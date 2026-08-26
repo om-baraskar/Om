@@ -4,972 +4,1234 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart Landslide Early Warning System</title>
+<title>Smart Landslide Safety System</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-*{
-    box-sizing:border-box;
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
 }
 
-html{
-    scroll-behavior:smooth;
+html {
+    scroll-behavior: smooth;
 }
 
-body{
-    margin:0;
-    font-family:'Nunito',Arial,sans-serif;
-    color:#17352d;
-    text-align:center;
-    overflow-x:hidden;
-
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #16324f;
+    text-align: center;
     background:
         linear-gradient(
             180deg,
-            rgba(224,247,250,.90),
-            rgba(240,248,235,.95)
+            #bfeeff 0%,
+            #dff7ff 45%,
+            #eefcff 100%
         );
+    overflow-x: hidden;
 }
 
-/* ================================
-   NATURE BACKGROUND
-================================ */
 
-.nature-bg{
-    position:fixed;
-    inset:0;
-    z-index:-10;
-    overflow:hidden;
+/* =========================================================
+   NATURAL BACKGROUND
+========================================================= */
+
+.nature-background {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    overflow: hidden;
+    pointer-events: none;
     background:
         linear-gradient(
-            180deg,
-            #8fd3ee 0%,
-            #c9edf3 42%,
-            #a8d69a 43%,
-            #6fa866 100%
+            #a9e8ff,
+            #e8fbff
         );
+    transition: background 0.8s ease;
 }
 
-.sun{
-    position:absolute;
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    right:8%;
-    top:55px;
-    background:#fff4a8;
-    box-shadow:0 0 60px rgba(255,238,120,.8);
+.sky-glow {
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: rgba(255,255,180,0.75);
+    top: 55px;
+    right: 12%;
+    filter: blur(2px);
 }
 
-.mountain{
-    position:absolute;
-    bottom:19%;
-    width:0;
-    height:0;
-    border-left:280px solid transparent;
-    border-right:280px solid transparent;
-    border-bottom:320px solid #567d5a;
-    opacity:.65;
+.cloud {
+    position: absolute;
+    background: white;
+    border-radius: 100px;
+    opacity: 0.75;
+    animation: cloudMove 35s linear infinite;
 }
 
-.mountain.one{
-    left:-170px;
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
 }
 
-.mountain.two{
-    right:-170px;
-    transform:scale(.8);
+.cloud::before {
+    width: 70px;
+    height: 70px;
+    left: 30px;
+    top: -35px;
 }
 
-.ground{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:23%;
-    background:
-        linear-gradient(
-            180deg,
-            #6fa45d,
-            #477947
-        );
+.cloud::after {
+    width: 90px;
+    height: 90px;
+    right: 25px;
+    top: -45px;
 }
 
-.tree{
-    position:absolute;
-    bottom:18%;
-    width:18px;
-    height:150px;
-    background:#66452d;
-    border-radius:10px;
-    transform-origin:bottom center;
-    animation:sway 4s ease-in-out infinite;
+.cloud.one {
+    width: 180px;
+    height: 45px;
+    top: 100px;
+    left: -220px;
 }
 
-.tree:before,
-.tree:after{
-    content:"";
-    position:absolute;
-    border-radius:50%;
-    background:#387c48;
+.cloud.two {
+    width: 220px;
+    height: 50px;
+    top: 190px;
+    left: -300px;
+    animation-delay: 10s;
 }
 
-.tree:before{
-    width:100px;
-    height:100px;
-    left:-42px;
-    top:-70px;
+@keyframes cloudMove {
+    from {
+        transform: translateX(-100px);
+    }
+    to {
+        transform: translateX(calc(100vw + 500px));
+    }
 }
 
-.tree:after{
-    width:75px;
-    height:75px;
-    left:-25px;
-    top:-110px;
+
+/* =========================================================
+   RAIN
+========================================================= */
+
+.rain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.32;
+    pointer-events: none;
 }
 
-.tree.t1{
-    left:7%;
-    animation-delay:.2s;
+.drop {
+    position: absolute;
+    width: 2px;
+    height: 22px;
+    background: #4aa8d8;
+    animation: rainfall linear infinite;
 }
 
-.tree.t2{
-    right:9%;
-    height:120px;
-    animation-delay:1s;
+@keyframes rainfall {
+    from {
+        transform: translateY(-40px) rotate(12deg);
+    }
+    to {
+        transform: translateY(110vh) rotate(12deg);
+    }
 }
 
-@keyframes sway{
-    0%,100%{transform:rotate(0deg)}
-    50%{transform:rotate(3deg)}
+
+/* =========================================================
+   HILLS
+========================================================= */
+
+.hills {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 190px;
 }
 
-/* Rain */
-
-.rain{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    opacity:.25;
-    background-image:
-        repeating-linear-gradient(
-            105deg,
-            transparent 0,
-            transparent 18px,
-            rgba(255,255,255,.75) 19px,
-            transparent 21px
-        );
-    background-size:80px 80px;
-    animation:rainMove .7s linear infinite;
+.hill {
+    position: absolute;
+    bottom: -70px;
+    width: 65%;
+    height: 230px;
+    border-radius: 50% 50% 0 0;
+    background: #78bd82;
 }
 
-@keyframes rainMove{
-    from{background-position:0 0}
-    to{background-position:-40px 80px}
+.hill.left {
+    left: -15%;
 }
 
-/* ================================
+.hill.right {
+    right: -15%;
+    background: #68aa76;
+}
+
+
+/* =========================================================
+   TREES
+========================================================= */
+
+.tree {
+    position: absolute;
+    bottom: 45px;
+    width: 12px;
+    height: 75px;
+    background: #76502e;
+    transform-origin: bottom;
+    animation: treeWind 3s ease-in-out infinite;
+}
+
+.tree::before,
+.tree::after {
+    content: "";
+    position: absolute;
+    background: #25834a;
+    border-radius: 50%;
+}
+
+.tree::before {
+    width: 55px;
+    height: 55px;
+    left: -21px;
+    top: -35px;
+}
+
+.tree::after {
+    width: 45px;
+    height: 45px;
+    left: -17px;
+    top: -65px;
+}
+
+.tree.t1 {
+    left: 7%;
+}
+
+.tree.t2 {
+    left: 18%;
+    transform: scale(0.8);
+    animation-delay: 0.5s;
+}
+
+.tree.t3 {
+    right: 9%;
+    transform: scale(1.1);
+    animation-delay: 1s;
+}
+
+.tree.t4 {
+    right: 22%;
+    transform: scale(0.75);
+    animation-delay: 1.5s;
+}
+
+@keyframes treeWind {
+    0%,100% {
+        rotate: -1deg;
+    }
+
+    50% {
+        rotate: 3deg;
+    }
+}
+
+
+/* =========================================================
    DANGER BACKGROUND
-================================ */
+========================================================= */
 
-body.danger-mode .nature-bg{
+body.danger-mode .nature-background {
     background:
         linear-gradient(
-            180deg,
-            #5b5d63,
-            #30343a 45%,
-            #542e28 46%,
-            #291d1b 100%
+            #4b5361,
+            #78808a 45%,
+            #a26e54 100%
         );
 }
 
-body.danger-mode .sun{
-    background:#d65b45;
-    box-shadow:0 0 60px rgba(255,70,40,.65);
+body.danger-mode .sky-glow {
+    background: rgba(255,80,50,0.4);
 }
 
-body.danger-mode .mountain{
-    border-bottom-color:#3d302e;
+body.danger-mode .hill {
+    background: #714839;
 }
 
-body.danger-mode .ground{
-    background:
-        linear-gradient(
-            180deg,
-            #574137,
-            #29211f
-        );
+body.danger-mode .hill.right {
+    background: #5d3c32;
 }
 
-body.danger-mode .tree{
-    animation:swayDanger .45s ease-in-out infinite;
+body.danger-mode .tree {
+    animation:
+        treeDanger 0.55s ease-in-out infinite;
 }
 
-@keyframes swayDanger{
-    0%,100%{transform:rotate(-4deg)}
-    50%{transform:rotate(8deg)}
-}
+@keyframes treeDanger {
+    0%,100% {
+        rotate: -8deg;
+    }
 
-/* ================================
-   TOP HERO
-================================ */
-
-.hero{
-    margin:18px auto;
-    width:94%;
-    max-width:1200px;
-    padding:28px 20px;
-    border-radius:30px;
-
-    background:rgba(255,255,255,.88);
-    backdrop-filter:blur(10px);
-
-    box-shadow:
-        0 18px 50px rgba(34,75,55,.18);
-
-    border:2px solid rgba(255,255,255,.9);
-}
-
-.logo{
-    display:block;
-    width:155px;
-    max-width:70%;
-    margin:0 auto 12px;
-}
-
-.hero h1{
-    margin:8px 0;
-    color:#145c49;
-    font-size:clamp(25px,5vw,42px);
-    font-weight:900;
-}
-
-.hero p{
-    margin:5px 0;
-    color:#56716a;
-    font-size:16px;
-    font-weight:700;
-}
-
-.badges{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:18px;
-}
-
-.badge{
-    padding:9px 15px;
-    border-radius:30px;
-    background:#e5f7ed;
-    color:#16734f;
-    font-weight:800;
-}
-
-/* ================================
-   ALERT BANNER
-================================ */
-
-.alert-banner{
-    display:none;
-    width:94%;
-    max-width:1200px;
-    margin:15px auto;
-    padding:20px;
-    border-radius:25px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ff3d3d,
-            #9d1111
-        );
-
-    color:white;
-    box-shadow:0 12px 35px rgba(160,0,0,.35);
-}
-
-.alert-banner.active{
-    display:block;
-    animation:dangerPulse 1s infinite;
-}
-
-.alert-banner h2{
-    margin:0;
-    font-size:clamp(24px,6vw,42px);
-}
-
-.alert-banner p{
-    margin:8px 0 0;
-    font-size:18px;
-    font-weight:800;
-}
-
-@keyframes dangerPulse{
-    50%{
-        transform:scale(1.015);
-        box-shadow:0 0 35px rgba(255,0,0,.7);
+    50% {
+        rotate: 8deg;
     }
 }
 
-/* ================================
-   MAIN
-================================ */
 
-.container{
-    width:94%;
-    max-width:1200px;
-    margin:auto;
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.page {
+    width: 94%;
+    max-width: 1250px;
+    margin: auto;
 }
 
-/* ================================
-   AUDIO CONTROL
-================================ */
 
-.audio-panel{
-    margin:18px auto;
-    padding:18px;
-    border-radius:24px;
-    background:rgba(255,255,255,.92);
-    box-shadow:0 10px 30px rgba(30,70,50,.15);
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    margin-top: 20px;
+    padding: 35px 20px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.84);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 35px rgba(45,110,145,0.18);
+    border: 2px solid rgba(255,255,255,0.9);
 }
 
-.audio-buttons{
-    display:flex;
-    gap:10px;
-    justify-content:center;
-    flex-wrap:wrap;
+.hero-badge {
+    display: inline-block;
+    padding: 8px 17px;
+    border-radius: 30px;
+    background: #d9f7ff;
+    color: #08749c;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.audio-btn{
-    border:0;
-    padding:13px 20px;
-    border-radius:50px;
-    font-weight:900;
-    font-size:16px;
-    cursor:pointer;
+.hero h1 {
+    margin: 5px 0;
+    font-size: clamp(27px, 5vw, 45px);
+    color: #075b82;
 }
 
-.audio-on{
-    background:#31b56b;
-    color:white;
+.hero p {
+    font-size: 17px;
+    margin: 12px auto;
 }
 
-.audio-off{
-    background:#ec6b6b;
-    color:white;
+.hero-nature {
+    font-size: 48px;
+    letter-spacing: 5px;
+    margin: 15px 0;
 }
 
-.audio-status{
-    margin-top:9px;
-    color:#60756e;
-    font-weight:700;
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+.audio-card {
+    margin: 20px auto;
+    padding: 18px;
+    max-width: 700px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 8px 25px rgba(50,100,130,0.15);
 }
 
-/* ================================
-   SYNC
-================================ */
-
-.sync{
-    background:rgba(255,255,255,.9);
-    border-radius:20px;
-    padding:15px;
-    margin:18px 0;
-    box-shadow:0 8px 25px rgba(30,70,50,.12);
-    font-weight:900;
+.audio-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.dot{
-    display:inline-block;
-    width:13px;
-    height:13px;
-    border-radius:50%;
-    margin-right:8px;
-    background:#f0ad32;
+.audio-btn {
+    border: none;
+    border-radius: 15px;
+    padding: 13px 22px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.dot.ok{
-    background:#2ebd69;
+.audio-on {
+    background: #2dbf72;
+    color: white;
 }
 
-.dot.bad{
-    background:#e54848;
+.audio-off {
+    background: #e9eef2;
+    color: #34495e;
 }
 
-/* ================================
-   STATUS
-================================ */
-
-.card{
-    background:rgba(255,255,255,.93);
-    border-radius:25px;
-    padding:22px;
-    margin:20px 0;
-    box-shadow:0 12px 35px rgba(30,70,50,.14);
+.audio-status {
+    margin-top: 10px;
+    font-size: 14px;
 }
 
-.status{
-    padding:20px;
-    border-radius:20px;
-    color:white;
-    font-size:22px;
-    font-weight:900;
-    background:#f2a93b;
+
+/* =========================================================
+   CONNECTION
+========================================================= */
+
+.connection-card {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 7px 20px rgba(30,100,130,0.13);
 }
 
-.status.safe{
-    background:linear-gradient(135deg,#26b968,#158c55);
+.status-dot {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #f0ad4e;
+    margin-right: 7px;
 }
 
-.status.warning{
-    background:linear-gradient(135deg,#ffc04d,#e88b18);
+.status-dot.connected {
+    background: #25b85a;
 }
 
-.status.danger{
-    background:linear-gradient(135deg,#ff4242,#a90f0f);
-    animation:statusFlash 1s infinite;
+.status-dot.error {
+    background: #e74c3c;
 }
 
-@keyframes statusFlash{
-    50%{filter:brightness(1.35)}
+
+/* =========================================================
+   EMERGENCY STATUS
+========================================================= */
+
+.status-card {
+    margin: 25px 0;
+    padding: 24px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.93);
+    box-shadow: 0 12px 35px rgba(50,100,130,0.16);
 }
 
-/* ================================
+.status-card h2 {
+    margin-top: 0;
+}
+
+#dangerStatus {
+    padding: 20px;
+    border-radius: 20px;
+    font-size: 21px;
+    font-weight: 800;
+    background: #f5b041;
+    color: white;
+    transition: 0.4s;
+}
+
+#dangerStatus.safe {
+    background: linear-gradient(135deg,#2ecc71,#20b56a);
+}
+
+#dangerStatus.warning {
+    background: linear-gradient(135deg,#f6b93b,#f39c12);
+}
+
+#dangerStatus.danger {
+    background: linear-gradient(135deg,#ff3b30,#b71c1c);
+    animation: dangerPulse 0.8s infinite;
+}
+
+@keyframes dangerPulse {
+    50% {
+        transform: scale(1.015);
+        box-shadow: 0 0 35px rgba(255,40,30,0.5);
+    }
+}
+
+
+/* =========================================================
+   EMERGENCY MESSAGE
+========================================================= */
+
+.emergency-message {
+    display: none;
+    margin-top: 15px;
+    padding: 18px;
+    border-radius: 20px;
+    background: #fff1f0;
+    border: 3px solid #ff4d4d;
+    color: #a50000;
+    font-weight: bold;
+}
+
+body.danger-mode .emergency-message {
+    display: block;
+    animation: emergencyBlink 1s infinite;
+}
+
+@keyframes emergencyBlink {
+    50% {
+        opacity: 0.75;
+    }
+}
+
+
+/* =========================================================
+   SAFE DIRECTION
+========================================================= */
+
+.direction-card {
+    margin: 25px 0;
+    padding: 25px;
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.95),
+            rgba(232,249,255,0.95)
+        );
+    box-shadow: 0 10px 30px rgba(50,100,130,0.14);
+}
+
+.direction-arrow {
+    font-size: 75px;
+    line-height: 1;
+    margin: 10px;
+}
+
+.direction-title {
+    font-size: 25px;
+    font-weight: 800;
+    color: #08749c;
+}
+
+.direction-text {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
    SENSOR CARDS
-================================ */
+========================================================= */
 
-.sensor-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;
+.sensor-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+    gap: 18px;
+    margin: 25px 0;
 }
 
-.sensor{
-    padding:22px 15px;
-    border-radius:25px;
-    background:rgba(255,255,255,.94);
-    box-shadow:0 10px 30px rgba(30,70,50,.14);
-    transition:.25s;
+.sensor-card {
+    padding: 22px 15px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.94);
+    box-shadow: 0 9px 25px rgba(40,100,130,0.14);
+    transition: transform 0.25s;
 }
 
-.sensor:hover{
-    transform:translateY(-5px);
+.sensor-card:hover {
+    transform: translateY(-5px);
 }
 
-.sensor-icon{
-    font-size:45px;
+.sensor-icon {
+    font-size: 43px;
 }
 
-.sensor h3{
-    margin:9px 0;
-    color:#276452;
+.sensor-card h3 {
+    margin: 10px 0;
+    color: #075b82;
 }
 
-.value{
-    font-size:35px;
-    font-weight:900;
-    color:#173f35;
+.sensor-value {
+    font-size: 34px;
+    font-weight: 900;
 }
 
-.unit{
-    color:#71817b;
-    font-size:13px;
-    font-weight:700;
+.sensor-unit {
+    margin-top: 6px;
+    color: #708090;
+    font-size: 13px;
 }
 
-/* ================================
-   INFO
-================================ */
 
-.info-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:12px;
+/* =========================================================
+   INFORMATION
+========================================================= */
+
+.info-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(210px,1fr));
+    gap: 15px;
+    margin: 25px 0;
 }
 
-.info{
-    padding:15px;
-    background:#f1faf5;
-    border-radius:18px;
-    font-weight:800;
+.info-box {
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 7px 22px rgba(40,100,130,0.12);
 }
 
-.info span{
-    display:block;
-    margin-top:5px;
-    color:#168258;
+.info-box strong {
+    display: block;
+    margin-bottom: 7px;
+    color: #08749c;
 }
 
-/* ================================
-   DIRECTION
-================================ */
 
-.direction-card{
-    background:
-        linear-gradient(
-            135deg,
-            #fffdf0,
-            #effbf1
-        );
-}
-
-.direction{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:15px;
-    margin-top:15px;
-}
-
-.direction-box{
-    padding:20px;
-    border-radius:22px;
-    background:white;
-    box-shadow:0 6px 18px rgba(30,70,50,.1);
-}
-
-.arrow{
-    font-size:50px;
-}
-
-.direction-box h3{
-    margin:5px;
-    color:#287052;
-}
-
-.direction-box p{
-    color:#65766f;
-    font-weight:700;
-}
-
-/* ================================
+/* =========================================================
    CHARTS
-================================ */
+========================================================= */
 
-.section-title{
-    color:#185c49;
-    margin:38px 0 15px;
-    font-size:28px;
+.graph-title {
+    margin-top: 38px;
+    color: #075b82;
+    font-size: 28px;
 }
 
-.chart-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:20px;
+.graph-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(310px,1fr));
+    gap: 20px;
 }
 
-.chart-card{
-    background:rgba(255,255,255,.96);
-    border-radius:26px;
-    padding:18px;
-    box-shadow:0 12px 35px rgba(30,70,50,.15);
+.graph-card {
+    background: rgba(255,255,255,0.96);
+    padding: 20px;
+    border-radius: 26px;
+    box-shadow: 0 10px 30px rgba(40,100,130,0.14);
 }
 
-.chart-card h3{
-    color:#245f4c;
-    margin:4px 0 12px;
+.graph-card h3 {
+    margin-top: 3px;
+    color: #075b82;
 }
 
-.chart-wrap{
-    position:relative;
-    height:300px;
+.chart-container {
+    height: 300px;
+    position: relative;
 }
 
-/* ================================
+
+/* =========================================================
    SAFETY PROTOCOLS
-================================ */
+========================================================= */
 
-.protocol-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:15px;
+.protocol-section {
+    margin: 40px 0;
 }
 
-.protocol{
-    text-align:left;
-    padding:20px;
-    border-radius:22px;
-    background:rgba(255,255,255,.94);
-    box-shadow:0 8px 25px rgba(30,70,50,.12);
+.protocol-section h2 {
+    color: #075b82;
 }
 
-.protocol-icon{
-    font-size:35px;
+.protocol-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(230px,1fr));
+    gap: 17px;
 }
 
-.protocol h3{
-    margin:7px 0;
-    color:#23654f;
+.protocol {
+    padding: 22px;
+    border-radius: 23px;
+    background: rgba(255,255,255,0.94);
+    box-shadow: 0 8px 25px rgba(40,100,130,0.13);
+    text-align: left;
 }
 
-.protocol p{
-    margin:0;
-    color:#62756d;
-    line-height:1.55;
-    font-weight:600;
+.protocol-icon {
+    font-size: 35px;
 }
 
-/* ================================
+.protocol h3 {
+    margin-bottom: 7px;
+    color: #08749c;
+}
+
+.protocol p {
+    line-height: 1.55;
+    color: #405568;
+}
+
+
+/* =========================================================
    FOOTER
-================================ */
+========================================================= */
 
-footer{
-    margin-top:35px;
-    padding:30px 15px;
-    background:#164c3d;
-    color:white;
+footer {
+    margin-top: 40px;
+    padding: 30px 15px;
+    background: rgba(6,80,112,0.95);
+    color: white;
 }
 
-.developer{
-    margin-top:10px;
-    font-size:18px;
-    font-weight:900;
+.developer {
+    font-size: 18px;
+    font-weight: bold;
 }
 
-/* ================================
+
+/* =========================================================
    MOBILE
-================================ */
+========================================================= */
 
-@media(max-width:600px){
+@media(max-width:600px) {
 
-    .hero{
-        padding:22px 13px;
+    .page {
+        width: 92%;
     }
 
-    .logo{
-        width:125px;
+    .hero {
+        padding: 25px 15px;
     }
 
-    .chart-grid{
-        grid-template-columns:1fr;
+    .hero-nature {
+        font-size: 38px;
     }
 
-    .chart-wrap{
-        height:270px;
+    .chart-container {
+        height: 260px;
     }
 
-    .status{
-        font-size:18px;
+    .direction-arrow {
+        font-size: 60px;
     }
+
 }
+
 </style>
 </head>
 
+
 <body>
 
-<!-- NATURE BACKGROUND -->
-<div class="nature-bg">
-    <div class="sun"></div>
-    <div class="mountain one"></div>
-    <div class="mountain two"></div>
-    <div class="ground"></div>
+<!-- =====================================================
+     NATURAL BACKGROUND
+===================================================== -->
+
+<div class="nature-background">
+
+    <div class="sky-glow"></div>
+
+    <div class="cloud one"></div>
+    <div class="cloud two"></div>
+
+    <div class="rain" id="rainBackground"></div>
+
+    <div class="hills">
+        <div class="hill left"></div>
+        <div class="hill right"></div>
+    </div>
+
     <div class="tree t1"></div>
     <div class="tree t2"></div>
-    <div class="rain"></div>
+    <div class="tree t3"></div>
+    <div class="tree t4"></div>
+
 </div>
 
-<!-- HERO -->
+
+<div class="page">
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
 <section class="hero">
 
-    <img
-        src="./logo.png"
-        class="logo"
-        alt="SESR Logo"
-        onerror="this.style.display='none';"
-    >
+    <div class="hero-badge">
+        🌍 SMART EARTH-SAFETY TECHNOLOGY
+    </div>
 
-    <h1>🌿 Smart Landslide Early Warning System</h1>
+    <div class="hero-nature">
+        🌧️ 🌲 🌿 🏔️ 🌸
+    </div>
+
+    <h1>
+        Smart Landslide<br>
+        Early Warning System
+    </h1>
 
     <p>
-        S.R.E.S. Sanjivani College of Engineering, Kopargaon
+        Real-time monitoring • Early warning • Safe evacuation
     </p>
 
-    <div class="badges">
-        <div class="badge">🌧️ Rain Monitoring</div>
-        <div class="badge">📳 Vibration Detection</div>
-        <div class="badge">📏 Distance Monitoring</div>
-        <div class="badge">🌱 Soil Monitoring</div>
-    </div>
+    <p>
+        <strong>
+            S.R.E.S. Sanjivani College of Engineering, Kopargaon
+        </strong>
+    </p>
 
 </section>
 
-<!-- DANGER MESSAGE -->
-<div id="dangerBanner" class="alert-banner">
-    <h2>🚨 LANDSLIDE ALERT</h2>
-    <p>⚠️ MOVE AWAY FROM THE DANGER ZONE • FOLLOW THE SAFE DIRECTION</p>
-</div>
 
-<div class="container">
+<!-- =====================================================
+     SAFETY AUDIO
+===================================================== -->
 
-<!-- AUDIO -->
-<div class="audio-panel">
+<section class="audio-card">
+
+    <h2>🔊 Safety Audio System</h2>
 
     <div class="audio-buttons">
 
         <button
             class="audio-btn audio-on"
-            onclick="enableSafetyAudio()">
+            onclick="turnAudioOn()">
             🔊 SAFETY AUDIO ON
         </button>
 
         <button
             class="audio-btn audio-off"
-            onclick="disableSafetyAudio()">
-            🔇 SAFETY AUDIO OFF
+            onclick="turnAudioOff()">
+            🔇 AUDIO OFF
         </button>
 
     </div>
 
     <div
-        id="audioStatus"
-        class="audio-status">
-        Safety audio is ready. Tap ON once if your browser has blocked sound.
+        class="audio-status"
+        id="audioStatus">
+        Safety audio is ready.
     </div>
 
-</div>
+</section>
 
-<!-- SYNC -->
-<div class="sync">
 
-    <span id="syncDot" class="dot"></span>
+<!-- =====================================================
+     CONNECTION
+===================================================== -->
 
-    <span id="syncStatus">
-        Connecting to ThingSpeak...
+<section class="connection-card">
+
+    <span
+        id="syncDot"
+        class="status-dot">
     </span>
 
-</div>
+    <strong id="syncStatus">
+        Connecting to ThingSpeak...
+    </strong>
 
-<!-- STATUS -->
-<div class="card">
+</section>
 
-    <h2>🚨 Landslide Safety Status</h2>
 
-    <div id="dangerStatus" class="status">
+<!-- =====================================================
+     LANDSLIDE STATUS
+===================================================== -->
+
+<section class="status-card">
+
+    <h2>
+        🚨 Landslide Safety Status
+    </h2>
+
+    <div
+        id="dangerStatus">
         ⏳ Waiting for sensor data...
     </div>
 
-</div>
+    <div class="emergency-message">
 
-<!-- SENSOR CARDS -->
+        🚨 LANDSLIDE DANGER DETECTED 🚨
+        <br><br>
+
+        🏃 MOVE AWAY FROM THE SLOPE
+        <br>
+
+        ➡️ FOLLOW THE SAFE DIRECTION
+        <br>
+
+        🚫 DO NOT RETURN TO THE DANGER AREA
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SAFE DIRECTION
+===================================================== -->
+
+<section class="direction-card">
+
+    <div class="direction-title">
+        🧭 SAFE MOVEMENT DIRECTION
+    </div>
+
+    <div
+        class="direction-arrow"
+        id="directionArrow">
+        ➡️
+    </div>
+
+    <div
+        class="direction-text"
+        id="directionText">
+
+        Move towards the designated safe area,
+        away from steep slopes and drainage channels.
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SENSOR CARDS
+===================================================== -->
+
 <div class="sensor-grid">
 
-    <div class="sensor">
+
+    <div class="sensor-card">
+
         <div class="sensor-icon">📏</div>
-        <h3>Ultrasonic Sensor</h3>
-        <div id="ultrasonicValue" class="value">--</div>
-        <div class="unit">Field 1 • Distance</div>
+
+        <h3>Ultrasonic</h3>
+
+        <div
+            class="sensor-value"
+            id="ultrasonicValue">
+            --
+        </div>
+
+        <div class="sensor-unit">
+            Field 1 • Distance
+        </div>
+
     </div>
 
-    <div class="sensor">
+
+    <div class="sensor-card">
+
         <div class="sensor-icon">🌱</div>
+
         <h3>Soil Moisture</h3>
-        <div id="soilValue" class="value">--</div>
-        <div class="unit">Field 2 • Soil Reading</div>
+
+        <div
+            class="sensor-value"
+            id="soilValue">
+            --
+        </div>
+
+        <div class="sensor-unit">
+            Field 2 • Soil Reading
+        </div>
+
     </div>
 
-    <div class="sensor">
+
+    <div class="sensor-card">
+
         <div class="sensor-icon">📳</div>
+
         <h3>Vibration</h3>
-        <div id="vibrationValue" class="value">--</div>
-        <div class="unit">Field 3 • SW-420</div>
+
+        <div
+            class="sensor-value"
+            id="vibrationValue">
+            --
+        </div>
+
+        <div class="sensor-unit">
+            Field 3 • SW-420
+        </div>
+
     </div>
 
-    <div class="sensor">
+
+    <div class="sensor-card">
+
         <div class="sensor-icon">🌧️</div>
-        <h3>Rain Sensor</h3>
-        <div id="rainValue" class="value">--</div>
-        <div class="unit">Field 4 • Rain Reading</div>
-    </div>
 
-</div>
+        <h3>Rain</h3>
 
-<!-- SYSTEM INFORMATION -->
-<div class="card">
-
-    <h2>📡 Live System Information</h2>
-
-    <div class="info-grid">
-
-        <div class="info">
-            ThingSpeak
-            <span id="connectionStatus">Connecting...</span>
+        <div
+            class="sensor-value"
+            id="rainValue">
+            --
         </div>
 
-        <div class="info">
-            Last Update
-            <span id="lastUpdate">--</span>
-        </div>
-
-        <div class="info">
-            Entry ID
-            <span id="entryId">--</span>
-        </div>
-
-        <div class="info">
-            Channel ID
-            <span>3456662</span>
+        <div class="sensor-unit">
+            Field 4 • Rain Reading
         </div>
 
     </div>
 
 </div>
 
-<!-- SAFE DIRECTION -->
-<div class="card direction-card">
 
-    <h2>🧭 Safe Evacuation Direction</h2>
+<!-- =====================================================
+     LIVE INFORMATION
+===================================================== -->
 
-    <p>
-        When an alert is active, move calmly toward a
-        <strong>stable, open area away from slopes, cliffs,
-        loose soil and flowing debris.</strong>
-    </p>
+<div class="info-grid">
 
-    <div class="direction">
+    <div class="info-box">
 
-        <div class="direction-box">
-            <div class="arrow">⬆️</div>
-            <h3>SAFE AREA</h3>
-            <p>Move toward higher, stable ground when local authorities recommend it.</p>
-        </div>
+        <strong>📡 ThingSpeak</strong>
 
-        <div class="direction-box">
-            <div class="arrow">➡️</div>
-            <h3>MOVE SIDEWAYS</h3>
-            <p>Move away from the path of possible falling soil or rocks.</p>
-        </div>
+        <span id="connectionStatus">
+            Connecting...
+        </span>
 
-        <div class="direction-box">
-            <div class="arrow">🚫</div>
-            <h3>DO NOT ENTER</h3>
-            <p>Avoid the base of steep slopes and areas showing signs of movement.</p>
-        </div>
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>🕐 Last Update</strong>
+
+        <span id="lastUpdate">
+            --
+        </span>
+
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>🔢 Entry ID</strong>
+
+        <span id="entryId">
+            --
+        </span>
+
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>📶 Channel</strong>
+
+        <span>
+            3456662
+        </span>
 
     </div>
 
 </div>
 
-<!-- GRAPHS -->
-<h2 class="section-title">
-    📊 Live ThingSpeak Sensor History
+
+<!-- =====================================================
+     GRAPHS
+===================================================== -->
+
+<h2 class="graph-title">
+    📊 Live Sensor History
 </h2>
 
-<div class="chart-grid">
 
-    <div class="chart-card">
+<div class="graph-grid">
+
+
+    <div class="graph-card">
+
         <h3>📏 Ultrasonic Distance</h3>
-        <div class="chart-wrap">
+
+        <div class="chart-container">
             <canvas id="ultrasonicChart"></canvas>
         </div>
+
     </div>
 
-    <div class="chart-card">
+
+    <div class="graph-card">
+
         <h3>🌱 Soil Moisture</h3>
-        <div class="chart-wrap">
+
+        <div class="chart-container">
             <canvas id="soilChart"></canvas>
         </div>
+
     </div>
 
-    <div class="chart-card">
+
+    <div class="graph-card">
+
         <h3>📳 Vibration</h3>
-        <div class="chart-wrap">
+
+        <div class="chart-container">
             <canvas id="vibrationChart"></canvas>
         </div>
+
     </div>
 
-    <div class="chart-card">
+
+    <div class="graph-card">
+
         <h3>🌧️ Rain Sensor</h3>
-        <div class="chart-wrap">
+
+        <div class="chart-container">
             <canvas id="rainChart"></canvas>
         </div>
+
     </div>
 
 </div>
 
-<!-- SAFETY PROTOCOLS -->
-<h2 class="section-title">
-    🛡️ Landslide Safety Protocols
-</h2>
 
-<div class="protocol-grid">
+<!-- =====================================================
+     SAFETY PROTOCOLS
+===================================================== -->
 
-    <div class="protocol">
-        <div class="protocol-icon">🚨</div>
-        <h3>Take Alerts Seriously</h3>
-        <p>
-            If the system reports danger, leave the hazardous
-            area calmly and follow instructions from responsible
-            authorities.
-        </p>
+<section class="protocol-section">
+
+    <h2>
+        🛡️ Landslide Safety Protocols
+    </h2>
+
+    <div class="protocol-grid">
+
+
+        <div class="protocol">
+
+            <div class="protocol-icon">🏃</div>
+
+            <h3>1. Move Away</h3>
+
+            <p>
+                If an emergency warning appears,
+                move away from steep slopes,
+                unstable ground and the landslide path.
+            </p>
+
+        </div>
+
+
+        <div class="protocol">
+
+            <div class="protocol-icon">🚫</div>
+
+            <h3>2. Do Not Return</h3>
+
+            <p>
+                Do not go back into a danger area
+                until responsible authorities declare
+                the area safe.
+            </p>
+
+        </div>
+
+
+        <div class="protocol">
+
+            <div class="protocol-icon">📱</div>
+
+            <h3>3. Follow Warnings</h3>
+
+            <p>
+                Follow official emergency instructions
+                and evacuation directions from local
+                authorities.
+            </p>
+
+        </div>
+
+
+        <div class="protocol">
+
+            <div class="protocol-icon">🌧️</div>
+
+            <h3>4. Watch Heavy Rain</h3>
+
+            <p>
+                Heavy or prolonged rainfall can increase
+                the possibility of slope instability.
+                Stay alert when conditions worsen.
+            </p>
+
+        </div>
+
+
+        <div class="protocol">
+
+            <div class="protocol-icon">🏠</div>
+
+            <h3>5. Reach a Safe Area</h3>
+
+            <p>
+                Move to a designated safe location,
+                preferably away from slopes,
+                gullies and drainage channels.
+            </p>
+
+        </div>
+
+
+        <div class="protocol">
+
+            <div class="protocol-icon">☎️</div>
+
+            <h3>6. Emergency Help</h3>
+
+            <p>
+                If someone is in danger, contact
+                local emergency services or responsible
+                authorities.
+            </p>
+
+        </div>
+
     </div>
 
-    <div class="protocol">
-        <div class="protocol-icon">🏔️</div>
-        <h3>Avoid Steep Slopes</h3>
-        <p>
-            Stay away from unstable slopes, cliffs and places
-            where rocks or soil may fall.
-        </p>
-    </div>
+</section>
 
-    <div class="protocol">
-        <div class="protocol-icon">🌊</div>
-        <h3>Avoid Debris Flow</h3>
-        <p>
-            Never approach flowing mud, rocks or debris during
-            heavy rainfall or a landslide warning.
-        </p>
-    </div>
-
-    <div class="protocol">
-        <div class="protocol-icon">📱</div>
-        <h3>Stay Connected</h3>
-        <p>
-            Keep communication available and follow verified
-            emergency instructions.
-        </p>
-    </div>
-
-    <div class="protocol">
-        <div class="protocol-icon">👨‍👩‍👧</div>
-        <h3>Stay With Others</h3>
-        <p>
-            Do not wander into hazardous areas alone. Stay with
-            family, teachers, staff or other responsible adults.
-        </p>
-    </div>
-
-    <div class="protocol">
-        <div class="protocol-icon">⛔</div>
-        <h3>Do Not Return Early</h3>
-        <p>
-            After an alert, remain away from the affected area
-            until responsible authorities say it is safe.
-        </p>
-    </div>
 
 </div>
 
-</div>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer>
 
-    🌿 Smart Landslide Early Warning System
+    🌍 Smart Landslide Early Warning System
 
-    <div class="developer">
+    <br><br>
+
+    S.R.E.S. Sanjivani College of Engineering, Kopargaon
+
+    <br><br>
+
+    <span class="developer">
         Developed by Om Baraskar
-    </div>
+    </span>
 
 </footer>
+
 
 
 <script>
 
 /* =========================================================
    THINGSPEAK CONFIGURATION
-   YOUR EXISTING VALUES ARE ALREADY HERE.
+   ALREADY BUILT IN
 ========================================================= */
 
 const CHANNEL_ID = "3456662";
@@ -977,6 +1239,11 @@ const CHANNEL_ID = "3456662";
 const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
 
 const UPDATE_INTERVAL = 15000;
+
+
+/* =========================================================
+   FIELDS
+========================================================= */
 
 const ULTRASONIC_FIELD = "field1";
 const SOIL_FIELD = "field2";
@@ -995,153 +1262,96 @@ let rainChart = null;
 
 
 /* =========================================================
-   AUDIO
+   AUDIO SYSTEM
 ========================================================= */
 
-let audioContext = null;
 let audioEnabled = false;
-let alarmTimer = null;
+let speechTimer = null;
 
 
 /*
-   Create the audio system only after a user action.
-   This is required by many mobile browsers.
+   Browser policy note:
+
+   Chrome/Android may block automatic speech
+   before the user interacts with the page.
+
+   The ON button activates it safely.
 */
 
-async function enableSafetyAudio(){
+function speakSafety(message) {
 
-    try{
-
-        if(!audioContext){
-
-            audioContext =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
-
-        }
-
-        if(audioContext.state === "suspended"){
-
-            await audioContext.resume();
-
-        }
-
-        audioEnabled = true;
-
-        document.getElementById("audioStatus").textContent =
-            "🔊 Safety audio ON — alert buzzer is ready.";
-
-        playSafetyTone();
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        document.getElementById("audioStatus").textContent =
-            "⚠️ Browser blocked audio. Tap the ON button again.";
-
+    if (!audioEnabled) {
+        return;
     }
 
+    if (!("speechSynthesis" in window)) {
+        document.getElementById("audioStatus").textContent =
+            "Your browser does not support speech audio.";
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(message);
+
+    speech.lang = "en-IN";
+    speech.rate = 0.9;
+    speech.pitch = 1;
+    speech.volume = 1;
+
+    window.speechSynthesis.speak(speech);
 }
 
 
-function disableSafetyAudio(){
+function turnAudioOn() {
+
+    audioEnabled = true;
+
+    const status =
+        document.getElementById("audioStatus");
+
+    status.textContent =
+        "🟢 Safety audio ON — speaking safety protocol.";
+
+    speakSafety(
+        "Landslide safety system activated. " +
+        "Stay alert. Monitor the warning system. " +
+        "If a danger warning appears, move away from the slope " +
+        "and follow the safe evacuation direction."
+    );
+}
+
+
+function turnAudioOff() {
 
     audioEnabled = false;
 
-    stopSafetyAlarm();
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
 
     document.getElementById("audioStatus").textContent =
         "🔇 Safety audio OFF.";
-
 }
 
 
-function playSafetyTone(){
+/* =========================================================
+   EMERGENCY VOICE
+========================================================= */
 
-    if(!audioEnabled || !audioContext){
+function emergencyVoice() {
+
+    if (!audioEnabled) {
         return;
     }
 
-    const oscillator =
-        audioContext.createOscillator();
-
-    const gain =
-        audioContext.createGain();
-
-    oscillator.type = "sine";
-
-    oscillator.frequency.setValueAtTime(
-        650,
-        audioContext.currentTime
+    speakSafety(
+        "Warning. Landslide danger detected. " +
+        "Move away from the slope immediately. " +
+        "Follow the safe direction. " +
+        "Do not return to the danger area."
     );
-
-    oscillator.frequency.linearRampToValueAtTime(
-        900,
-        audioContext.currentTime + .15
-    );
-
-    gain.gain.setValueAtTime(
-        .001,
-        audioContext.currentTime
-    );
-
-    gain.gain.linearRampToValueAtTime(
-        .12,
-        audioContext.currentTime + .03
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        .001,
-        audioContext.currentTime + .35
-    );
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.start();
-
-    oscillator.stop(
-        audioContext.currentTime + .35
-    );
-
-}
-
-
-function startSafetyAlarm(){
-
-    if(!audioEnabled){
-        return;
-    }
-
-    if(alarmTimer){
-        return;
-    }
-
-    playSafetyTone();
-
-    alarmTimer =
-        setInterval(
-            playSafetyTone,
-            700
-        );
-
-}
-
-
-function stopSafetyAlarm(){
-
-    if(alarmTimer){
-
-        clearInterval(alarmTimer);
-
-        alarmTimer = null;
-
-    }
-
 }
 
 
@@ -1149,7 +1359,7 @@ function stopSafetyAlarm(){
    THINGSPEAK URL
 ========================================================= */
 
-function getThingSpeakURL(){
+function getThingSpeakURL() {
 
     return (
         "https://api.thingspeak.com/channels/" +
@@ -1163,130 +1373,161 @@ function getThingSpeakURL(){
 
 
 /* =========================================================
+   SAFE DIRECTION
+========================================================= */
+
+function setSafeDirection(danger) {
+
+    const arrow =
+        document.getElementById("directionArrow");
+
+    const text =
+        document.getElementById("directionText");
+
+    if (danger) {
+
+        arrow.textContent = "➡️";
+
+        text.textContent =
+            "MOVE AWAY FROM THE SLOPE → " +
+            "Go toward the designated safe/open area. " +
+            "Avoid valleys, drainage channels and the unstable slope.";
+
+    }
+    else {
+
+        arrow.textContent = "➡️";
+
+        text.textContent =
+            "Normal condition: remain alert and use the " +
+            "designated safe route if an official warning is issued.";
+
+    }
+
+}
+
+
+/* =========================================================
    SAFETY STATUS
 ========================================================= */
+
+let previousDanger = false;
 
 function updateSafetyStatus(
     ultrasonic,
     soil,
     vibration,
     rain
-){
+) {
 
     const status =
-        document.getElementById(
-            "dangerStatus"
-        );
+        document.getElementById("dangerStatus");
 
-    const banner =
-        document.getElementById(
-            "dangerBanner"
-        );
+    status.className = "";
 
-
-    status.className = "status";
-
-
-    if(
+    if (
         Number.isNaN(ultrasonic) ||
         Number.isNaN(soil) ||
         Number.isNaN(vibration) ||
         Number.isNaN(rain)
-    ){
+    ) {
 
         status.classList.add("warning");
 
         status.textContent =
             "⏳ WAITING FOR COMPLETE SENSOR DATA";
 
-        banner.classList.remove("active");
-
         document.body.classList.remove("danger-mode");
 
-        stopSafetyAlarm();
+        setSafeDirection(false);
+
+        previousDanger = false;
 
         return;
-
     }
 
 
     /* VIBRATION */
 
-    if(vibration >= 1){
+    if (vibration >= 1) {
 
         status.classList.add("danger");
 
         status.textContent =
-            "🚨 ALERT: VIBRATION DETECTED";
-
-        banner.classList.add("active");
+            "🚨 DANGER: VIBRATION DETECTED";
 
         document.body.classList.add("danger-mode");
 
-        startSafetyAlarm();
+        setSafeDirection(true);
+
+        if (!previousDanger) {
+            emergencyVoice();
+        }
+
+        previousDanger = true;
 
         return;
-
     }
 
 
     /* RAIN */
 
-    if(rain >= 1){
+    if (rain >= 1) {
 
         status.classList.add("warning");
 
         status.textContent =
             "⚠️ WARNING: RAIN DETECTED";
 
-        banner.classList.remove("active");
-
         document.body.classList.remove("danger-mode");
 
-        stopSafetyAlarm();
+        setSafeDirection(false);
+
+        previousDanger = false;
 
         return;
-
     }
 
 
-    /* DISTANCE */
+    /* ULTRASONIC */
 
-    if(ultrasonic < 70){
+    if (ultrasonic < 70) {
 
         status.classList.add("danger");
 
         status.textContent =
-            "🚨 ALERT: CRITICAL DISTANCE";
-
-        banner.classList.add("active");
+            "🚨 DANGER: CRITICAL DISTANCE";
 
         document.body.classList.add("danger-mode");
 
-        startSafetyAlarm();
+        setSafeDirection(true);
+
+        if (!previousDanger) {
+            emergencyVoice();
+        }
+
+        previousDanger = true;
 
         return;
-
     }
 
 
     /* SOIL */
 
-    if(soil < 1500){
+    if (soil < 1500) {
 
         status.classList.add("warning");
 
         status.textContent =
             "⚠️ WARNING: SOIL CONDITION";
 
-        banner.classList.remove("active");
-
         document.body.classList.remove("danger-mode");
 
-        stopSafetyAlarm();
+        setSafeDirection(false);
+
+        previousDanger = false;
 
         return;
-
     }
 
 
@@ -1295,137 +1536,85 @@ function updateSafetyStatus(
     status.classList.add("safe");
 
     status.textContent =
-        "✅ SYSTEM NORMAL";
-
-    banner.classList.remove("active");
+        "✅ SYSTEM NORMAL — AREA MONITORED";
 
     document.body.classList.remove("danger-mode");
 
-    stopSafetyAlarm();
+    setSafeDirection(false);
 
+    previousDanger = false;
 }
 
 
 /* =========================================================
-   CHART HELPERS
+   CHART CREATION
 ========================================================= */
 
-function makeGradient(chart){
-
-    const ctx = chart.ctx;
-
-    const area = chart.chartArea;
-
-    if(!area){
-        return "rgba(43,160,120,.25)";
-    }
-
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            area.top,
-            0,
-            area.bottom
-        );
-
-    gradient.addColorStop(
-        0,
-        "rgba(43,160,120,.45)"
-    );
-
-    gradient.addColorStop(
-        1,
-        "rgba(43,160,120,.02)"
-    );
-
-    return gradient;
-
-}
-
-
-function chartOptions(){
+function chartOptions() {
 
     return {
 
-        responsive:true,
+        responsive: true,
 
-        maintainAspectRatio:false,
+        maintainAspectRatio: false,
 
-        interaction:{
-            mode:"index",
-            intersect:false
+        interaction: {
+            mode: "index",
+            intersect: false
         },
 
-        animation:{
-            duration:900,
-            easing:"easeOutQuart"
-        },
+        plugins: {
 
-        plugins:{
-
-            legend:{
-                display:true,
-                position:"bottom",
-
-                labels:{
-                    usePointStyle:true,
-                    padding:16,
-                    font:{
-                        family:"Nunito",
-                        weight:"800"
+            legend: {
+                display: true,
+                labels: {
+                    font: {
+                        size: 13,
+                        weight: "bold"
                     }
                 }
             },
 
-            tooltip:{
-                backgroundColor:"rgba(20,55,45,.95)",
-                titleFont:{
-                    family:"Nunito",
-                    weight:"900"
-                },
-                bodyFont:{
-                    family:"Nunito",
-                    weight:"700"
-                },
-                padding:12,
-                cornerRadius:12,
-                displayColors:true
+            tooltip: {
+                enabled: true,
+                displayColors: true
             }
 
         },
 
-        scales:{
+        scales: {
 
-            x:{
+            x: {
 
-                grid:{
-                    display:false
+                grid: {
+                    display: false
                 },
 
-                ticks:{
-                    maxRotation:0,
-                    autoSkip:true,
-                    maxTicksLimit:8,
-                    font:{
-                        family:"Nunito",
-                        weight:"700"
+                ticks: {
+
+                    maxTicksLimit: 8,
+
+                    autoSkip: true,
+
+                    font: {
+                        size: 11
                     }
+
                 }
 
             },
 
-            y:{
+            y: {
 
-                beginAtZero:true,
+                beginAtZero: true,
 
-                grid:{
-                    color:"rgba(40,100,75,.10)"
+                grid: {
+                    color: "rgba(80,130,160,0.12)"
                 },
 
-                ticks:{
-                    font:{
-                        family:"Nunito",
-                        weight:"700"
+                ticks: {
+                    font: {
+                        size: 11
                     }
                 }
 
@@ -1439,24 +1628,32 @@ function chartOptions(){
 
 
 /* =========================================================
-   CREATE / UPDATE CHARTS
+   GRAPHS
 ========================================================= */
 
-function updateCharts(feeds){
+function updateCharts(feeds) {
 
     const labels =
-        feeds.map(feed =>
-            new Date(
-                feed.created_at
-            ).toLocaleTimeString(
+        feeds.map(feed => {
+
+            const date =
+                new Date(feed.created_at);
+
+            /*
+               NORMAL TIME ONLY
+               No ugly full date underneath.
+            */
+
+            return date.toLocaleTimeString(
                 [],
                 {
-                    hour:"2-digit",
-                    minute:"2-digit",
-                    second:"2-digit"
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
                 }
-            )
-        );
+            );
+
+        });
 
 
     const ultrasonicData =
@@ -1491,65 +1688,501 @@ function updateCharts(feeds){
         );
 
 
-    createChart(
-        "ultrasonicChart",
-        "Ultrasonic Distance",
-        labels,
-        ultrasonicData,
-        ultrasonicChart,
-        "rgba(36,139,211,1)",
-        chart => ultrasonicChart = chart
-    );
+    if (ultrasonicChart)
+        ultrasonicChart.destroy();
+
+    if (soilChart)
+        soilChart.destroy();
+
+    if (vibrationChart)
+        vibrationChart.destroy();
+
+    if (rainChart)
+        rainChart.destroy();
 
 
-    createChart(
-        "soilChart",
-        "Soil Moisture",
-        labels,
-        soilData,
-        soilChart,
-        "rgba(129,91,48,1)",
-        chart => soilChart = chart
-    );
+    ultrasonicChart =
+        new Chart(
+            document.getElementById(
+                "ultrasonicChart"
+            ),
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "Distance",
+
+                            data: ultrasonicData,
+
+                            borderWidth: 3,
+
+                            tension: 0.35,
+
+                            pointRadius: 3,
+
+                            pointHoverRadius: 6,
+
+                            fill: true,
+
+                            backgroundColor:
+                                "rgba(52,152,219,0.15)",
+
+                            borderColor:
+                                "#3498db"
+
+                        }
+
+                    ]
+
+                },
+
+                options: chartOptions()
+
+            }
+        );
 
 
-    createChart(
-        "vibrationChart",
-        "SW-420 Vibration",
-        labels,
-        vibrationData,
-        vibrationChart,
-        "rgba(215,62,82,1)",
-        chart => vibrationChart = chart
-    );
+    soilChart =
+        new Chart(
+            document.getElementById(
+                "soilChart"
+            ),
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "Soil Reading",
+
+                            data: soilData,
+
+                            borderWidth: 3,
+
+                            tension: 0.35,
+
+                            pointRadius: 3,
+
+                            pointHoverRadius: 6,
+
+                            fill: true,
+
+                            backgroundColor:
+                                "rgba(46,204,113,0.15)",
+
+                            borderColor:
+                                "#27ae60"
+
+                        }
+
+                    ]
+
+                },
+
+                options: chartOptions()
+
+            }
+        );
 
 
-    createChart(
-        "rainChart",
-        "Rain Sensor",
-        labels,
-        rainData,
-        rainChart,
-        "rgba(52,151,196,1)",
-        chart => rainChart = chart
-    );
+    vibrationChart =
+        new Chart(
+            document.getElementById(
+                "vibrationChart"
+            ),
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "SW-420 Vibration",
+
+                            data: vibrationData,
+
+                            borderWidth: 3,
+
+                            tension: 0.15,
+
+                            pointRadius: 3,
+
+                            pointHoverRadius: 6,
+
+                            fill: true,
+
+                            backgroundColor:
+                                "rgba(231,76,60,0.15)",
+
+                            borderColor:
+                                "#e74c3c"
+
+                        }
+
+                    ]
+
+                },
+
+                options: chartOptions()
+
+            }
+        );
+
+
+    rainChart =
+        new Chart(
+            document.getElementById(
+                "rainChart"
+            ),
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "Rain Sensor",
+
+                            data: rainData,
+
+                            borderWidth: 3,
+
+                            tension: 0.35,
+
+                            pointRadius: 3,
+
+                            pointHoverRadius: 6,
+
+                            fill: true,
+
+                            backgroundColor:
+                                "rgba(155,89,182,0.15)",
+
+                            borderColor:
+                                "#8e44ad"
+
+                        }
+
+                    ]
+
+                },
+
+                options: chartOptions()
+
+            }
+        );
 
 }
 
 
-function createChart(
-    canvasId,
-    label,
-    labels,
-    data,
-    oldChart,
-    lineColor,
-    saveChart
-){
+/* =========================================================
+   UPDATE DASHBOARD
+========================================================= */
 
-    if(oldChart){
-        oldChart.destroy();
+async function updateDashboard() {
+
+    const syncStatus =
+        document.getElementById("syncStatus");
+
+    const syncDot =
+        document.getElementById("syncDot");
+
+    const connectionStatus =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    try {
+
+        syncStatus.textContent =
+            "Synchronizing with ThingSpeak...";
+
+        syncDot.className =
+            "status-dot";
+
+        connectionStatus.textContent =
+            "Connecting...";
+
+
+        const response =
+            await fetch(
+                getThingSpeakURL(),
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " + response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const feeds =
+            data.feeds;
+
+
+        if (
+            !feeds ||
+            feeds.length === 0
+        ) {
+
+            throw new Error(
+                "No ThingSpeak readings found."
+            );
+
+        }
+
+
+        const latest =
+            feeds[feeds.length - 1];
+
+
+        const ultrasonic =
+            parseFloat(
+                latest[ULTRASONIC_FIELD]
+            );
+
+        const soil =
+            parseFloat(
+                latest[SOIL_FIELD]
+            );
+
+        const vibration =
+            parseFloat(
+                latest[VIBRATION_FIELD]
+            );
+
+        const rain =
+            parseFloat(
+                latest[RAIN_FIELD]
+            );
+
+
+        document.getElementById(
+            "ultrasonicValue"
+        ).textContent =
+            Number.isNaN(ultrasonic)
+            ? "--"
+            : ultrasonic.toFixed(1);
+
+
+        document.getElementById(
+            "soilValue"
+        ).textContent =
+            Number.isNaN(soil)
+            ? "--"
+            : soil;
+
+
+        document.getElementById(
+            "vibrationValue"
+        ).textContent =
+            Number.isNaN(vibration)
+            ? "--"
+            : vibration;
+
+
+        document.getElementById(
+            "rainValue"
+        ).textContent =
+            Number.isNaN(rain)
+            ? "--"
+            : rain;
+
+
+        const latestDate =
+            new Date(
+                latest.created_at
+            );
+
+
+        document.getElementById(
+            "lastUpdate"
+        ).textContent =
+            latestDate.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
+            );
+
+
+        document.getElementById(
+            "entryId"
+        ).textContent =
+            latest.entry_id;
+
+
+        syncStatus.textContent =
+            "✓ ThingSpeak Synchronized";
+
+        syncDot.className =
+            "status-dot connected";
+
+        connectionStatus.textContent =
+            "🟢 Connected";
+
+
+        updateSafetyStatus(
+            ultrasonic,
+            soil,
+            vibration,
+            rain
+        );
+
+
+        updateCharts(feeds);
+
     }
 
-    const canvas =
-        document.getElement
+    catch (error) {
+
+        console.error(error);
+
+        syncStatus.textContent =
+            "❌ ThingSpeak Connection Failed";
+
+        syncDot.className =
+            "status-dot error";
+
+        connectionStatus.textContent =
+            "🔴 Connection Error";
+
+
+        const status =
+            document.getElementById(
+                "dangerStatus"
+            );
+
+        status.className = "warning";
+
+        status.textContent =
+            "⚠️ Waiting for ThingSpeak Data";
+
+        document.body.classList.remove(
+            "danger-mode"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE NATURAL RAIN
+========================================================= */
+
+function createRain() {
+
+    const rain =
+        document.getElementById(
+            "rainBackground"
+        );
+
+    for (
+        let i = 0;
+        i < 75;
+        i++
+    ) {
+
+        const drop =
+            document.createElement("div");
+
+        drop.className = "drop";
+
+        drop.style.left =
+            Math.random() * 100 + "%";
+
+        drop.style.animationDuration =
+            (0.6 + Math.random() * 0.8) + "s";
+
+        drop.style.animationDelay =
+            (-Math.random() * 3) + "s";
+
+        drop.style.opacity =
+            0.25 + Math.random() * 0.5;
+
+        rain.appendChild(drop);
+
+    }
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        createRain();
+
+        updateDashboard();
+
+        setInterval(
+            updateDashboard,
+            UPDATE_INTERVAL
+        );
+
+        /*
+           Attempt a welcome announcement.
+           Mobile browsers may block it until
+           the user interacts with the page.
+        */
+
+        setTimeout(
+            function() {
+
+                if (audioEnabled) {
+
+                    speakSafety(
+                        "Landslide safety system active."
+                    );
+
+                }
+
+            },
+            1200
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>

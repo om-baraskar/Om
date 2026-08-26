@@ -1,2556 +1,1306 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Smart Landslide Early Warning System</title>
+<title>Smart Landslide Safety System</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
 <style>
-
-/* =========================================================
-   COLOR THEME
-========================================================= */
-
-:root {
-
-    --purple: #6c63ff;
-    --violet: #8e54e9;
-    --pink: #ff6f91;
-    --blue: #4776e6;
-    --mint: #41d7b5;
-    --yellow: #ffd166;
-    --red: #ef476f;
-
-    --dark: #263657;
-    --text: #24324a;
-
-    --background: #f7f8ff;
-
+*{
+    box-sizing:border-box;
 }
 
-
-/* =========================================================
-   BASIC
-========================================================= */
-
-* {
-    box-sizing: border-box;
+html{
+    scroll-behavior:smooth;
 }
 
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    color:#18324a;
+    text-align:center;
+    overflow-x:hidden;
 
-html {
-    scroll-behavior: smooth;
+    background:
+        linear-gradient(
+            rgba(220,242,255,.72),
+            rgba(241,250,238,.82)
+        ),
+        linear-gradient(
+            120deg,
+            #dff3ff,
+            #eefbe9,
+            #fff4d8
+        );
 }
 
+/* =========================
+   NATURE BACKGROUND
+========================= */
 
-body {
+.nature{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-2;
+    overflow:hidden;
+}
 
-    margin: 0;
+.mountain{
+    position:absolute;
+    bottom:0;
+    width:0;
+    height:0;
+    border-left:180px solid transparent;
+    border-right:180px solid transparent;
+    border-bottom:300px solid rgba(117,148,128,.24);
+}
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+.m1{
+    left:-100px;
+}
 
-    color: var(--text);
+.m2{
+    left:25%;
+    border-bottom-height:250px;
+    transform:scale(.8);
+}
 
-    text-align: center;
+.m3{
+    right:-100px;
+    transform:scale(1.2);
+}
+
+.tree{
+    position:absolute;
+    bottom:30px;
+    width:18px;
+    height:180px;
+    background:#795548;
+    border-radius:20px;
+    transform-origin:bottom center;
+    animation:treeWind 3s ease-in-out infinite;
+}
+
+.tree:before,
+.tree:after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    background:#6dbb72;
+}
+
+.tree:before{
+    width:100px;
+    height:100px;
+    left:-42px;
+    top:-45px;
+}
+
+.tree:after{
+    width:80px;
+    height:80px;
+    left:-30px;
+    top:-90px;
+}
+
+.tree1{
+    left:4%;
+}
+
+.tree2{
+    right:5%;
+    animation-delay:1s;
+}
+
+@keyframes treeWind{
+    0%,100%{transform:rotate(0deg)}
+    50%{transform:rotate(3deg)}
+}
+
+.flower{
+    position:absolute;
+    bottom:15px;
+    font-size:28px;
+    animation:sway 2s ease-in-out infinite;
+}
+
+.f1{left:20%}
+.f2{left:70%;animation-delay:.5s}
+.f3{left:85%;animation-delay:1s}
+
+@keyframes sway{
+    0%,100%{transform:rotate(-5deg)}
+    50%{transform:rotate(8deg)}
+}
+
+/* =========================
+   RAIN
+========================= */
+
+.rain{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+    opacity:.28;
+}
+
+.drop{
+    position:absolute;
+    width:2px;
+    height:28px;
+    background:#5ca8d6;
+    animation:rainFall 1s linear infinite;
+}
+
+@keyframes rainFall{
+    from{
+        transform:translateY(-50px);
+    }
+    to{
+        transform:translateY(110vh);
+    }
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.hero{
+    margin:18px auto;
+    width:94%;
+    max-width:1200px;
+    padding:28px 18px;
+    border-radius:30px;
 
     background:
         linear-gradient(
             135deg,
-            #fff5fb,
-            #eef7ff 45%,
-            #f2fff9
+            rgba(255,255,255,.94),
+            rgba(232,248,255,.92)
         );
 
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
-
-    padding: 28px 15px 32px;
-
-    color: white;
-
-    background:
-        linear-gradient(
-            135deg,
-            #6c63ff,
-            #8e54e9 50%,
-            #ff7aa2
-        );
-
-    border-radius:
-        0 0 36px 36px;
-
     box-shadow:
-        0 10px 35px
-        rgba(70,70,150,0.25);
+        0 15px 40px rgba(46,92,122,.18);
 
+    border:2px solid rgba(255,255,255,.9);
 }
 
+.logo{
+    display:block;
+    width:145px;
+    height:145px;
+    object-fit:contain;
+    margin:0 auto 12px;
 
-/* =========================================================
-   LOGO
-========================================================= */
-
-.logo {
-
-    width: 115px;
-
-    height: 115px;
-
-    object-fit: contain;
-
-    border-radius: 30px;
-
-    background: white;
-
-    padding: 8px;
-
-    display: block;
-
-    margin: auto;
-
-    box-shadow:
-        0 10px 30px
-        rgba(0,0,0,0.20);
-
+    border-radius:25px;
 }
 
-
-.logo-fallback {
-
-    width: 115px;
-
-    height: 115px;
-
-    border-radius: 30px;
-
-    background: white;
-
-    color: var(--purple);
-
-    font-size: 30px;
-
-    font-weight: 900;
-
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    margin: auto;
-
-    box-shadow:
-        0 10px 30px
-        rgba(0,0,0,0.20);
-
+.hero h1{
+    margin:8px 0;
+    font-size:clamp(27px,5vw,46px);
+    color:#164d70;
 }
 
-
-.hero h1 {
-
-    font-size:
-        clamp(27px, 6vw, 46px);
-
-    margin:
-        16px 0 8px;
-
+.subtitle{
+    margin:5px;
+    font-size:17px;
+    color:#587080;
 }
 
-
-.subtitle {
-
-    max-width: 800px;
-
-    margin: auto;
-
-    font-size: 16px;
-
-    line-height: 1.6;
-
+.badges{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:18px;
 }
 
-
-/* =========================================================
-   FIRST PAGE SAFETY PROTOCOL
-========================================================= */
-
-.protocol {
-
-    max-width: 800px;
-
-    margin:
-        20px auto 0;
-
-    padding: 18px;
-
-    text-align: left;
-
-    border-radius: 24px;
-
-    background:
-        rgba(255,255,255,0.18);
-
-    border:
-        1px solid
-        rgba(255,255,255,0.35);
-
+.badge{
+    padding:8px 14px;
+    border-radius:30px;
+    background:#fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    font-weight:bold;
 }
 
+/* =========================
+   START PROTOCOL
+========================= */
 
-.protocol-title {
-
-    font-size: 19px;
-
-    font-weight: 900;
-
-    margin-bottom: 12px;
-
+.protocol{
+    width:94%;
+    max-width:850px;
+    margin:20px auto;
+    padding:22px;
+    border-radius:25px;
+    background:rgba(255,255,255,.94);
+    box-shadow:0 12px 30px rgba(0,0,0,.12);
 }
 
-
-.protocol-row {
-
-    display: flex;
-
-    gap: 10px;
-
-    margin: 9px 0;
-
-    line-height: 1.5;
-
+.protocol h2{
+    margin-top:0;
+    color:#195a78;
 }
 
+.protocol-text{
+    padding:16px;
+    border-radius:18px;
+    background:#eaf7ff;
+    font-weight:bold;
+    line-height:1.6;
+}
 
-/* =========================================================
+.audio-button{
+    margin-top:14px;
+    border:0;
+    padding:13px 22px;
+    border-radius:30px;
+    background:#ff9f43;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(255,159,67,.3);
+}
+
+/* =========================
    MAIN
-========================================================= */
+========================= */
 
-.container {
-
-    width: 94%;
-
-    max-width: 1100px;
-
-    margin: auto;
-
+.container{
+    width:94%;
+    max-width:1200px;
+    margin:auto;
 }
 
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.toolbar {
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-
-    margin: 22px 0;
-
-}
-
-
-.btn {
-
-    border: none;
-
-    border-radius: 17px;
-
-    padding: 14px 20px;
-
-    font-size: 15px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 6px 18px
-        rgba(0,0,0,0.10);
-
-}
-
-
-.primary {
-
-    background: var(--purple);
-
-    color: white;
-
-}
-
-
-.secondary {
-
-    background: white;
-
-    color: var(--text);
-
-}
-
-
-/* =========================================================
-   CARDS
-========================================================= */
-
-.card {
-
-    background:
-        rgba(255,255,255,0.90);
-
-    border-radius: 25px;
-
-    padding: 21px;
-
-    margin: 20px 0;
-
-    box-shadow:
-        0 10px 30px
-        rgba(60,80,150,0.10);
-
-}
-
-
-/* =========================================================
-   SYNCHRONIZATION
-========================================================= */
-
-.sync {
-
-    font-weight: 800;
-
-}
-
-
-.dot {
-
-    display: inline-block;
-
-    width: 13px;
-
-    height: 13px;
-
-    border-radius: 50%;
-
-    background: #ffb000;
-
-    margin-right: 8px;
-
-}
-
-
-.dot.ok {
-
-    background: #20c997;
-
-}
-
-
-.dot.bad {
-
-    background: #ef476f;
-
-}
-
-
-/* =========================================================
+/* =========================
    STATUS
-========================================================= */
+========================= */
 
-.status {
-
-    padding: 21px;
-
-    border-radius: 20px;
-
-    color: white;
-
-    font-size: 21px;
-
-    font-weight: 900;
-
-    background: #8795aa;
-
+.status-card{
+    margin:22px 0;
+    padding:22px;
+    background:rgba(255,255,255,.95);
+    border-radius:27px;
+    box-shadow:0 12px 35px rgba(0,0,0,.12);
 }
 
-
-.status.safe {
-
-    background: #20b486;
-
+.status-card h2{
+    margin-top:0;
 }
 
-
-.status.warn {
-
-    background: #f2a93b;
-
+#dangerStatus{
+    padding:20px;
+    border-radius:20px;
+    font-size:22px;
+    font-weight:900;
+    background:#ffd166;
+    color:#503900;
+    transition:.4s;
 }
 
-
-.status.danger {
-
-    background: #ef476f;
-
-    animation:
-        statusPulse 1s infinite;
-
+.safe{
+    background:#80d98a !important;
+    color:#12491b !important;
 }
 
+.warning{
+    background:#ffd166 !important;
+    color:#604400 !important;
+}
 
-@keyframes statusPulse {
+.danger{
+    background:#ff5b67 !important;
+    color:white !important;
+    animation:dangerPulse .7s infinite alternate;
+}
 
-    50% {
-
-        transform:
-            scale(1.015);
-
-        filter:
-            brightness(1.1);
-
+@keyframes dangerPulse{
+    from{
+        box-shadow:0 0 5px rgba(255,0,0,.2);
     }
-
+    to{
+        box-shadow:0 0 30px rgba(255,0,0,.65);
+    }
 }
 
+/* =========================
+   DANGER SCENE
+========================= */
 
-/* =========================================================
-   SENSOR CARDS
-========================================================= */
-
-.sensors {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(210px,1fr)
+#dangerScene{
+    display:none;
+    margin-top:15px;
+    padding:18px;
+    border-radius:20px;
+    background:
+        linear-gradient(
+            rgba(75,30,20,.35),
+            rgba(30,20,20,.55)
         );
-
-    gap: 17px;
-
+    color:white;
+    overflow:hidden;
 }
 
-
-.sensor {
-
-    background: white;
-
-    border-radius: 23px;
-
-    padding: 21px;
-
-    box-shadow:
-        0 8px 24px
-        rgba(60,80,150,0.10);
-
-    transition:
-        transform 0.2s;
-
+#dangerScene.active{
+    display:block;
+    animation:sceneAppear .5s;
 }
 
-
-.sensor:hover {
-
-    transform:
-        translateY(-4px);
-
+@keyframes sceneAppear{
+    from{opacity:0;transform:scale(.97)}
+    to{opacity:1;transform:scale(1)}
 }
 
-
-.icon {
-
-    font-size: 42px;
-
+.landslide{
+    font-size:55px;
+    animation:shakeRock .6s infinite alternate;
 }
 
-
-.sensor h3 {
-
-    margin:
-        9px 0;
-
+@keyframes shakeRock{
+    from{transform:translateX(-5px) rotate(-2deg)}
+    to{transform:translateX(5px) rotate(2deg)}
 }
 
-
-.value {
-
-    font-size: 33px;
-
-    font-weight: 900;
-
+.run{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:2px;
 }
 
+/* =========================
+   SENSOR CARDS
+========================= */
 
-.unit {
-
-    color: #778;
-
-    font-size: 13px;
-
+.sensor-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin:22px 0;
 }
 
-
-/* =========================================================
-   SAFE DIRECTION
-========================================================= */
-
-.route {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 18px;
-
+.sensor-card{
+    padding:22px 15px;
+    border-radius:25px;
+    background:rgba(255,255,255,.94);
+    box-shadow:0 10px 28px rgba(0,0,0,.1);
+    transition:.25s;
 }
 
+.sensor-card:hover{
+    transform:translateY(-5px);
+}
 
-.route-box {
+.sensor-icon{
+    font-size:45px;
+}
 
-    padding: 19px;
+.sensor-card h3{
+    margin:10px 0;
+}
 
-    border-radius: 23px;
+.sensor-value{
+    font-size:36px;
+    font-weight:900;
+    color:#174f70;
+}
 
+.sensor-unit{
+    color:#71808a;
+    font-size:13px;
+}
+
+/* =========================
+   INFO
+========================= */
+
+.info-card{
+    margin:25px 0;
+    padding:22px;
+    border-radius:25px;
+    background:rgba(255,255,255,.94);
+    box-shadow:0 10px 28px rgba(0,0,0,.1);
+}
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:12px;
+    margin:7px 0;
+    border-radius:15px;
+    background:#f1f8fc;
+    text-align:left;
+}
+
+/* =========================
+   DIRECTIONS
+========================= */
+
+.direction-card{
+    margin:25px 0;
+    padding:25px;
+    border-radius:28px;
     background:
         linear-gradient(
             135deg,
-            #e9fff8,
-            #eef3ff
+            #e9fff0,
+            #e8f7ff
         );
-
-    text-align: left;
-
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
 }
 
-
-.arrow {
-
-    font-size: 62px;
-
-    font-weight: 900;
-
-    text-align: center;
-
-    color: var(--purple);
-
-    transition:
-        transform 0.25s;
-
+.direction-main{
+    font-size:25px;
+    font-weight:900;
+    color:#167047;
+    padding:18px;
+    border-radius:20px;
+    background:white;
 }
 
-
-.small {
-
-    font-size: 13px;
-
-    color: #6d7890;
-
+.direction-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:14px;
+    margin-top:15px;
 }
 
-
-/* =========================================================
-   GRAPHS
-========================================================= */
-
-.chart-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(300px,1fr)
-        );
-
-    gap: 17px;
-
+.direction-box{
+    padding:18px;
+    border-radius:20px;
+    background:white;
+    box-shadow:0 5px 15px rgba(0,0,0,.07);
+    font-weight:bold;
 }
 
+/* =========================
+   CHARTS
+========================= */
 
-.chart-box {
-
-    background: white;
-
-    border-radius: 23px;
-
-    padding: 15px;
-
-    height: 330px;
-
+.graph-title{
+    margin:38px 0 18px;
+    color:#164d70;
 }
 
-
-.chart-box canvas {
-
-    width: 100% !important;
-
-    height: 270px !important;
-
+.graph-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
 }
 
+.graph-card{
+    background:rgba(255,255,255,.97);
+    padding:18px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.11);
+}
 
-/* =========================================================
+.graph-card h3{
+    margin-top:4px;
+}
+
+.chart-box{
+    height:290px;
+}
+
+/* =========================
    SAFETY PROTOCOLS
-========================================================= */
+========================= */
 
-.safety {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(220px,1fr)
-        );
-
-    gap: 15px;
-
+.safety-section{
+    margin:35px 0;
 }
 
-
-.safety-item {
-
-    text-align: left;
-
-    padding: 18px;
-
-    border-radius: 21px;
-
-    background: white;
-
-    box-shadow:
-        0 5px 15px
-        rgba(60,80,150,0.07);
-
-    line-height: 1.5;
-
+.safety-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:16px;
 }
 
-
-.safety-item b {
-
-    display: block;
-
-    margin-bottom: 7px;
-
-    font-size: 17px;
-
+.safety-box{
+    padding:20px;
+    border-radius:23px;
+    background:rgba(255,255,255,.95);
+    box-shadow:0 9px 25px rgba(0,0,0,.09);
+    text-align:left;
 }
 
+.safety-box .big{
+    font-size:35px;
+}
 
-/* =========================================================
+.safety-box h3{
+    color:#185474;
+}
+
+/* =========================
    FOOTER
-========================================================= */
+========================= */
 
-footer {
-
-    margin-top: 35px;
-
-    padding: 30px 15px;
-
-    background:
-        #263657;
-
-    color: white;
-
-    border-radius:
-        32px 32px 0 0;
-
-    line-height: 1.6;
-
+footer{
+    margin-top:40px;
+    padding:30px 15px;
+    background:#164d70;
+    color:white;
 }
 
-
-.developer {
-
-    font-size: 18px;
-
-    font-weight: 900;
-
+.developer{
+    margin-top:10px;
+    font-size:18px;
+    font-weight:bold;
 }
 
-
-/* =========================================================
+/* =========================
    MOBILE
-========================================================= */
+========================= */
 
-@media(max-width:650px) {
+@media(max-width:600px){
 
-    .hero {
-
-        border-radius:
-            0 0 27px 27px;
-
+    .hero{
+        padding:22px 12px;
     }
 
-
-    .route {
-
-        grid-template-columns:
-            1fr;
-
+    .logo{
+        width:115px;
+        height:115px;
     }
 
-
-    .status {
-
-        font-size: 18px;
-
+    .hero h1{
+        font-size:27px;
     }
 
-
-    .chart-box {
-
-        height: 320px;
-
+    #dangerStatus{
+        font-size:18px;
     }
 
+    .sensor-value{
+        font-size:30px;
+    }
+
+    .info-row{
+        flex-direction:column;
+    }
 }
-
 </style>
-
 </head>
-
 
 <body>
 
+<!-- NATURE -->
+<div class="nature">
+    <div class="mountain m1"></div>
+    <div class="mountain m2"></div>
+    <div class="mountain m3"></div>
 
-<!-- =========================================================
-     HERO / FIRST PAGE
-========================================================= -->
+    <div class="tree tree1"></div>
+    <div class="tree tree2"></div>
+
+    <div class="flower f1">🌷</div>
+    <div class="flower f2">🌼</div>
+    <div class="flower f3">🌸</div>
+</div>
+
+<div class="rain" id="rain"></div>
+
+<!-- =========================
+     HERO
+========================= -->
 
 <header class="hero">
 
-
     <!--
-        If logo.png exists, it appears here.
-        If not, SRES text automatically appears.
+    IMPORTANT:
+    Put your SESR logo in the SAME GitHub folder
+    as index.html and name it:
+
+    logo.png
+
+    If your file is JPG instead, change
+    src="logo.png" to your exact filename.
     -->
 
     <img
-        id="logo"
-        class="logo"
         src="logo.png"
-        alt="SRES Sanjivani College Logo"
-        onerror="
-            this.style.display='none';
-            document.getElementById('logoFallback').style.display='flex';
-        "
+        class="logo"
+        alt="SESR Logo"
+        onerror="this.style.display='none';"
     >
 
-
-    <div
-        id="logoFallback"
-        class="logo-fallback"
-    >
-        SRES
-    </div>
-
-
-    <h1>
-
-        🌸 Smart Landslide
-        Early Warning System 🌸
-
-    </h1>
-
+    <h1>🏔️ Smart Landslide Safety System</h1>
 
     <p class="subtitle">
-
-        A colorful live safety dashboard
-        for distance, soil, vibration
-        and rainfall monitoring.
-
+        🌧️ Live Early Warning • 📡 Sensor Monitoring • 🛡️ Safety Guidance
     </p>
 
-
-    <div class="protocol">
-
-
-        <div class="protocol-title">
-
-            🔊 Landslide Safety System Protocol
-
-        </div>
-
-
-        <div class="protocol-row">
-
-            <span>1️⃣</span>
-
-            <span>
-
-                Stay calm and move away
-                from unstable slopes.
-
-            </span>
-
-        </div>
-
-
-        <div class="protocol-row">
-
-            <span>2️⃣</span>
-
-            <span>
-
-                Follow official evacuation
-                instructions.
-
-            </span>
-
-        </div>
-
-
-        <div class="protocol-row">
-
-            <span>3️⃣</span>
-
-            <span>
-
-                Move toward designated
-                safe/open ground.
-
-            </span>
-
-        </div>
-
-
+    <div class="badges">
+        <div class="badge">🌱 Environment</div>
+        <div class="badge">📡 Live IoT</div>
+        <div class="badge">🚨 Early Warning</div>
+        <div class="badge">🧭 Safe Direction</div>
     </div>
-
 
 </header>
 
+<!-- =========================
+     AUDIO PROTOCOL
+========================= -->
 
+<section class="protocol">
 
-<main class="container">
+    <h2>🔊 Landslide Safety System Protocol</h2>
 
-
-<!-- =========================================================
-     BUTTONS
-========================================================= -->
-
-<div class="toolbar">
-
-
-    <button
-        class="btn primary"
-        id="audioBtn"
-    >
-
-        🔊 Start Safety Audio
-
-    </button>
-
+    <div class="protocol-text">
+        Stay calm. Check the safety status.
+        If a danger warning appears, move calmly
+        toward the displayed safe direction and
+        stay away from unstable slopes.
+    </div>
 
     <button
-        class="btn secondary"
-        id="compassBtn"
+        class="audio-button"
+        onclick="enableAudio()"
+        id="audioButton"
     >
-
-        🧭 Enable Direction
-
+        🔊 Enable Safety Audio
     </button>
 
+    <p id="audioStatus">
+        Tap once to allow safety announcements on your phone.
+    </p>
 
-</div>
+</section>
 
+<div class="container">
 
-
-<!-- =========================================================
-     SYNCHRONIZATION
-========================================================= -->
-
-<div class="card sync">
-
-
-    <span
-        id="dot"
-        class="dot"
-    ></span>
-
-
-    <span id="sync">
-
-        Connecting to ThingSpeak...
-
-    </span>
-
-
-</div>
-
-
-
-<!-- =========================================================
+<!-- =========================
      STATUS
-========================================================= -->
+========================= -->
 
-<section class="card">
+<section class="status-card">
 
+    <h2>🚨 Landslide Safety Status</h2>
 
-    <h2>
+    <div id="dangerStatus">
+        ⏳ Connecting to sensor system...
+    </div>
 
-        🚨 Landslide Safety Status
+    <div id="dangerScene">
 
-    </h2>
+        <div class="landslide">
+            🏔️🪨🌪️
+        </div>
 
+        <div class="run">
+            🚨 DANGER — MOVE TO SAFE GROUND 🚨
+        </div>
+
+        <p>
+            Do not approach the slope.
+            Follow the safe-direction guidance below.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     SENSORS
+========================= -->
+
+<section class="sensor-grid">
+
+    <div class="sensor-card">
+        <div class="sensor-icon">📏</div>
+        <h3>Ultrasonic</h3>
+        <div class="sensor-value" id="ultrasonicValue">--</div>
+        <div class="sensor-unit">Field 1 • Distance</div>
+    </div>
+
+    <div class="sensor-card">
+        <div class="sensor-icon">🌱</div>
+        <h3>Soil Moisture</h3>
+        <div class="sensor-value" id="soilValue">--</div>
+        <div class="sensor-unit">Field 2 • Soil Reading</div>
+    </div>
+
+    <div class="sensor-card">
+        <div class="sensor-icon">📳</div>
+        <h3>Vibration</h3>
+        <div class="sensor-value" id="vibrationValue">--</div>
+        <div class="sensor-unit">Field 3 • SW-420</div>
+    </div>
+
+    <div class="sensor-card">
+        <div class="sensor-icon">🌧️</div>
+        <h3>Rain</h3>
+        <div class="sensor-value" id="rainValue">--</div>
+        <div class="sensor-unit">Field 4 • Rain Reading</div>
+    </div>
+
+</section>
+
+<!-- =========================
+     LIVE INFORMATION
+========================= -->
+
+<section class="info-card">
+
+    <h2>📡 Live System Information</h2>
+
+    <div class="info-row">
+        <strong>ThingSpeak</strong>
+        <span id="connectionStatus">Connecting...</span>
+    </div>
+
+    <div class="info-row">
+        <strong>Synchronization</strong>
+        <span id="syncStatus">Starting...</span>
+    </div>
+
+    <div class="info-row">
+        <strong>Last Update</strong>
+        <span id="lastUpdate">--</span>
+    </div>
+
+    <div class="info-row">
+        <strong>Entry ID</strong>
+        <span id="entryId">--</span>
+    </div>
+
+    <div class="info-row">
+        <strong>Channel ID</strong>
+        <span>3456662</span>
+    </div>
+
+</section>
+
+<!-- =========================
+     SAFE DIRECTION
+========================= -->
+
+<section class="direction-card">
+
+    <h2>🧭 Safe Direction Guidance</h2>
 
     <div
-        id="status"
-        class="status"
+        class="direction-main"
+        id="directionMain"
     >
-
-        ⏳ Waiting for sensor data...
-
+        🟢 NORMAL — Remain in the designated safe area
     </div>
 
+    <div class="direction-grid">
+
+        <div class="direction-box">
+            ⬆️<br><br>
+            Move toward open, stable ground.
+        </div>
+
+        <div class="direction-box">
+            ↔️<br><br>
+            Move away from steep slopes.
+        </div>
+
+        <div class="direction-box">
+            🚫🏔️<br><br>
+            Do not move toward the landslide.
+        </div>
+
+        <div class="direction-box">
+            🏠➡️🚶<br><br>
+            Follow local evacuation instructions.
+        </div>
+
+    </div>
 
 </section>
 
-
-
-<!-- =========================================================
-     SENSOR CARDS
-========================================================= -->
-
-<section class="sensors">
-
-
-    <div class="sensor">
-
-        <div class="icon">
-
-            📏
-
-        </div>
-
-
-        <h3>
-
-            Ultrasonic
-
-        </h3>
-
-
-        <div
-            id="ultrasonic"
-            class="value"
-        >
-
-            --
-
-        </div>
-
-
-        <div class="unit">
-
-            Field 1 • Distance
-
-        </div>
-
-    </div>
-
-
-
-    <div class="sensor">
-
-        <div class="icon">
-
-            🌱
-
-        </div>
-
-
-        <h3>
-
-            Soil Moisture
-
-        </h3>
-
-
-        <div
-            id="soil"
-            class="value"
-        >
-
-            --
-
-        </div>
-
-
-        <div class="unit">
-
-            Field 2 • Soil Reading
-
-        </div>
-
-    </div>
-
-
-
-    <div class="sensor">
-
-        <div class="icon">
-
-            📳
-
-        </div>
-
-
-        <h3>
-
-            Vibration
-
-        </h3>
-
-
-        <div
-            id="vibration"
-            class="value"
-        >
-
-            --
-
-        </div>
-
-
-        <div class="unit">
-
-            Field 3 • SW-420
-
-        </div>
-
-    </div>
-
-
-
-    <div class="sensor">
-
-        <div class="icon">
-
-            🌧️
-
-        </div>
-
-
-        <h3>
-
-            Rain
-
-        </h3>
-
-
-        <div
-            id="rain"
-            class="value"
-        >
-
-            --
-
-        </div>
-
-
-        <div class="unit">
-
-            Field 4 • Rain Reading
-
-        </div>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =========================================================
-     SAFE DIRECTION
-========================================================= -->
-
-<section class="card">
-
-
-    <h2>
-
-        🧭 Safe Direction Assistant
-
-    </h2>
-
-
-    <p>
-
-        <b>Important:</b>
-        The phone can show its compass heading,
-        but it cannot know the real evacuation
-        route unless your site has a verified
-        safe bearing or official route.
-
-    </p>
-
-
-    <div class="route">
-
-
-        <div class="route-box">
-
-
-            <div
-                id="arrow"
-                class="arrow"
-            >
-
-                ↑
-
-            </div>
-
-
-            <p
-                id="heading"
-                style="text-align:center"
-            >
-
-                Phone direction:
-                unavailable
-
-            </p>
-
-
-        </div>
-
-
-
-        <div class="route-box">
-
-
-            <b>
-
-                🛡️ Recommended Safety Movement
-
-            </b>
-
-
-            <p>
-
-                ➡️ Move toward designated
-                open/safe ground.
-
-            </p>
-
-
-            <p>
-
-                ⛰️ Stay away from unstable
-                slopes and possible debris paths.
-
-            </p>
-
-
-            <p class="small">
-
-                If authorities provide a different
-                evacuation route, follow their
-                instructions.
-
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =========================================================
-     LIVE SYSTEM INFORMATION
-========================================================= -->
-
-<section class="card">
-
-
-    <h2>
-
-        📡 Live System Information
-
-    </h2>
-
-
-    <p>
-
-        <b>ThingSpeak:</b>
-
-        <span id="connection">
-
-            Connecting...
-
-        </span>
-
-    </p>
-
-
-    <p>
-
-        <b>Last Update:</b>
-
-        <span id="lastUpdate">
-
-            --
-
-        </span>
-
-    </p>
-
-
-    <p>
-
-        <b>Entry ID:</b>
-
-        <span id="entryId">
-
-            --
-
-        </span>
-
-    </p>
-
-
-    <p>
-
-        <b>Channel ID:</b>
-
-        3456662
-
-    </p>
-
-
-</section>
-
-
-
-<!-- =========================================================
+<!-- =========================
      GRAPHS
-========================================================= -->
+========================= -->
 
-<section class="card">
+<h2 class="graph-title">
+    📊 Live ThingSpeak Sensor History
+</h2>
 
+<section class="graph-grid">
 
-    <h2>
-
-        📊 Live Sensor History
-
-    </h2>
-
-
-    <p class="small">
-
-        The timestamps below come directly
-        from the ThingSpeak readings.
-
-    </p>
-
-
-    <div class="chart-grid">
-
-
+    <div class="graph-card">
+        <h3>📏 Ultrasonic Distance</h3>
         <div class="chart-box">
-
-            <h3>
-
-                📏 Ultrasonic History
-
-            </h3>
-
-
-            <canvas id="c1"></canvas>
-
+            <canvas id="ultrasonicChart"></canvas>
         </div>
-
-
-
-        <div class="chart-box">
-
-            <h3>
-
-                🌱 Soil Moisture History
-
-            </h3>
-
-
-            <canvas id="c2"></canvas>
-
-        </div>
-
-
-
-        <div class="chart-box">
-
-            <h3>
-
-                📳 Vibration History
-
-            </h3>
-
-
-            <canvas id="c3"></canvas>
-
-        </div>
-
-
-
-        <div class="chart-box">
-
-            <h3>
-
-                🌧️ Rain History
-
-            </h3>
-
-
-            <canvas id="c4"></canvas>
-
-        </div>
-
-
     </div>
 
+    <div class="graph-card">
+        <h3>🌱 Soil Moisture</h3>
+        <div class="chart-box">
+            <canvas id="soilChart"></canvas>
+        </div>
+    </div>
+
+    <div class="graph-card">
+        <h3>📳 Vibration</h3>
+        <div class="chart-box">
+            <canvas id="vibrationChart"></canvas>
+        </div>
+    </div>
+
+    <div class="graph-card">
+        <h3>🌧️ Rain</h3>
+        <div class="chart-box">
+            <canvas id="rainChart"></canvas>
+        </div>
+    </div>
 
 </section>
 
-
-
-<!-- =========================================================
+<!-- =========================
      SAFETY PROTOCOLS
-========================================================= -->
+========================= -->
 
-<section class="card">
+<section class="safety-section">
 
+    <h2>🛡️ Landslide Safety Protocols</h2>
 
-    <h2>
+    <div class="safety-grid">
 
-        💗 Landslide Safety Protocols
-
-    </h2>
-
-
-    <div class="safety">
-
-
-        <div class="safety-item">
-
-            🏃
-
-            <b>
-                Move Early
-            </b>
-
-            If an official warning is
-            issued, leave the danger area
-            promptly.
-
+        <div class="safety-box">
+            <div class="big">🚨</div>
+            <h3>If an Alert Appears</h3>
+            <p>
+                Stay calm and move away from unstable slopes.
+                Follow official evacuation instructions.
+            </p>
         </div>
 
-
-
-        <div class="safety-item">
-
-            ⛰️
-
-            <b>
-                Avoid Slopes
-            </b>
-
-            Stay away from unstable slopes,
-            cliffs and areas directly below them.
-
+        <div class="safety-box">
+            <div class="big">🏔️</div>
+            <h3>Stay Away From Slopes</h3>
+            <p>
+                Avoid standing below or directly beside
+                steep or visibly unstable terrain.
+            </p>
         </div>
 
-
-
-        <div class="safety-item">
-
-            🌊
-
-            <b>
-                Avoid Flowing Water
-            </b>
-
-            Never cross muddy flows,
-            debris or rapidly moving water.
-
+        <div class="safety-box">
+            <div class="big">🌊</div>
+            <h3>Avoid Water Channels</h3>
+            <p>
+                During heavy rain, avoid streams,
+                drainage channels and low-lying areas.
+            </p>
         </div>
 
-
-
-        <div class="safety-item">
-
-            📱
-
-            <b>
-                Stay Informed
-            </b>
-
-            Keep your phone available
-            and follow official instructions.
-
+        <div class="safety-box">
+            <div class="big">📱</div>
+            <h3>Follow Official Alerts</h3>
+            <p>
+                Pay attention to local authorities,
+                emergency announcements and evacuation orders.
+            </p>
         </div>
 
-
-
-        <div class="safety-item">
-
-            👨‍👩‍👧
-
-            <b>
-                Stay Together
-            </b>
-
-            Stay with your family or group
-            and help others only when safe.
-
+        <div class="safety-box">
+            <div class="big">🎒</div>
+            <h3>Emergency Preparation</h3>
+            <p>
+                Keep essential items accessible and know
+                the designated evacuation route beforehand.
+            </p>
         </div>
 
-
-
-        <div class="safety-item">
-
-            🛑
-
-            <b>
-                Do Not Return Early
-            </b>
-
-            Do not return to the danger
-            area until authorities say
-            it is safe.
-
+        <div class="safety-box">
+            <div class="big">👨‍👩‍👧‍👦</div>
+            <h3>Help Others Safely</h3>
+            <p>
+                Stay together where possible and help children
+                and vulnerable people follow evacuation guidance.
+            </p>
         </div>
-
 
     </div>
 
-
 </section>
 
+</div>
 
-</main>
-
-
-
-<!-- =========================================================
+<!-- =========================
      FOOTER
-========================================================= -->
+========================= -->
 
 <footer>
 
-
-    🌷 Smart Landslide Early Warning System
-
-
-    <br><br>
-
-
-    <div class="developer">
-
-        Developed by Om Baraskar
-
+    <div>
+        🏔️ Smart Landslide Safety System
     </div>
 
+    <div>
+        S.R.E.S. Sanjivani College of Engineering, Kopargaon
+    </div>
+
+    <div class="developer">
+        Developed by Om Baraskar
+    </div>
 
 </footer>
 
-
-
 <script>
 
+/* =====================================================
+   THINGSPEAK CONFIGURATION
+   ALREADY BUILT IN
+===================================================== */
 
-/* =========================================================
-   THINGSPEAK SETTINGS
-========================================================= */
+const CHANNEL_ID = "3456662";
 
+const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
 
-/*
-    YOUR EXISTING CHANNEL ID
-*/
+const UPDATE_INTERVAL = 15000;
 
-const CHANNEL_ID =
-    "3456662";
-
-
-/*
-    YOUR EXISTING READ API KEY
-
-    YOU DO NOT NEED TO ADD IT AGAIN.
-*/
-
-const READ_API_KEY =
-    "DB7UMVLEJ8Y6I7E5";
+const ULTRASONIC_FIELD = "field1";
+const SOIL_FIELD = "field2";
+const VIBRATION_FIELD = "field3";
+const RAIN_FIELD = "field4";
 
 
-/*
-    Update every 15 seconds.
-*/
+/* =====================================================
+   AUDIO
+===================================================== */
 
-const UPDATE_INTERVAL =
-    15000;
+let audioContext = null;
+let audioEnabled = false;
+let alarmTimer = null;
 
+function enableAudio(){
 
+    try{
 
-/* =========================================================
-   FIELD CONFIGURATION
-========================================================= */
+        if(!audioContext){
 
-const FIELDS = {
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
 
-    ultrasonic: "field1",
+        }
 
-    soil: "field2",
+        if(audioContext.state === "suspended"){
+            audioContext.resume();
+        }
 
-    vibration: "field3",
+        audioEnabled = true;
 
-    rain: "field4"
+        document.getElementById("audioButton")
+            .textContent = "🔊 Safety Audio Enabled";
 
-};
+        document.getElementById("audioStatus")
+            .textContent =
+            "Safety announcements are enabled.";
 
+        speakSafety(
+            "Landslide safety system activated."
+        );
 
+    }
+    catch(error){
 
-/* =========================================================
-   CHART STORAGE
-========================================================= */
+        console.error(error);
 
-let charts = {};
+        document.getElementById("audioStatus")
+            .textContent =
+            "Audio could not be enabled on this browser.";
 
-
-
-/* =========================================================
-   SHORT DOM FUNCTION
-========================================================= */
-
-function $(id) {
-
-    return document.getElementById(id);
+    }
 
 }
 
 
+function speakSafety(text){
 
-/* =========================================================
+    if(!audioEnabled){
+        return;
+    }
+
+    if("speechSynthesis" in window){
+
+        window.speechSynthesis.cancel();
+
+        const speech =
+            new SpeechSynthesisUtterance(text);
+
+        speech.rate = .9;
+        speech.pitch = 1;
+
+        window.speechSynthesis.speak(speech);
+    }
+
+}
+
+
+/* =====================================================
+   PHONE ALARM
+===================================================== */
+
+function alarmBeep(){
+
+    if(!audioEnabled || !audioContext){
+        return;
+    }
+
+    if(audioContext.state === "suspended"){
+        audioContext.resume();
+    }
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = "sine";
+
+    oscillator.frequency.setValueAtTime(
+        850,
+        audioContext.currentTime
+    );
+
+    oscillator.frequency.linearRampToValueAtTime(
+        450,
+        audioContext.currentTime + .3
+    );
+
+    gain.gain.setValueAtTime(
+        .18,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        .01,
+        audioContext.currentTime + .3
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + .3
+    );
+}
+
+
+function startAlarm(){
+
+    if(!audioEnabled){
+        return;
+    }
+
+    if(alarmTimer){
+        return;
+    }
+
+    alarmBeep();
+
+    alarmTimer =
+        setInterval(
+            alarmBeep,
+            800
+        );
+}
+
+
+function stopAlarm(){
+
+    if(alarmTimer){
+
+        clearInterval(alarmTimer);
+
+        alarmTimer = null;
+    }
+}
+
+
+/* =====================================================
    THINGSPEAK URL
-========================================================= */
+===================================================== */
 
-function getThingSpeakURL() {
+function getThingSpeakURL(){
 
     return (
-
-        "https://api.thingspeak.com/channels/"
-        +
-        CHANNEL_ID
-        +
-        "/feeds.json?api_key="
-        +
-        READ_API_KEY
-        +
+        "https://api.thingspeak.com/channels/" +
+        CHANNEL_ID +
+        "/feeds.json?api_key=" +
+        READ_API_KEY +
         "&results=60"
-        +
-        "&_="
-        +
-        Date.now()
-
     );
 
 }
 
 
-
-/* =========================================================
-   NUMBER CONVERTER
-========================================================= */
-
-function numberValue(value) {
-
-    const number =
-        parseFloat(value);
-
-    if (
-        Number.isFinite(number)
-    ) {
-
-        return number;
-
-    }
-
-    return null;
-
-}
-
-
-
-/* =========================================================
-   SAFETY STATUS
-========================================================= */
-
-function updateSafety(
-    ultrasonic,
-    soil,
-    vibration,
-    rain
-) {
-
-
-    const status =
-        $("status");
-
-
-    status.className =
-        "status";
-
-
-    /*
-        Missing sensor data.
-    */
-
-    if (
-
-        ultrasonic === null ||
-        soil === null ||
-        vibration === null ||
-        rain === null
-
-    ) {
-
-        status.classList.add(
-            "warn"
-        );
-
-        status.textContent =
-            "⏳ WAITING FOR COMPLETE SENSOR DATA";
-
-        return;
-
-    }
-
-
-
-    /*
-        VIBRATION
-    */
-
-    if (
-        vibration >= 1
-    ) {
-
-        status.classList.add(
-            "danger"
-        );
-
-        status.textContent =
-            "🚨 ALERT: VIBRATION DETECTED";
-
-        return;
-
-    }
-
-
-
-    /*
-        RAIN
-    */
-
-    if (
-        rain >= 1
-    ) {
-
-        status.classList.add(
-            "warn"
-        );
-
-        status.textContent =
-            "⚠️ WARNING: RAIN DETECTED";
-
-        return;
-
-    }
-
-
-
-    /*
-        ULTRASONIC
-    */
-
-    if (
-        ultrasonic < 70
-    ) {
-
-        status.classList.add(
-            "danger"
-        );
-
-        status.textContent =
-            "🚨 ALERT: CRITICAL DISTANCE";
-
-        return;
-
-    }
-
-
-
-    /*
-        SOIL
-    */
-
-    if (
-        soil < 1500
-    ) {
-
-        status.classList.add(
-            "warn"
-        );
-
-        status.textContent =
-            "⚠️ WARNING: SOIL CONDITION";
-
-        return;
-
-    }
-
-
-
-    /*
-        EVERYTHING NORMAL
-    */
-
-    status.classList.add(
-        "safe"
-    );
-
-    status.textContent =
-        "✅ SYSTEM NORMAL";
-
-}
-
-
-
-/* =========================================================
-   CREATE GRAPH
-========================================================= */
-
-function createChart(
-    canvasID,
-    label,
-    labels,
-    values
-) {
-
-
-    if (
-        charts[canvasID]
-    ) {
-
-        charts[canvasID].destroy();
-
-    }
-
-
-    charts[canvasID] =
-
-        new Chart(
-
-            $(canvasID),
-
-            {
-
-                type: "line",
-
-
-                data: {
-
-                    labels: labels,
-
-
-                    datasets: [
-
-                        {
-
-                            label: label,
-
-                            data: values,
-
-                            borderWidth: 3,
-
-                            pointRadius: 2,
-
-                            tension: 0.28,
-
-                            fill: true
-
-                        }
-
-                    ]
-
+/* =====================================================
+   CHART VARIABLES
+===================================================== */
+
+let ultrasonicChart;
+let soilChart;
+let vibrationChart;
+let rainChart;
+
+
+/* =====================================================
+   CHART CREATION
+===================================================== */
+
+function createChart(canvasId,label,data,labels){
+
+    return new Chart(
+        document.getElementById(canvasId),
+        {
+            type:"line",
+
+            data:{
+                labels:labels,
+
+                datasets:[
+                    {
+                        label:label,
+                        data:data,
+                        borderWidth:3,
+                        pointRadius:3,
+                        pointHoverRadius:6,
+                        tension:.35,
+                        fill:true
+                    }
+                ]
+            },
+
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+
+                interaction:{
+                    intersect:false,
+                    mode:"index"
                 },
 
+                plugins:{
+                    legend:{
+                        display:true
+                    }
+                },
 
-                options: {
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    animation: false,
-
-
-                    plugins: {
-
-                        legend: {
-
-                            display: true
-
-                        }
-
-                    },
-
-
-                    scales: {
-
-                        x: {
-
-                            ticks: {
-
-                                maxRotation: 45,
-
-                                minRotation: 0,
-
-                                autoSkip: true,
-
-                                maxTicksLimit: 8
-
-                            }
-
+                scales:{
+                    x:{
+                        ticks:{
+                            maxTicksLimit:8,
+                            autoSkip:true
                         },
 
-
-                        y: {
-
-                            beginAtZero: true
-
+                        grid:{
+                            display:false
                         }
+                    },
 
+                    y:{
+                        beginAtZero:true,
+
+                        grid:{
+                            color:"rgba(50,90,110,.10)"
+                        }
                     }
-
                 }
-
             }
-
-        );
+        }
+    );
 
 }
 
 
+/* =====================================================
+   UPDATE CHARTS
+===================================================== */
 
-/* =========================================================
-   UPDATE GRAPHS
-========================================================= */
-
-function updateCharts(
-    feeds
-) {
-
-
-    /*
-        IMPORTANT:
-
-        These timestamps are generated
-        directly from ThingSpeak's
-        created_at value.
-    */
+function updateCharts(feeds){
 
     const labels =
-
-        feeds.map(
-
-            feed =>
-
-                new Date(
-                    feed.created_at
-                ).toLocaleString(
+        feeds.map(feed =>
+            new Date(feed.created_at)
+                .toLocaleTimeString(
                     [],
                     {
-
-                        month: "short",
-
-                        day: "numeric",
-
-                        hour: "2-digit",
-
-                        minute: "2-digit",
-
-                        second: "2-digit"
-
+                        hour:"2-digit",
+                        minute:"2-digit",
+                        second:"2-digit"
                     }
                 )
+        );
 
+    const ultrasonic =
+        feeds.map(feed =>
+            parseFloat(feed[ULTRASONIC_FIELD])
+        );
+
+    const soil =
+        feeds.map(feed =>
+            parseFloat(feed[SOIL_FIELD])
+        );
+
+    const vibration =
+        feeds.map(feed =>
+            parseFloat(feed[VIBRATION_FIELD])
+        );
+
+    const rain =
+        feeds.map(feed =>
+            parseFloat(feed[RAIN_FIELD])
         );
 
 
-
-    const ultrasonicData =
-
-        feeds.map(
-
-            feed =>
-
-                numberValue(
-                    feed.field1
-                ) ?? 0
-
-        );
-
-
-
-    const soilData =
-
-        feeds.map(
-
-            feed =>
-
-                numberValue(
-                    feed.field2
-                ) ?? 0
-
-        );
-
-
-
-    const vibrationData =
-
-        feeds.map(
-
-            feed =>
-
-                numberValue(
-                    feed.field3
-                ) ?? 0
-
-        );
-
-
-
-    const rainData =
-
-        feeds.map(
-
-            feed =>
-
-                numberValue(
-                    feed.field4
-                ) ?? 0
-
-        );
-
-
-
-    createChart(
-        "c1",
-        "Ultrasonic",
-        labels,
-        ultrasonicData
-    );
-
-
-    createChart(
-        "c2",
-        "Soil Moisture",
-        labels,
-        soilData
-    );
-
-
-    createChart(
-        "c3",
-        "Vibration",
-        labels,
-        vibrationData
-    );
-
-
-    createChart(
-        "c4",
-        "Rain",
-        labels,
-        rainData
-    );
-
-}
-
-
-
-/* =========================================================
-   MAIN THINGSPEAK UPDATE
-========================================================= */
-
-async function updateDashboard() {
-
-
-    try {
-
-
-        $("sync").textContent =
-            "Synchronizing with ThingSpeak...";
-
-
-        $("dot").className =
-            "dot";
-
-
-        const response =
-
-            await fetch(
-
-                getThingSpeakURL(),
-
-                {
-
-                    method: "GET",
-
-                    cache: "no-store"
-
-                }
-
-            );
-
-
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-
-        }
-
-
-        const data =
-
-            await response.json();
-
-
-        if (
-
-            !data.feeds ||
-            data.feeds.length === 0
-
-        ) {
-
-            throw new Error(
-                "No ThingSpeak readings found."
-            );
-
-        }
-
-
-        /*
-            Latest reading.
-        */
-
-        const latest =
-
-            data.feeds[
-                data.feeds.length - 1
-            ];
-
-
-
-        /*
-            Sensor values.
-        */
-
-        const ultrasonic =
-            numberValue(
-                latest.field1
-            );
-
-
-        const soil =
-            numberValue(
-                latest.field2
-            );
-
-
-        const vibration =
-            numberValue(
-                latest.field3
-            );
-
-
-        const rain =
-            numberValue(
-                latest.field4
-            );
-
-
-
-        /*
-            Display values.
-        */
-
-        $("ultrasonic").textContent =
-
-            ultrasonic === null
-            ? "--"
-            : ultrasonic.toFixed(1);
-
-
-        $("soil").textContent =
-
-            soil === null
-            ? "--"
-            : soil;
-
-
-        $("vibration").textContent =
-
-            vibration === null
-            ? "--"
-            : vibration;
-
-
-        $("rain").textContent =
-
-            rain === null
-            ? "--"
-            : rain;
-
-
-
-        /*
-            Live information.
-        */
-
-        $("lastUpdate").textContent =
-
-            new Date(
-                latest.created_at
-            ).toLocaleString();
-
-
-        $("entryId").textContent =
-            latest.entry_id;
-
-
-
-        /*
-            Connection.
-        */
-
-        $("sync").textContent =
-            "✓ Synchronized Successfully";
-
-
-        $("dot").className =
-            "dot ok";
-
-
-        $("connection").textContent =
-            "🟢 Connected to ThingSpeak";
-
-
-
-        /*
-            Safety.
-        */
-
-        updateSafety(
+    if(ultrasonicChart){
+        ultrasonicChart.destroy();
+    }
+
+    if(soilChart){
+        soilChart.destroy();
+    }
+
+    if(vibrationChart){
+        vibrationChart.destroy();
+    }
+
+    if(rainChart){
+        rainChart.destroy();
+    }
+
+
+    ultrasonicChart =
+        createChart(
+            "ultrasonicChart",
+            "Distance",
             ultrasonic,
+            labels
+        );
+
+    soilChart =
+        createChart(
+            "soilChart",
+            "Soil Moisture",
             soil,
+            labels
+        );
+
+    vibrationChart =
+        createChart(
+            "vibrationChart",
+            "SW-420 Vibration",
             vibration,
-            rain
-        );
-
-
-
-        /*
-            Graphs.
-        */
-
-        updateCharts(
-            data.feeds
-        );
-
-
-    }
-
-
-    catch (error) {
-
-
-        console.error(
-            "ThingSpeak Error:",
-            error
-        );
-
-
-        $("sync").textContent =
-            "❌ Synchronization Failed";
-
-
-        $("dot").className =
-            "dot bad";
-
-
-        $("connection").textContent =
-            "🔴 Connection Error";
-
-
-        $("status").className =
-            "status warn";
-
-
-        $("status").textContent =
-            "⚠️ WAITING FOR THINGSPEAK DATA";
-
-    }
-
-}
-
-
-
-/* =========================================================
-   SAFETY AUDIO
-========================================================= */
-
-
-/*
-    Mobile browsers can block automatic
-    audible playback.
-
-    Therefore the website attempts to
-    start speech automatically, but the
-    button is always available as a
-    reliable fallback.
-*/
-
-function speakSafetyProtocol() {
-
-
-    if (
-        !("speechSynthesis" in window)
-    ) {
-
-        return;
-
-    }
-
-
-    speechSynthesis.cancel();
-
-
-    const message =
-
-        "Landslide safety system protocol. " +
-
-        "Stay calm. " +
-
-        "Move away from unstable slopes " +
-
-        "and possible debris paths. " +
-
-        "Follow official evacuation instructions " +
-
-        "and move to designated safe open ground.";
-
-
-    const speech =
-
-        new SpeechSynthesisUtterance(
-            message
-        );
-
-
-    speech.rate =
-        0.9;
-
-
-    speech.pitch =
-        1.05;
-
-
-    speech.volume =
-        1;
-
-
-    speechSynthesis.speak(
-        speech
-    );
-
-}
-
-
-/*
-    Button = reliable audio activation.
-*/
-
-$("audioBtn").addEventListener(
-
-    "click",
-
-    function() {
-
-        speakSafetyProtocol();
-
-        $("audioBtn").textContent =
-            "🔊 Safety Audio Playing";
-
-    }
-
-);
-
-
-/*
-    Try automatic audio when
-    website opens.
-
-    Some mobile browsers will block
-    this. That is a browser security
-    restriction, not a ThingSpeak error.
-*/
-
-window.addEventListener(
-
-    "load",
-
-    function() {
-
-        setTimeout(
-            speakSafetyProtocol,
-            700
-        );
-
-    }
-
-);
-
-
-
-/* =========================================================
-   MOBILE COMPASS
-========================================================= */
-
-
-/*
-    This displays phone heading.
-
-    It does NOT pretend to know the
-    actual evacuation route.
-*/
-
-function handleOrientation(
-    event
-) {
-
-
-    let heading = null;
-
-
-    /*
-        iPhone / Safari.
-    */
-
-    if (
-
-        typeof event.webkitCompassHeading
-        === "number"
-
-    ) {
-
-        heading =
-            event.webkitCompassHeading;
-
-    }
-
-
-    /*
-        Android / other browsers.
-    */
-
-    else if (
-
-        typeof event.alpha
-        === "number"
-
-    ) {
-
-        heading =
-            360 - event.alpha;
-
-    }
-
-
-    if (
-        heading === null
-    ) {
-
-        return;
-
-    }
-
-
-    $("heading").textContent =
-
-        "Phone heading: " +
-        Math.round(heading) +
-        "°";
-
-
-    $("arrow").style.transform =
-
-        "rotate(" +
-        heading +
-        "deg)";
-
-}
-
-
-
-/* =========================================================
-   ENABLE COMPASS
-========================================================= */
-
-$("compassBtn").addEventListener(
-
-    "click",
-
-    async function() {
-
-
-        try {
-
-
-            /*
-                iPhone permission.
-            */
-
-            if (
-
-                typeof DeviceOrientationEvent
-                !== "undefined" &&
-
-                typeof
-                DeviceOrientationEvent.requestPermission
-                === "function"
-
-            ) {
-
-
-                const permission =
-
-                    await
-                    DeviceOrientationEvent
-                    .requestPermission();
-
-
-                if (
-                    permission !== "granted"
-                ) {
-
-                    throw new Error(
-                        "Compass permission denied"
-                    );
-
-                }
-
-            }
-
-
-            window.addEventListener(
-
-                "deviceorientation",
-
-                handleOrientation,
-
-                true
-
-            );
-
-
-            $("compassBtn").textContent =
-                "🧭 Direction Enabled";
-
-
-        }
-
-
-        catch (error) {
-
-
-            $("heading").textContent =
-
-                "Compass permission is unavailable on this browser.";
-
-
-        }
-
-    }
-
-);
-
-
-
-/* =========================================================
-   START DASHBOARD
-========================================================= */
-
-
-/*
-    First update immediately.
-*/
-
-updateDashboard();
-
-
-/*
-    Then every 15 seconds.
-*/
-
-setInterval(
-
-    updateDashboard,
-
-    UPDATE_INTERVAL
-
-);
-
-
-</script>
-
-
-</body>
-
-</html>
+           

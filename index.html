@@ -2,911 +2,543 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-               maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>Sanjivani College | Landslide Safety</title>
+<title>Sanjivani College - Landslide Safety Dashboard</title>
 
 <style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
 *{
     box-sizing:border-box;
 }
 
-html{
-    scroll-behavior:smooth;
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
 }
 
 body{
-    margin:0;
-    min-height:100vh;
-
-    font-family:
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    color:#18251e;
-
+    font-family:"Segoe UI",Arial,sans-serif;
+    color:#17251d;
     background:#020807;
-
     overflow-x:hidden;
 }
 
+/* ================= NIGHT BACKGROUND ================= */
 
-/* =========================================================
-   NIGHT RAIN BACKGROUND
-========================================================= */
-
-.night{
+.night-bg{
     position:fixed;
     inset:0;
-    z-index:-100;
-
+    z-index:-20;
     overflow:hidden;
-
     background:
-        radial-gradient(
-            ellipse at 50% 20%,
-            rgba(41,91,78,.35),
-            transparent 42%
-        ),
-        linear-gradient(
-            180deg,
-            #020b0a 0%,
-            #061916 45%,
-            #0b241c 72%,
-            #020807 100%
-        );
+        radial-gradient(circle at 70% 12%,rgba(150,220,190,.18),transparent 20%),
+        linear-gradient(180deg,#020908 0%,#061714 48%,#102b21 100%);
 }
 
-
-/* distant moon glow */
-
-.night::before{
-    content:"";
-
+.moon-glow{
     position:absolute;
-
-    width:350px;
-    height:350px;
-
-    top:-100px;
-    right:-50px;
-
+    width:280px;
+    height:280px;
+    right:-80px;
+    top:-80px;
     border-radius:50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(180,235,211,.16),
-            transparent 65%
-        );
-
-    filter:blur(20px);
+    background:radial-gradient(circle,rgba(210,255,235,.20),transparent 68%);
+    filter:blur(10px);
 }
 
+/* distant mountains */
 
-/* =========================================================
-   MOUNTAINS
-========================================================= */
-
-.mountains{
+.mountain{
     position:absolute;
-
+    bottom:10%;
     left:-5%;
-    bottom:12%;
-
     width:110%;
-    height:60%;
-
-    background:
-        linear-gradient(
-            145deg,
-            #122b24,
-            #071713 55%,
-            #020908
-        );
-
-    clip-path:
-        polygon(
-            0 78%,
-            8% 65%,
-            17% 72%,
-            28% 40%,
-            39% 62%,
-            50% 20%,
-            61% 49%,
-            71% 30%,
-            81% 58%,
-            92% 39%,
-            100% 60%,
-            100% 100%,
-            0 100%
-        );
-
-    filter:blur(1px);
+    height:55%;
+    background:linear-gradient(145deg,#19352c,#081813 65%,#020807);
+    clip-path:polygon(
+        0 75%,8% 58%,17% 69%,28% 39%,
+        38% 62%,50% 19%,61% 48%,71% 31%,
+        81% 58%,91% 37%,100% 59%,100% 100%,0 100%
+    );
 }
 
-
-/* landslide section */
+/* landslide */
 
 .landslide{
     position:absolute;
-
-    left:42%;
-    bottom:13%;
-
-    width:27%;
+    left:43%;
+    bottom:11%;
+    width:30%;
     height:43%;
-
-    background:
-        linear-gradient(
-            140deg,
-            #4a4439,
-            #29271f 55%,
-            #111512
-        );
-
-    clip-path:
-        polygon(
-            42% 0,
-            65% 15%,
-            54% 36%,
-            84% 66%,
-            69% 100%,
-            12% 100%,
-            27% 70%,
-            10% 51%,
-            32% 29%
-        );
-
-    opacity:.72;
+    opacity:.75;
+    background:linear-gradient(140deg,#63594b,#312f28,#111612);
+    clip-path:polygon(
+        43% 0,68% 16%,55% 37%,87% 66%,
+        70% 100%,10% 100%,28% 69%,10% 51%,32% 28%
+    );
 }
 
-
-/* =========================================================
-   TREES
-========================================================= */
+/* trees */
 
 .tree{
     position:absolute;
-
-    bottom:10%;
-
+    bottom:9%;
     width:0;
     height:0;
-
-    border-left:22px solid transparent;
-    border-right:22px solid transparent;
-    border-bottom:80px solid #03120d;
-
-    filter:
-        drop-shadow(
-            6px 8px 5px rgba(0,0,0,.65)
-        );
+    border-left:24px solid transparent;
+    border-right:24px solid transparent;
+    border-bottom:88px solid #03110c;
+    filter:drop-shadow(7px 8px 5px rgba(0,0,0,.7));
 }
 
-.tree::before{
+.tree:before{
     content:"";
-
     position:absolute;
-
-    left:-17px;
-    top:35px;
-
-    border-left:17px solid transparent;
-    border-right:17px solid transparent;
-    border-bottom:63px solid #041710;
+    left:-19px;
+    top:38px;
+    border-left:19px solid transparent;
+    border-right:19px solid transparent;
+    border-bottom:67px solid #04150f;
 }
 
-.tree::after{
+.tree:after{
     content:"";
-
     position:absolute;
-
     left:-5px;
-    top:69px;
-
+    top:74px;
     width:10px;
-    height:55px;
-
-    background:#11130f;
+    height:58px;
+    background:#10130f;
 }
 
-.t1{
-    left:3%;
-    transform:scale(1.5);
-}
+.t1{left:3%;transform:scale(1.6)}
+.t2{left:15%;transform:scale(.9)}
+.t3{left:26%;transform:scale(1.3)}
+.t4{right:3%;transform:scale(1.7)}
+.t5{right:17%;transform:scale(1.05)}
+.t6{right:30%;transform:scale(.75)}
 
-.t2{
-    left:14%;
-    transform:scale(.9);
-}
-
-.t3{
-    left:26%;
-    transform:scale(1.3);
-}
-
-.t4{
-    right:4%;
-    transform:scale(1.6);
-}
-
-.t5{
-    right:18%;
-    transform:scale(1.05);
-}
-
-.t6{
-    right:31%;
-    transform:scale(.75);
-}
-
-
-/* =========================================================
-   RAIN
-========================================================= */
+/* rain */
 
 .rain{
     position:absolute;
-
     inset:-30%;
-
     opacity:.45;
-
     background-image:
         repeating-linear-gradient(
             105deg,
             transparent 0 35px,
-            rgba(205,240,236,.34) 36px,
+            rgba(220,250,245,.35) 36px,
             transparent 38px 75px
         );
-
     background-size:80px 90px;
-
-    animation:
-        rainMove .55s linear infinite;
+    animation:rainMove .55s linear infinite;
 }
 
 .rain.fast{
-    opacity:.22;
-
-    background-size:
-        45px 65px;
-
-    animation-duration:.28s;
+    opacity:.20;
+    background-size:45px 65px;
+    animation-duration:.27s;
 }
 
 @keyframes rainMove{
-
-    from{
-        transform:translateY(-60px);
-    }
-
-    to{
-        transform:translateY(100px);
-    }
-
+    from{transform:translateY(-70px)}
+    to{transform:translateY(110px)}
 }
 
-
-/* =========================================================
-   MIST
-========================================================= */
+/* mist */
 
 .mist{
     position:absolute;
-
     left:-10%;
-    bottom:12%;
-
+    bottom:9%;
     width:120%;
-    height:27%;
-
-    background:
-        linear-gradient(
-            180deg,
-            transparent,
-            rgba(190,225,214,.13),
-            transparent
-        );
-
+    height:28%;
+    background:linear-gradient(
+        180deg,
+        transparent,
+        rgba(210,240,230,.12),
+        transparent
+    );
     filter:blur(18px);
-
-    animation:
-        mistMove 9s ease-in-out infinite alternate;
+    animation:mistMove 9s ease-in-out infinite alternate;
 }
 
 @keyframes mistMove{
-
-    from{
-        transform:translateX(-3%);
-    }
-
-    to{
-        transform:translateX(3%);
-    }
-
+    from{transform:translateX(-3%)}
+    to{transform:translateX(3%)}
 }
 
-
-/* =========================================================
-   LIGHTNING
-========================================================= */
+/* lightning */
 
 .lightning{
     position:absolute;
-
     top:0;
     right:18%;
-
-    width:70px;
+    width:75px;
     height:90%;
-
     opacity:0;
-
-    background:#eaffff;
-
-    clip-path:
-        polygon(
-            48% 0,
-            82% 0,
-            62% 35%,
-            91% 35%,
-            24% 75%,
-            42% 46%,
-            15% 46%
-        );
-
-    filter:
-        drop-shadow(
-            0 0 22px
-            rgba(190,255,245,.95)
-        );
-
-    animation:
-        lightningFlash 9s infinite;
+    background:#efffff;
+    clip-path:polygon(
+        48% 0,82% 0,62% 35%,91% 35%,
+        24% 75%,42% 46%,15% 46%
+    );
+    filter:drop-shadow(0 0 25px rgba(200,255,245,.95));
+    animation:lightningFlash 9s infinite;
 }
 
 @keyframes lightningFlash{
-
-    0%,86%,100%{
-        opacity:0;
-    }
-
-    87%{
-        opacity:.9;
-    }
-
-    88%{
-        opacity:.1;
-    }
-
-    89%{
-        opacity:1;
-    }
-
-    90%{
-        opacity:0;
-    }
-
-    92%{
-        opacity:.55;
-    }
-
-    93%{
-        opacity:0;
-    }
+    0%,86%,100%{opacity:0}
+    87%{opacity:.9}
+    88%{opacity:.05}
+    89%{opacity:1}
+    90%{opacity:0}
+    92%{opacity:.55}
+    93%{opacity:0}
 }
 
-
-/* =========================================================
-   WINDSHIELD
-========================================================= */
+/* windshield */
 
 .windshield{
     position:fixed;
     inset:0;
-
-    z-index:-80;
-
+    z-index:-10;
     pointer-events:none;
-
-    box-shadow:
-        inset 0 0 100px rgba(0,0,0,.72);
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            transparent 35%,
-            rgba(0,0,0,.25) 100%
-        );
+    box-shadow:inset 0 0 110px rgba(0,0,0,.72);
 }
-
-
-/* =========================================================
-   REALISTIC WATER DROPS
-========================================================= */
 
 .drop{
     position:absolute;
-
-    border-radius:
-        55% 45% 60% 40%;
-
+    border-radius:55% 45% 60% 40%;
     background:
         radial-gradient(
             circle at 30% 25%,
-            rgba(255,255,255,.70),
-            rgba(175,230,220,.22) 35%,
-            rgba(255,255,255,.05) 70%,
+            rgba(255,255,255,.75),
+            rgba(180,235,225,.22) 35%,
+            rgba(255,255,255,.04) 70%,
             transparent 72%
         );
-
-    border:
-        1px solid
-        rgba(220,250,242,.16);
-
-    box-shadow:
-        0 1px 7px rgba(0,0,0,.4);
-
-    animation:
-        dropletMove 5s ease-in-out infinite alternate;
+    border:1px solid rgba(225,255,247,.18);
+    box-shadow:0 2px 8px rgba(0,0,0,.45);
+    animation:dropMove 5s ease-in-out infinite alternate;
 }
 
-@keyframes dropletMove{
-
-    from{
-        transform:
-            translateY(-2px)
-            translateX(0);
-    }
-
-    to{
-        transform:
-            translateY(10px)
-            translateX(4px);
-    }
+@keyframes dropMove{
+    from{transform:translate(0,-2px)}
+    to{transform:translate(5px,10px)}
 }
 
-.d1{
-    width:19px;
-    height:27px;
-    left:7%;
-    top:17%;
-}
+.d1{width:20px;height:28px;left:7%;top:16%}
+.d2{width:11px;height:16px;left:21%;top:38%;animation-delay:1s}
+.d3{width:27px;height:36px;right:8%;top:20%;animation-delay:2s}
+.d4{width:13px;height:20px;right:18%;top:50%;animation-delay:3s}
+.d5{width:29px;height:39px;left:53%;top:8%;animation-delay:1.5s}
+.d6{width:10px;height:14px;left:39%;top:57%;animation-delay:2.5s}
+.d7{width:19px;height:28px;right:30%;top:67%;animation-delay:4s}
+.d8{width:13px;height:19px;left:4%;top:72%;animation-delay:2s}
+.d9{width:26px;height:35px;right:4%;top:82%;animation-delay:3.5s}
 
-.d2{
-    width:10px;
-    height:15px;
-    left:21%;
-    top:38%;
-    animation-delay:1s;
-}
-
-.d3{
-    width:25px;
-    height:34px;
-    right:8%;
-    top:20%;
-    animation-delay:2s;
-}
-
-.d4{
-    width:13px;
-    height:19px;
-    right:18%;
-    top:50%;
-    animation-delay:3s;
-}
-
-.d5{
-    width:29px;
-    height:38px;
-    left:53%;
-    top:8%;
-    animation-delay:1.5s;
-}
-
-.d6{
-    width:9px;
-    height:13px;
-    left:39%;
-    top:57%;
-    animation-delay:2.5s;
-}
-
-.d7{
-    width:18px;
-    height:27px;
-    right:30%;
-    top:67%;
-    animation-delay:4s;
-}
-
-.d8{
-    width:12px;
-    height:18px;
-    left:4%;
-    top:72%;
-    animation-delay:2s;
-}
-
-.d9{
-    width:25px;
-    height:34px;
-    right:4%;
-    top:82%;
-    animation-delay:3.5s;
-}
-
-
-/* =========================================================
-   MAIN DASHBOARD
-========================================================= */
+/* ================= DASHBOARD ================= */
 
 .dashboard{
     width:min(1120px,94%);
-
-    margin:
-        18px auto 45px;
+    margin:15px auto 45px;
 }
 
-
-/* =========================================================
-   HEADER
-========================================================= */
+/* ================= COLLEGE HEADER ================= */
 
 .header{
     text-align:center;
-
-    padding:
-        24px 15px 22px;
-
+    padding:23px 15px 21px;
     border-radius:30px;
-
-    background:
-        rgba(255,255,255,.96);
-
-    border:
-        3px solid #2e9b68;
-
+    background:rgba(255,255,255,.97);
+    border:3px solid #2d9c68;
     box-shadow:
-        0 20px 55px rgba(0,0,0,.38),
-        0 0 25px rgba(46,155,104,.18);
+        0 20px 55px rgba(0,0,0,.42),
+        0 0 28px rgba(45,156,104,.18);
 }
 
 .logo{
     width:96px;
     height:96px;
-
     object-fit:contain;
-
     border-radius:50%;
-
-    background:#fff;
-
+    background:white;
     padding:6px;
-
-    border:
-        3px solid #2e9b68;
-
-    box-shadow:
-        0 7px 22px rgba(0,0,0,.18);
+    border:3px solid #2d9c68;
+    box-shadow:0 7px 22px rgba(0,0,0,.20);
 }
 
 .college{
-    margin-top:12px;
-
-    font-size:
-        clamp(28px,6vw,44px);
-
+    margin-top:11px;
+    font-size:clamp(29px,6vw,45px);
     font-weight:1000;
-
     letter-spacing:.5px;
-
     color:#176b47;
 }
 
 .subtitle{
     margin-top:5px;
-
-    color:#587267;
-
-    font-size:11px;
-
-    font-weight:800;
-
+    color:#5c7368;
+    font-size:10px;
+    font-weight:900;
     letter-spacing:2px;
-
     text-transform:uppercase;
 }
 
+/* ================= SIREN BOX ================= */
 
-/* =========================================================
-   STATUS
-========================================================= */
+.siren-card{
+    margin-top:14px;
+    padding:18px;
+    border-radius:25px;
+    background:rgba(255,255,255,.98);
+    border:3px solid #e69a28;
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.32),
+        0 0 25px rgba(240,155,40,.16);
+}
+
+.siren-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.siren-icon{
+    width:53px;
+    height:53px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:16px;
+    font-size:26px;
+    background:#fff4dc;
+    border:2px solid #f0bd62;
+}
+
+.siren-info{
+    flex:1;
+}
+
+.siren-title{
+    color:#613f12;
+    font-size:16px;
+    font-weight:1000;
+}
+
+.siren-description{
+    margin-top:3px;
+    color:#7d7465;
+    font-size:10px;
+}
+
+.siren-button{
+    min-width:145px;
+    border:0;
+    padding:14px 18px;
+    border-radius:15px;
+    cursor:pointer;
+    color:white;
+    background:linear-gradient(135deg,#ef9d24,#df6e19);
+    font-size:11px;
+    font-weight:1000;
+    box-shadow:0 8px 20px rgba(223,110,25,.28);
+    transition:.2s;
+}
+
+.siren-button:hover{
+    transform:translateY(-2px);
+}
+
+.siren-button.enabled{
+    background:linear-gradient(135deg,#26ad68,#13834d);
+    box-shadow:0 8px 20px rgba(19,131,77,.28);
+}
+
+.siren-status{
+    margin-top:10px;
+    padding:9px 11px;
+    border-radius:12px;
+    background:#fff8ea;
+    color:#856b3c;
+    font-size:9px;
+    text-align:center;
+    font-weight:800;
+}
+
+.siren-card.alarming{
+    border-color:#df3658;
+    animation:sirenFlash .45s infinite alternate;
+}
+
+@keyframes sirenFlash{
+    from{box-shadow:0 0 10px rgba(220,45,80,.15)}
+    to{box-shadow:0 0 35px rgba(220,45,80,.65)}
+}
+
+/* ================= STATUS ================= */
 
 .status-card{
-    margin-top:15px;
-
-    padding:21px;
-
+    margin-top:14px;
+    padding:20px;
     border-radius:25px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    border:
-        3px solid #2e9b68;
-
-    box-shadow:
-        0 18px 45px rgba(0,0,0,.30);
+    background:rgba(255,255,255,.97);
+    border:3px solid #2d9c68;
+    box-shadow:0 18px 45px rgba(0,0,0,.30);
 }
 
 .status-top{
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
-
     gap:20px;
 }
 
 .status-label{
-    color:#6d8278;
-
+    color:#6b8075;
     font-size:10px;
-
     font-weight:900;
-
     letter-spacing:2px;
-
     text-transform:uppercase;
 }
 
 .status{
     margin-top:4px;
-
-    font-size:
-        clamp(30px,7vw,48px);
-
+    font-size:clamp(30px,7vw,48px);
     font-weight:1000;
-
-    color:#17945c;
+    color:#15945a;
 }
 
 .status-sub{
     margin-top:4px;
-
     color:#64786e;
-
     font-size:12px;
 }
 
 .status-light{
     width:54px;
     height:54px;
-
     flex:none;
-
     border-radius:50%;
-
     background:#39d98a;
-
     box-shadow:
         0 0 0 8px rgba(57,217,138,.13),
         0 0 30px rgba(57,217,138,.50);
-
-    animation:
-        pulse 2s infinite;
+    animation:pulse 2s infinite;
 }
 
 @keyframes pulse{
-
-    50%{
-        transform:scale(1.08);
-        opacity:.75;
-    }
-
+    50%{transform:scale(1.08);opacity:.75}
 }
 
-
-/* =========================================================
-   SENSOR LIST — ONE BY ONE
-========================================================= */
+/* ================= SENSOR ROWS ================= */
 
 .sensor-section{
-    margin-top:16px;
+    margin-top:15px;
 }
 
 .sensor-row{
     display:grid;
-
-    grid-template-columns:
-        55px
-        1fr
-        minmax(120px,180px)
-        minmax(150px,300px);
-
+    grid-template-columns:55px 1fr minmax(115px,180px) minmax(150px,300px);
     align-items:center;
-
     gap:15px;
-
     margin-bottom:12px;
-
-    padding:
-        15px 17px;
-
+    padding:15px 17px;
     border-radius:22px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    border:
-        2px solid #3aa66f;
-
-    box-shadow:
-        0 13px 32px rgba(0,0,0,.25);
-
-    transition:.2s ease;
+    background:rgba(255,255,255,.97);
+    border:2px solid #3aa66f;
+    box-shadow:0 13px 32px rgba(0,0,0,.25);
+    transition:.2s;
 }
 
 .sensor-row:hover{
-    transform:
-        translateY(-3px);
-
-    box-shadow:
-        0 18px 38px rgba(0,0,0,.31);
+    transform:translateY(-3px);
 }
 
 .sensor-icon{
     width:47px;
     height:47px;
-
     display:flex;
-
     align-items:center;
     justify-content:center;
-
     border-radius:15px;
-
-    background:
-        #e8f7ef;
-
-    border:
-        2px solid #b7dfca;
-
+    background:#e8f7ef;
+    border:2px solid #b7dfca;
     font-size:22px;
 }
 
 .sensor-name{
     font-size:13px;
-
     font-weight:950;
-
-    color:#1c3025;
 }
 
 .sensor-description{
     margin-top:3px;
-
     color:#75867d;
-
     font-size:10px;
 }
 
 .sensor-value{
     font-size:27px;
-
     font-weight:1000;
-
     color:#178c57;
 }
 
 .sensor-unit{
     font-size:9px;
-
     color:#7a8b83;
 }
 
 .sensor-bar{
     width:100%;
-    height:7px;
-
+    height:8px;
     overflow:hidden;
-
     border-radius:20px;
-
     background:#e4eee9;
 }
 
 .sensor-fill{
     height:100%;
-
     width:4%;
-
     border-radius:20px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #30a967,
-            #7bdb9f
-        );
-
-    transition:
-        width .5s ease;
+    background:linear-gradient(90deg,#25a963,#7bdb9f);
+    transition:width .5s;
 }
 
-
-/* =========================================================
-   DIRECTION
-========================================================= */
+/* ================= DIRECTION ================= */
 
 .direction-card{
-    margin-top:16px;
-
+    margin-top:15px;
     padding:20px;
-
     text-align:center;
-
     border-radius:25px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    border:
-        3px solid #2e9b68;
-
-    box-shadow:
-        0 18px 45px rgba(0,0,0,.28);
+    background:rgba(255,255,255,.97);
+    border:3px solid #2d9c68;
+    box-shadow:0 18px 45px rgba(0,0,0,.28);
 }
 
 .direction-title{
     color:#5c7468;
-
     font-size:10px;
-
     font-weight:900;
-
     letter-spacing:2px;
-
     text-transform:uppercase;
 }
 
 .direction-ring{
     width:145px;
     height:145px;
-
-    margin:
-        15px auto 5px;
-
+    margin:15px auto 5px;
     display:flex;
-
     align-items:center;
     justify-content:center;
-
     border-radius:50%;
-
-    border:
-        4px solid #42a96f;
-
-    background:
-        radial-gradient(
-            circle,
-            #fafffc,
-            #eaf8f0
-        );
-
+    border:4px solid #42a96f;
+    background:radial-gradient(circle,#fafffc,#eaf8f0);
     box-shadow:
         inset 0 0 25px rgba(48,155,103,.10),
         0 12px 28px rgba(0,0,0,.18);
@@ -915,558 +547,319 @@ body{
 .arrow{
     width:0;
     height:0;
-
-    border-left:
-        15px solid transparent;
-
-    border-right:
-        15px solid transparent;
-
-    border-bottom:
-        65px solid #168b55;
-
+    border-left:15px solid transparent;
+    border-right:15px solid transparent;
+    border-bottom:65px solid #168b55;
     position:relative;
-
-    filter:
-        drop-shadow(
-            0 5px 5px rgba(0,0,0,.18)
-        );
-
-    transition:
-        transform .15s linear;
+    filter:drop-shadow(0 5px 5px rgba(0,0,0,.18));
+    transition:transform .15s linear;
 }
 
-.arrow::after{
+.arrow:after{
     content:"";
-
     position:absolute;
-
     width:9px;
     height:48px;
-
     left:-4px;
     top:45px;
-
     background:#168b55;
-
     border-radius:5px;
 }
 
 .direction-hint{
     color:#788b82;
-
     font-size:10px;
 }
 
-
-/* =========================================================
-   GRAPHS
-========================================================= */
+/* ================= GRAPH SECTION ================= */
 
 .section-title{
-    margin:
-        24px 4px 11px;
-
+    margin:24px 4px 11px;
     font-size:18px;
-
     font-weight:1000;
-
-    color:#effff7;
-
-    text-shadow:
-        0 2px 8px rgba(0,0,0,.7);
+    color:white;
+    text-shadow:0 2px 8px rgba(0,0,0,.8);
 }
 
 .graph-card{
     margin-bottom:14px;
-
     padding:15px;
-
     border-radius:24px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    border:
-        2px solid #3aa66f;
-
-    box-shadow:
-        0 17px 38px rgba(0,0,0,.27);
+    background:rgba(255,255,255,.98);
+    border:2px solid #3aa66f;
+    box-shadow:0 17px 38px rgba(0,0,0,.27);
 }
 
 .graph-title{
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
-
     margin-bottom:6px;
 }
 
 .graph-name{
     font-size:13px;
-
     font-weight:1000;
-
-    color:#1d3327;
 }
 
 .live{
     display:flex;
-
     align-items:center;
-
     gap:5px;
-
     color:#168b55;
-
     font-size:9px;
-
     font-weight:900;
 }
 
 .live-dot{
     width:7px;
     height:7px;
-
     border-radius:50%;
-
     background:#24bd72;
-
-    box-shadow:
-        0 0 10px rgba(36,189,114,.65);
+    box-shadow:0 0 10px rgba(36,189,114,.65);
 }
 
 .graph{
     position:relative;
-
     width:100%;
-
-    height:220px;
+    height:235px;
 }
 
 .graph svg{
     width:100%;
     height:100%;
-
     overflow:visible;
 }
 
-.graph-grid-line{
-    stroke:
-        rgba(34,104,67,.12);
+/* colorful graph zones */
 
+.zone-safe{
+    fill:rgba(44,190,116,.08);
+}
+
+.zone-warning{
+    fill:rgba(248,196,52,.10);
+}
+
+.zone-high{
+    fill:rgba(245,133,39,.11);
+}
+
+.zone-danger{
+    fill:rgba(222,50,73,.10);
+}
+
+.graph-grid-line{
+    stroke:rgba(34,104,67,.13);
     stroke-width:1;
 }
 
 .graph-line{
     fill:none;
-
-    stroke:#20a663;
-
-    stroke-width:3.5;
-
+    stroke:#f28c28;
+    stroke-width:4;
     stroke-linecap:round;
-
     stroke-linejoin:round;
-
-    filter:
-        drop-shadow(
-            0 0 4px rgba(32,166,99,.45)
-        );
+    filter:drop-shadow(0 0 5px rgba(242,140,40,.45));
 }
 
 .graph-area{
-    fill:
-        rgba(42,180,108,.10);
+    fill:rgba(242,140,40,.10);
 }
 
 .graph-dot{
-    fill:#fff;
-
-    stroke:#20a663;
-
+    fill:white;
+    stroke:#f28c28;
     stroke-width:3;
-
     cursor:pointer;
-
-    filter:
-        drop-shadow(
-            0 0 5px rgba(32,166,99,.55)
-        );
+    filter:drop-shadow(0 0 5px rgba(242,140,40,.55));
+    transition:.15s;
 }
 
+.graph-dot:hover,
 .graph-dot.selected{
-    stroke:#e34e7e;
-
+    stroke:#df3156;
     stroke-width:4;
-
-    filter:
-        drop-shadow(
-            0 0 7px rgba(227,78,126,.65)
-        );
+    r:7;
 }
-
-
-/* tooltip */
 
 .graph-tooltip{
     position:absolute;
-
-    min-width:145px;
-
+    min-width:150px;
     padding:10px;
-
     border-radius:13px;
-
-    background:
-        rgba(255,255,255,.99);
-
-    border:
-        2px solid #35a66b;
-
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.25);
-
+    background:rgba(255,255,255,.99);
+    border:2px solid #e69a28;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
     pointer-events:none;
-
     opacity:0;
-
-    transform:
-        translate(-50%,-110%)
-        scale(.9);
-
+    transform:translate(-50%,-110%) scale(.9);
     transition:.15s;
-
     z-index:20;
 }
 
 .graph-tooltip.show{
     opacity:1;
-
-    transform:
-        translate(-50%,-110%)
-        scale(1);
+    transform:translate(-50%,-110%) scale(1);
 }
 
 .tooltip-date{
     color:#72857b;
-
     font-size:9px;
 }
 
 .tooltip-value{
     margin-top:3px;
-
-    color:#168b55;
-
+    color:#df761c;
     font-size:18px;
-
     font-weight:1000;
 }
 
 .tooltip-rating{
     margin-top:3px;
-
     font-size:10px;
-
     font-weight:1000;
 }
 
-.low{
-    color:#15965b;
-}
+.low{color:#15965b}
+.moderate{color:#d38b00}
+.high{color:#e16c22}
+.critical{color:#d82c54}
 
-.moderate{
-    color:#d58a00;
-}
-
-.high{
-    color:#df5a29;
-}
-
-.critical{
-    color:#d82c54;
-}
-
-
-/* =========================================================
-   SAFETY PRECAUTIONS
-========================================================= */
+/* ================= PRECAUTIONS ================= */
 
 .precautions{
     margin-top:18px;
-
     padding:20px;
-
     border-radius:25px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    border:
-        3px solid #2e9b68;
-
-    box-shadow:
-        0 18px 45px rgba(0,0,0,.30);
+    background:rgba(255,255,255,.97);
+    border:3px solid #2d9c68;
+    box-shadow:0 18px 45px rgba(0,0,0,.30);
 }
 
 .precaution-heading{
     font-size:19px;
-
     font-weight:1000;
-
     color:#176b47;
 }
 
 .precaution-intro{
     margin-top:4px;
-
     color:#71847a;
-
     font-size:10px;
 }
 
 .precaution-list{
     display:grid;
-
-    grid-template-columns:
-        repeat(5,1fr);
-
+    grid-template-columns:repeat(5,1fr);
     gap:10px;
-
     margin-top:15px;
 }
 
 .precaution{
     padding:14px;
-
     min-height:145px;
-
     border-radius:18px;
-
-    background:
-        #f1faf5;
-
-    border:
-        1px solid #b6ddc7;
+    background:#f1faf5;
+    border:1px solid #b6ddc7;
 }
 
 .precaution-number{
     width:31px;
     height:31px;
-
     display:flex;
-
     align-items:center;
     justify-content:center;
-
     border-radius:10px;
-
     background:#dcefe5;
-
     color:#188452;
-
     font-size:10px;
-
     font-weight:1000;
 }
 
 .precaution-title{
     margin-top:9px;
-
     color:#244d39;
-
     font-size:12px;
-
     font-weight:1000;
 }
 
 .precaution-text{
     margin-top:5px;
-
     color:#708178;
-
     font-size:10px;
-
     line-height:1.5;
 }
 
-
-/* =========================================================
-   ALARM
-========================================================= */
-
-.alarm-panel{
-    margin-top:16px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:15px;
-
-    padding:17px;
-
-    border-radius:23px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    border:
-        3px solid #2e9b68;
-
-    box-shadow:
-        0 18px 42px rgba(0,0,0,.29);
-}
-
-.alarm-title{
-    font-size:14px;
-
-    font-weight:1000;
-
-    color:#1c3527;
-}
-
-.alarm-text{
-    margin-top:4px;
-
-    color:#718178;
-
-    font-size:10px;
-}
-
-.alarm-button{
-    border:0;
-
-    padding:
-        13px 19px;
-
-    border-radius:14px;
-
-    color:#fff;
-
-    background:
-        #218d58;
-
-    font-weight:1000;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 7px 18px rgba(33,141,88,.28);
-}
-
-.alarm-button.enabled{
-    background:#159d61;
-}
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
+/* ================= FOOTER ================= */
 
 .footer{
     margin-top:18px;
-
     text-align:center;
-
     color:#d1eee0;
-
     font-size:9px;
-
     letter-spacing:1px;
-
-    text-shadow:
-        0 2px 5px #000;
+    text-shadow:0 2px 5px #000;
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/* ================= MOBILE ================= */
 
 @media(max-width:850px){
 
     .sensor-row{
-        grid-template-columns:
-            52px
-            1fr
-            120px;
+        grid-template-columns:52px 1fr 120px;
     }
 
     .sensor-bar{
-        grid-column:
-            2 / 4;
+        grid-column:2/4;
     }
 
     .precaution-list{
-        grid-template-columns:
-            repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
     }
-
 }
-
 
 @media(max-width:600px){
 
     .dashboard{
         width:94%;
+    }
 
-        margin-top:10px;
+    .siren-top{
+        flex-wrap:wrap;
+    }
+
+    .siren-info{
+        min-width:160px;
+    }
+
+    .siren-button{
+        width:100%;
     }
 
     .sensor-row{
-        grid-template-columns:
-            48px
-            1fr
-            95px;
-
+        grid-template-columns:48px 1fr 95px;
         gap:10px;
-
         padding:13px;
+    }
+
+    .sensor-bar{
+        grid-column:1/4;
     }
 
     .sensor-value{
         font-size:22px;
     }
 
-    .sensor-description{
-        font-size:9px;
-    }
-
-    .sensor-bar{
-        grid-column:
-            1 / 4;
-    }
-
     .precaution-list{
         grid-template-columns:1fr;
     }
-
-    .alarm-panel{
-        flex-direction:column;
-
-        align-items:stretch;
-    }
-
-    .alarm-button{
-        width:100%;
-    }
-
 }
-
 
 @media(max-width:380px){
 
     .sensor-row{
-        grid-template-columns:
-            43px
-            1fr
-            78px;
+        grid-template-columns:43px 1fr 78px;
     }
 
     .sensor-icon{
@@ -1481,24 +874,17 @@ body{
     .sensor-value{
         font-size:19px;
     }
-
 }
-
 </style>
 </head>
 
-
 <body>
 
+<!-- ================= BACKGROUND ================= -->
 
-<!-- =======================================================
-     NIGHT SCENE
-======================================================== -->
-
-<div class="night">
-
-    <div class="mountains"></div>
-
+<div class="night-bg">
+    <div class="moon-glow"></div>
+    <div class="mountain"></div>
     <div class="landslide"></div>
 
     <div class="tree t1"></div>
@@ -1509,19 +895,12 @@ body{
     <div class="tree t6"></div>
 
     <div class="mist"></div>
-
     <div class="rain"></div>
     <div class="rain fast"></div>
-
     <div class="lightning"></div>
-
 </div>
 
-
-<!-- windshield -->
-
 <div class="windshield">
-
     <div class="drop d1"></div>
     <div class="drop d2"></div>
     <div class="drop d3"></div>
@@ -1531,20 +910,12 @@ body{
     <div class="drop d7"></div>
     <div class="drop d8"></div>
     <div class="drop d9"></div>
-
 </div>
 
 
-<!-- =======================================================
-     DASHBOARD
-======================================================== -->
-
 <main class="dashboard">
 
-
-<!-- =======================================================
-     COLLEGE
-======================================================== -->
+<!-- ================= COLLEGE ================= -->
 
 <header class="header">
 
@@ -1565,9 +936,53 @@ body{
 </header>
 
 
-<!-- =======================================================
-     RISK STATUS
-======================================================== -->
+<!-- ================= SIREN ================= -->
+
+<section
+    id="sirenCard"
+    class="siren-card"
+>
+
+    <div class="siren-top">
+
+        <div class="siren-icon">
+            📢
+        </div>
+
+        <div class="siren-info">
+
+            <div class="siren-title">
+                Emergency Mobile Siren
+            </div>
+
+            <div class="siren-description">
+                The phone speaker will sound automatically
+                when HIGH RISK or HIGH DANGER is detected.
+            </div>
+
+        </div>
+
+        <button
+            id="sirenButton"
+            class="siren-button"
+            onclick="enableSiren()"
+        >
+            🔊 ENABLE SIREN
+        </button>
+
+    </div>
+
+    <div
+        id="sirenStatus"
+        class="siren-status"
+    >
+        Tap the button once to allow the browser to use the phone speaker.
+    </div>
+
+</section>
+
+
+<!-- ================= STATUS ================= -->
 
 <section class="status-card">
 
@@ -1605,245 +1020,201 @@ body{
 </section>
 
 
-<!-- =======================================================
-     SENSOR SECTION
-     ONE SENSOR PER ROW
-======================================================== -->
+<!-- ================= SENSORS ================= -->
 
 <section class="sensor-section">
 
+    <!-- ONLY ONE SOIL SENSOR -->
 
-<!-- SOIL SENSOR 1 -->
+    <div class="sensor-row">
 
-<div class="sensor-row">
-
-    <div class="sensor-icon">
-        🌱
-    </div>
-
-    <div>
-
-        <div class="sensor-name">
-            Soil Moisture Sensor 1
+        <div class="sensor-icon">
+            🌱
         </div>
 
-        <div class="sensor-description">
-            Ground moisture monitoring
+        <div>
+
+            <div class="sensor-name">
+                Soil Moisture Sensor
+            </div>
+
+            <div class="sensor-description">
+                Ground moisture monitoring
+            </div>
+
         </div>
 
-    </div>
+        <div>
 
-    <div>
+            <div
+                id="soilValue"
+                class="sensor-value"
+            >
+                --
+            </div>
 
-        <div
-            id="soilValue"
-            class="sensor-value"
-        >
-            --
+            <div class="sensor-unit">
+                sensor value
+            </div>
+
         </div>
 
-        <div class="sensor-unit">
-            sensor value
-        </div>
+        <div class="sensor-bar">
 
-    </div>
+            <div
+                id="soilBar"
+                class="sensor-fill"
+            ></div>
 
-    <div class="sensor-bar">
-        <div
-            id="soilBar"
-            class="sensor-fill"
-        ></div>
-    </div>
-
-</div>
-
-
-    <div>
-
-        <div class="sensor-name">
-            Soil Moisture Sensor 2
-        </div>
-
-        <div class="sensor-description">
-            Second ground moisture reading
         </div>
 
     </div>
 
-    <div>
 
-        <div
-            id="soil2Value"
-            class="sensor-value"
-        >
-            --
+    <!-- DISTANCE -->
+
+    <div class="sensor-row">
+
+        <div class="sensor-icon">
+            📏
         </div>
 
-        <div class="sensor-unit">
-            sensor value
+        <div>
+
+            <div class="sensor-name">
+                Distance Sensor
+            </div>
+
+            <div class="sensor-description">
+                Slope movement / distance
+            </div>
+
         </div>
 
-    </div>
+        <div>
 
-    <div class="sensor-bar">
+            <div
+                id="distanceValue"
+                class="sensor-value"
+            >
+                --
+            </div>
 
-        <div
-            id="soil2Bar"
-            class="sensor-fill"
-        ></div>
+            <div class="sensor-unit">
+                cm
+            </div>
 
-    </div>
-
-</div>
-
-
-<!-- DISTANCE -->
-
-<div class="sensor-row">
-
-    <div class="sensor-icon">
-        📏
-    </div>
-
-    <div>
-
-        <div class="sensor-name">
-            Distance Sensor
         </div>
 
-        <div class="sensor-description">
-            Slope movement / distance
-        </div>
+        <div class="sensor-bar">
 
-    </div>
+            <div
+                id="distanceBar"
+                class="sensor-fill"
+            ></div>
 
-    <div>
-
-        <div
-            id="distanceValue"
-            class="sensor-value"
-        >
-            --
-        </div>
-
-        <div class="sensor-unit">
-            cm
         </div>
 
     </div>
 
-    <div class="sensor-bar">
 
-        <div
-            id="distanceBar"
-            class="sensor-fill"
-        ></div>
+    <!-- RAIN -->
 
-    </div>
+    <div class="sensor-row">
 
-</div>
-
-
-<!-- RAIN -->
-
-<div class="sensor-row">
-
-    <div class="sensor-icon">
-        🌧️
-    </div>
-
-    <div>
-
-        <div class="sensor-name">
-            Rain Sensor
+        <div class="sensor-icon">
+            🌧️
         </div>
 
-        <div class="sensor-description">
-            Rainfall condition
+        <div>
+
+            <div class="sensor-name">
+                Rain Sensor
+            </div>
+
+            <div class="sensor-description">
+                Rainfall condition
+            </div>
+
         </div>
 
-    </div>
+        <div>
 
-    <div>
+            <div
+                id="rainValue"
+                class="sensor-value"
+            >
+                --
+            </div>
 
-        <div
-            id="rainValue"
-            class="sensor-value"
-        >
-            --
+            <div class="sensor-unit">
+                sensor value
+            </div>
+
         </div>
 
-        <div class="sensor-unit">
-            sensor value
-        </div>
+        <div class="sensor-bar">
 
-    </div>
+            <div
+                id="rainBar"
+                class="sensor-fill"
+            ></div>
 
-    <div class="sensor-bar">
-
-        <div
-            id="rainBar"
-            class="sensor-fill"
-        ></div>
-
-    </div>
-
-</div>
-
-
-<!-- VIBRATION -->
-
-<div class="sensor-row">
-
-    <div class="sensor-icon">
-        📳
-    </div>
-
-    <div>
-
-        <div class="sensor-name">
-            Vibration Sensor
-        </div>
-
-        <div class="sensor-description">
-            Ground vibration detection
         </div>
 
     </div>
 
-    <div>
 
-        <div
-            id="vibrationValue"
-            class="sensor-value"
-        >
-            --
+    <!-- VIBRATION -->
+
+    <div class="sensor-row">
+
+        <div class="sensor-icon">
+            📳
         </div>
 
-        <div class="sensor-unit">
-            sensor value
+        <div>
+
+            <div class="sensor-name">
+                Vibration Sensor
+            </div>
+
+            <div class="sensor-description">
+                Ground vibration detection
+            </div>
+
+        </div>
+
+        <div>
+
+            <div
+                id="vibrationValue"
+                class="sensor-value"
+            >
+                --
+            </div>
+
+            <div class="sensor-unit">
+                sensor value
+            </div>
+
+        </div>
+
+        <div class="sensor-bar">
+
+            <div
+                id="vibrationBar"
+                class="sensor-fill"
+            ></div>
+
         </div>
 
     </div>
-
-    <div class="sensor-bar">
-
-        <div
-            id="vibrationBar"
-            class="sensor-fill"
-        ></div>
-
-    </div>
-
-</div>
-
 
 </section>
 
 
-<!-- =======================================================
-     DIRECTION
-======================================================== -->
+<!-- ================= DIRECTION ================= -->
 
 <section class="direction-card">
 
@@ -1861,15 +1232,13 @@ body{
     </div>
 
     <div class="direction-hint">
-        Rotate your phone to rotate the arrow.
+        Rotate the phone to rotate the arrow.
     </div>
 
 </section>
 
 
-<!-- =======================================================
-     GRAPHS
-======================================================== -->
+<!-- ================= GRAPHS ================= -->
 
 <div class="section-title">
     📊 Live Sensor Trends
@@ -1881,7 +1250,7 @@ body{
     <div class="graph-title">
 
         <span class="graph-name">
-            Soil Moisture Sensor 1
+            Soil Moisture
         </span>
 
         <span class="live">
@@ -1892,39 +1261,10 @@ body{
     </div>
 
     <div class="graph">
-
         <svg
             id="soilGraph"
-            viewBox="0 0 600 220"
+            viewBox="0 0 600 235"
         ></svg>
-
-    </div>
-
-</div>
-
-
-<div class="graph-card">
-
-    <div class="graph-title">
-
-        <span class="graph-name">
-            Soil Moisture Sensor 2
-        </span>
-
-        <span class="live">
-            <span class="live-dot"></span>
-            LIVE
-        </span>
-
-    </div>
-
-    <div class="graph">
-
-        <svg
-            id="soil2Graph"
-            viewBox="0 0 600 220"
-        ></svg>
-
     </div>
 
 </div>
@@ -1946,12 +1286,10 @@ body{
     </div>
 
     <div class="graph">
-
         <svg
             id="distanceGraph"
-            viewBox="0 0 600 220"
+            viewBox="0 0 600 235"
         ></svg>
-
     </div>
 
 </div>
@@ -1973,12 +1311,10 @@ body{
     </div>
 
     <div class="graph">
-
         <svg
             id="rainGraph"
-            viewBox="0 0 600 220"
+            viewBox="0 0 600 235"
         ></svg>
-
     </div>
 
 </div>
@@ -2000,20 +1336,16 @@ body{
     </div>
 
     <div class="graph">
-
         <svg
             id="vibrationGraph"
-            viewBox="0 0 600 220"
+            viewBox="0 0 600 235"
         ></svg>
-
     </div>
 
 </div>
 
 
-<!-- =======================================================
-     SAFETY PRECAUTIONS
-======================================================== -->
+<!-- ================= SAFETY ================= -->
 
 <section class="precautions">
 
@@ -2022,13 +1354,10 @@ body{
     </div>
 
     <div class="precaution-intro">
-        Follow these precautions when the monitoring system
-        indicates increasing landslide risk.
+        Follow these precautions when landslide risk increases.
     </div>
 
-
     <div class="precaution-list">
-
 
         <div class="precaution">
 
@@ -2041,9 +1370,8 @@ body{
             </div>
 
             <div class="precaution-text">
-                If dangerous conditions are announced,
-                move away from the affected slope and
-                follow official evacuation instructions.
+                Move away from unstable slopes and follow
+                official evacuation instructions.
             </div>
 
         </div>
@@ -2060,9 +1388,8 @@ body{
             </div>
 
             <div class="precaution-text">
-                Stay away from steep hillsides, cliffs,
-                unstable ground and areas showing signs
-                of slope movement.
+                Stay away from cliffs, steep hillsides and
+                visibly unstable ground.
             </div>
 
         </div>
@@ -2080,8 +1407,7 @@ body{
 
             <div class="precaution-text">
                 During intense rainfall, avoid unnecessary
-                travel through areas known to have
-                landslide risk.
+                travel through landslide-prone areas.
             </div>
 
         </div>
@@ -2098,8 +1424,8 @@ body{
             </div>
 
             <div class="precaution-text">
-                Keep your phone charged and pay attention
-                to official emergency warnings.
+                Keep your phone charged and watch official
+                emergency warnings.
             </div>
 
         </div>
@@ -2116,47 +1442,13 @@ body{
             </div>
 
             <div class="precaution-text">
-                Never walk or drive across an active
-                landslide, debris flow or newly damaged road.
+                Never walk or drive across an active landslide
+                or debris flow.
             </div>
 
         </div>
 
-
     </div>
-
-</section>
-
-
-<!-- =======================================================
-     MOBILE ALARM
-======================================================== -->
-
-<section class="alarm-panel">
-
-    <div>
-
-        <div class="alarm-title">
-            📢 Mobile Emergency Alarm
-        </div>
-
-        <div
-            id="alarmText"
-            class="alarm-text"
-        >
-            Tap once to enable the mobile speaker alarm.
-        </div>
-
-    </div>
-
-
-    <button
-        id="alarmButton"
-        class="alarm-button"
-        onclick="enableAlarm()"
-    >
-        ENABLE ALARM
-    </button>
 
 </section>
 
@@ -2165,53 +1457,40 @@ body{
     LIVE THINGSPEAK DATA • SANJIVANI COLLEGE
 </div>
 
-
 </main>
 
 
 <script>
 
 /* =========================================================
-   THINGSPEAK SETTINGS
+   THINGSPEAK
 ========================================================= */
 
 const CHANNEL_ID = "3456662";
 
 /*
-    FIELD ASSIGNMENT
+    Your dashboard has ONE soil sensor.
 
-    Field 1 = Soil Moisture Sensor 1
+    Field 1 = Soil Moisture
     Field 2 = Distance
     Field 3 = Vibration
     Field 4 = Rain
 
-    Soil Sensor 2:
-    The code looks for Field 5.
-
-    If your second soil sensor is connected to another
-    ThingSpeak field, change SOIL2_FIELD below.
+    The Read API key is deliberately not displayed in this
+    HTML file.
 */
 
-const SOIL1_FIELD = 1;
+const SOIL_FIELD = 1;
 const DISTANCE_FIELD = 2;
 const VIBRATION_FIELD = 3;
 const RAIN_FIELD = 4;
-const SOIL2_FIELD = 5;
-
-
-/*
-    The Read API key is intentionally NOT placed here.
-*/
-
-const READ_API_KEY = "";
 
 
 /* =========================================================
-   DATA ARRAYS
+   ARRAYS
 ========================================================= */
 
 let soilValues = [];
-let soil2Values = [];
 let distanceValues = [];
 let rainValues = [];
 let vibrationValues = [];
@@ -2219,15 +1498,15 @@ let dates = [];
 
 
 /* =========================================================
-   ALARM
+   SIREN
 ========================================================= */
 
-let alarmEnabled = false;
+let sirenEnabled = false;
 let audioContext = null;
 let previousDanger = false;
 
 
-function enableAlarm(){
+function enableSiren(){
 
     try{
 
@@ -2239,27 +1518,28 @@ function enableAlarm(){
 
         audioContext.resume();
 
-        alarmEnabled = true;
+        sirenEnabled = true;
+
+        const button =
+            document.getElementById(
+                "sirenButton"
+            );
+
+        button.classList.add("enabled");
+
+        button.textContent =
+            "✓ SIREN ENABLED";
 
         document
-            .getElementById("alarmButton")
-            .classList.add("enabled");
-
-        document
-            .getElementById("alarmButton")
+            .getElementById("sirenStatus")
             .textContent =
-                "✓ ALARM ENABLED";
-
-        document
-            .getElementById("alarmText")
-            .textContent =
-                "Mobile emergency alarm is ready.";
+                "Siren is armed. It will sound when HIGH RISK or HIGH DANGER is detected.";
 
     }
     catch(error){
 
         console.error(
-            "Audio error:",
+            "Siren error:",
             error
         );
 
@@ -2269,13 +1549,13 @@ function enableAlarm(){
 
 
 /* =========================================================
-   MOBILE HORN
+   SIREN SOUND
 ========================================================= */
 
-function playHorn(){
+function playSiren(){
 
     if(
-        !alarmEnabled ||
+        !sirenEnabled ||
         !audioContext
     ){
         return;
@@ -2286,9 +1566,19 @@ function playHorn(){
         audioContext.currentTime;
 
 
+    const card =
+        document.getElementById(
+            "sirenCard"
+        );
+
+    card.classList.add(
+        "alarming"
+    );
+
+
     for(
         let i=0;
-        i<5;
+        i<8;
         i++
     ){
 
@@ -2304,76 +1594,75 @@ function playHorn(){
 
 
         oscillator.frequency.setValueAtTime(
-            430,
-            start+i*.55
+            420,
+            start+i*.45
         );
 
 
         oscillator.frequency.linearRampToValueAtTime(
-            700,
-            start+i*.55+.24
+            760,
+            start+i*.45+.20
         );
 
 
         gain.gain.setValueAtTime(
             .0001,
-            start+i*.55
+            start+i*.45
         );
 
 
         gain.gain.exponentialRampToValueAtTime(
-            .18,
-            start+i*.55+.04
+            .20,
+            start+i*.45+.035
         );
 
 
         gain.gain.exponentialRampToValueAtTime(
             .0001,
-            start+i*.55+.46
+            start+i*.45+.37
         );
 
 
         oscillator.connect(gain);
-
         gain.connect(
             audioContext.destination
         );
 
 
         oscillator.start(
-            start+i*.55
+            start+i*.45
         );
 
 
         oscillator.stop(
-            start+i*.55+.50
+            start+i*.45+.40
         );
 
     }
+
+
+    setTimeout(
+        ()=>{
+            card.classList.remove(
+                "alarming"
+            );
+        },
+        3800
+    );
 
 }
 
 
 /* =========================================================
-   LOAD THINGSPEAK
+   LOAD THINGSPEAK DATA
 ========================================================= */
 
 async function loadData(){
 
     try{
 
-        let url =
+        const url =
             `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
-
-
-        if(READ_API_KEY){
-
-            url +=
-                `&api_key=${encodeURIComponent(
-                    READ_API_KEY
-                )}`;
-
-        }
 
 
         const response =
@@ -2399,14 +1688,13 @@ async function loadData(){
         ){
 
             throw new Error(
-                "No ThingSpeak data"
+                "No ThingSpeak data available"
             );
 
         }
 
 
         soilValues=[];
-        soil2Values=[];
         distanceValues=[];
         rainValues=[];
         vibrationValues=[];
@@ -2418,14 +1706,7 @@ async function loadData(){
 
                 soilValues.push(
                     Number(
-                        feed[`field${SOIL1_FIELD}`]
-                    ) || 0
-                );
-
-
-                soil2Values.push(
-                    Number(
-                        feed[`field${SOIL2_FIELD}`]
+                        feed[`field${SOIL_FIELD}`]
                     ) || 0
                 );
 
@@ -2479,13 +1760,7 @@ async function loadData(){
 
         const soil =
             Number(
-                last[`field${SOIL1_FIELD}`]
-            ) || 0;
-
-
-        const soil2 =
-            Number(
-                last[`field${SOIL2_FIELD}`]
+                last[`field${SOIL_FIELD}`]
             ) || 0;
 
 
@@ -2509,7 +1784,6 @@ async function loadData(){
 
         updateSensors(
             soil,
-            soil2,
             distance,
             rain,
             vibration
@@ -2521,14 +1795,6 @@ async function loadData(){
             soilValues,
             dates,
             "Soil"
-        );
-
-
-        createGraph(
-            "soil2Graph",
-            soil2Values,
-            dates,
-            "Soil 2"
         );
 
 
@@ -2556,23 +1822,20 @@ async function loadData(){
             "Vibration"
         );
 
-
     }
     catch(error){
 
         console.error(error);
-
 
         document
             .getElementById("riskStatus")
             .textContent =
                 "OFFLINE";
 
-
         document
             .getElementById("riskMessage")
             .textContent =
-                "Unable to read live sensor data.";
+                "Unable to read live ThingSpeak data.";
 
     }
 
@@ -2580,12 +1843,11 @@ async function loadData(){
 
 
 /* =========================================================
-   SENSOR UPDATE
+   SENSOR DISPLAY
 ========================================================= */
 
 function updateSensors(
     soil,
-    soil2,
     distance,
     rain,
     vibration
@@ -2595,12 +1857,6 @@ function updateSensors(
         .getElementById("soilValue")
         .textContent =
             soil.toFixed(0);
-
-
-    document
-        .getElementById("soil2Value")
-        .textContent =
-            soil2.toFixed(0);
 
 
     document
@@ -2627,15 +1883,6 @@ function updateSensors(
             Math.min(
                 100,
                 soil/10
-            )+"%";
-
-
-    document
-        .getElementById("soil2Bar")
-        .style.width =
-            Math.min(
-                100,
-                soil2/10
             )+"%";
 
 
@@ -2667,7 +1914,6 @@ function updateSensors(
 
     calculateRisk(
         soil,
-        soil2,
         distance,
         rain,
         vibration
@@ -2677,12 +1923,11 @@ function updateSensors(
 
 
 /* =========================================================
-   RISK
+   RISK CALCULATION
 ========================================================= */
 
 function calculateRisk(
     soil,
-    soil2,
     distance,
     rain,
     vibration
@@ -2691,44 +1936,24 @@ function calculateRisk(
     let score=0;
 
 
-    /* soil 1 */
-
     if(soil>=700)
         score+=3;
-
     else if(soil>=500)
         score+=2;
-
     else if(soil>=350)
         score+=1;
 
-
-    /* soil 2 */
-
-    if(soil2>=700)
-        score+=3;
-
-    else if(soil2>=500)
-        score+=2;
-
-    else if(soil2>=350)
-        score+=1;
-
-
-    /* distance */
 
     if(
         distance>0 &&
         distance<=10
     )
         score+=3;
-
     else if(
         distance>0 &&
         distance<=20
     )
         score+=2;
-
     else if(
         distance>0 &&
         distance<=40
@@ -2736,19 +1961,13 @@ function calculateRisk(
         score+=1;
 
 
-    /* rain */
-
     if(rain>=700)
         score+=3;
-
     else if(rain>=500)
         score+=2;
-
     else if(rain>=300)
         score+=1;
 
-
-    /* vibration */
 
     if(vibration>=1)
         score+=2;
@@ -2762,11 +1981,9 @@ function calculateRisk(
             "danger"
         );
 
-
-        triggerAlarmOnce();
+        triggerSirenOnce();
 
     }
-
     else if(score>=5){
 
         setStatus(
@@ -2775,11 +1992,9 @@ function calculateRisk(
             "high"
         );
 
-
-        triggerAlarmOnce();
+        triggerSirenOnce();
 
     }
-
     else if(score>=2){
 
         setStatus(
@@ -2788,11 +2003,9 @@ function calculateRisk(
             "moderate"
         );
 
-
         previousDanger=false;
 
     }
-
     else{
 
         setStatus(
@@ -2800,7 +2013,6 @@ function calculateRisk(
             "Current sensor conditions are normal.",
             "safe"
         );
-
 
         previousDanger=false;
 
@@ -2810,14 +2022,14 @@ function calculateRisk(
 
 
 /* =========================================================
-   ALARM TRIGGER
+   SIREN ONCE
 ========================================================= */
 
-function triggerAlarmOnce(){
+function triggerSirenOnce(){
 
     if(!previousDanger){
 
-        playHorn();
+        playSiren();
 
         previousDanger=true;
 
@@ -2874,7 +2086,6 @@ function setStatus(
             "0 0 0 8px rgba(237,63,97,.12),0 0 38px rgba(237,63,97,.65)";
 
     }
-
     else if(type==="high"){
 
         statusElement.style.color =
@@ -2887,7 +2098,6 @@ function setStatus(
             "0 0 0 8px rgba(240,120,62,.12),0 0 38px rgba(240,120,62,.60)";
 
     }
-
     else if(type==="moderate"){
 
         statusElement.style.color =
@@ -2900,7 +2110,6 @@ function setStatus(
             "0 0 0 8px rgba(233,183,53,.12),0 0 35px rgba(233,183,53,.55)";
 
     }
-
     else{
 
         statusElement.style.color =
@@ -2961,25 +2170,19 @@ function createGraph(
 
 
     const W=600;
-    const H=220;
+    const H=235;
 
     const left=42;
     const right=12;
     const top=12;
     const bottom=32;
 
-    const gw=
-        W-left-right;
-
-    const gh=
-        H-top-bottom;
+    const gw=W-left-right;
+    const gh=H-top-bottom;
 
 
-    let min=
-        Math.min(...values);
-
-    let max=
-        Math.max(...values);
+    let min=Math.min(...values);
+    let max=Math.max(...values);
 
 
     if(min===max){
@@ -3001,7 +2204,63 @@ function createGraph(
     max+=padding;
 
 
-    /* grid lines */
+    /* colorful horizontal zones */
+
+    const zoneHeight=
+        gh/4;
+
+
+    const zones=[
+        ["zone-safe",0],
+        ["zone-warning",1],
+        ["zone-high",2],
+        ["zone-danger",3]
+    ];
+
+
+    zones.forEach(
+        z=>{
+
+            const rect=
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "rect"
+                );
+
+
+            rect.setAttribute(
+                "x",
+                left
+            );
+
+            rect.setAttribute(
+                "y",
+                top+zoneHeight*z[1]
+            );
+
+            rect.setAttribute(
+                "width",
+                gw
+            );
+
+            rect.setAttribute(
+                "height",
+                zoneHeight
+            );
+
+            rect.setAttribute(
+                "class",
+                z[0]
+            );
+
+
+            svg.appendChild(rect);
+
+        }
+    );
+
+
+    /* grid */
 
     for(
         let i=0;
@@ -3010,8 +2269,7 @@ function createGraph(
     ){
 
         const y=
-            top+
-            gh*(i/4);
+            top+gh*(i/4);
 
 
         const line=
@@ -3073,12 +2331,8 @@ function createGraph(
                     top+
                     gh-
                     (
-                        (
-                            value-min
-                        )/
-                        (
-                            max-min
-                        )
+                        (value-min)/
+                        (max-min)
                     )*gh;
 
 
@@ -3087,8 +2341,7 @@ function createGraph(
                     y,
                     value,
                     date:
-                        dates[index] ||
-                        "--"
+                        dates[index] || "--"
                 };
 
             }
@@ -3097,14 +2350,13 @@ function createGraph(
 
     /* area */
 
-    const areaPoints=
-        [
-            `${points[0].x},${H-bottom}`,
-            ...points.map(
-                p=>`${p.x},${p.y}`
-            ),
-            `${points[points.length-1].x},${H-bottom}`
-        ].join(" ");
+    const areaPoints=[
+        `${points[0].x},${H-bottom}`,
+        ...points.map(
+            p=>`${p.x},${p.y}`
+        ),
+        `${points[points.length-1].x},${H-bottom}`
+    ].join(" ");
 
 
     const area=
@@ -3128,7 +2380,7 @@ function createGraph(
     svg.appendChild(area);
 
 
-    /* smooth line */
+    /* line */
 
     let path="";
 
@@ -3147,12 +2399,8 @@ function createGraph(
                 const previous=
                     points[index-1];
 
-
                 const middle=
-                    (
-                        previous.x+p.x
-                    )/2;
-
+                    (previous.x+p.x)/2;
 
                 path+=
                     ` C ${middle} ${previous.y},
@@ -3203,7 +2451,7 @@ function createGraph(
     );
 
 
-    /* dots */
+    /* circles */
 
     points.forEach(
         (p,index)=>{
@@ -3229,7 +2477,7 @@ function createGraph(
                 "r",
                 index===points.length-1
                 ?5.5
-                :4
+                :4.5
             );
 
 
@@ -3291,7 +2539,6 @@ function createGraph(
                     const svgRect=
                         svg.getBoundingClientRect();
 
-
                     const graphRect=
                         graph.getBoundingClientRect();
 
@@ -3328,7 +2575,7 @@ function createGraph(
     );
 
 
-    /* only three date labels */
+    /* exactly three date labels */
 
     const indexes=
         getDateIndexes(
@@ -3398,16 +2645,12 @@ function getDateIndexes(length){
     if(length<=1)
         return [0];
 
-
     if(length<=3)
         return [...Array(length).keys()];
 
-
     return[
         0,
-        Math.floor(
-            (length-1)/2
-        ),
+        Math.floor((length-1)/2),
         length-1
     ];
 
@@ -3427,10 +2670,7 @@ function getRating(
     let className="low";
 
 
-    if(
-        label==="Soil" ||
-        label==="Soil 2"
-    ){
+    if(label==="Soil"){
 
         if(value>=800){
 
@@ -3532,14 +2772,16 @@ function getRating(
 
 
 /* =========================================================
-   PHONE DIRECTION ARROW
+   DEVICE DIRECTION
 ========================================================= */
 
 function rotateArrow(angle){
 
     document
-        .getElementById("directionArrow")
-        .style.transform =
+        .getElementById(
+            "directionArrow"
+        )
+        .style.transform=
             `rotate(${angle}deg)`;
 
 }
@@ -3550,37 +2792,28 @@ function handleOrientation(event){
     let heading;
 
 
-    /*
-       iPhone / iPad
-    */
-
     if(
-        typeof event.webkitCompassHeading ===
+        typeof event.webkitCompassHeading===
         "number"
     ){
 
-        heading =
+        heading=
             event.webkitCompassHeading;
 
     }
-
-    /*
-       Android / other browsers
-    */
-
     else if(
-        typeof event.alpha ===
+        typeof event.alpha===
         "number"
     ){
 
-        heading =
+        heading=
             360-event.alpha;
 
     }
 
 
     if(
-        typeof heading ===
+        typeof heading===
         "number"
     ){
 
@@ -3594,7 +2827,7 @@ function handleOrientation(event){
 
 
 /* =========================================================
-   REQUEST SENSOR PERMISSION
+   DIRECTION PERMISSION
 ========================================================= */
 
 async function enableDirection(){
@@ -3602,20 +2835,15 @@ async function enableDirection(){
     try{
 
         if(
-            typeof DeviceOrientationEvent !==
-            "undefined" &&
-            typeof DeviceOrientationEvent.requestPermission ===
-            "function"
+            typeof DeviceOrientationEvent!=="undefined" &&
+            typeof DeviceOrientationEvent.requestPermission==="function"
         ){
 
-            const permission =
+            const permission=
                 await DeviceOrientationEvent.requestPermission();
 
 
-            if(
-                permission ===
-                "granted"
-            ){
+            if(permission==="granted"){
 
                 window.addEventListener(
                     "deviceorientation",
@@ -3626,7 +2854,6 @@ async function enableDirection(){
             }
 
         }
-
         else{
 
             window.addEventListener(
@@ -3650,16 +2877,10 @@ async function enableDirection(){
 }
 
 
-/*
-   Try to activate orientation.
-*/
-
 document.addEventListener(
     "click",
     enableDirection,
-    {
-        once:true
-    }
+    {once:true}
 );
 
 
@@ -3671,7 +2892,7 @@ loadData();
 
 
 /*
-   Refresh every 15 seconds.
+   Update live data every 15 seconds.
 */
 
 setInterval(
@@ -3682,4 +2903,4 @@ setInterval(
 </script>
 
 </body>
-   </html>
+</html>

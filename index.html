@@ -1,1572 +1,433 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Smart Landslide Early Warning System</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
-/* =========================================================
-   BASIC
-========================================================= */
-
-*{
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#dff4ff;
-    color:#17324d;
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.header{
-    background:white;
-    text-align:center;
-    padding:25px 15px 22px;
-    box-shadow:0 4px 18px rgba(0,0,0,.12);
-}
-
-.logo{
-    display:block;
-    width:155px;
-    max-width:75%;
-    height:auto;
-    margin:0 auto 15px;
-    border-radius:18px;
-}
-
-.header h1{
-    margin:8px 0;
-    color:#11658f;
-    font-size:30px;
-}
-
-.header p{
-    margin:6px 0;
-    color:#587083;
-    font-size:16px;
-}
-
-/* =========================================================
-   INTRO VIDEO
-========================================================= */
-
-.video-section{
-    width:94%;
-    max-width:1000px;
-    margin:22px auto;
-    background:white;
-    padding:15px;
-    border-radius:22px;
-    box-shadow:0 5px 20px rgba(0,0,0,.12);
-}
-
-.video-title{
-    color:#11658f;
-    margin:5px 0 14px;
-    font-size:22px;
-}
-
-.video-box{
-    position:relative;
-    width:100%;
-    aspect-ratio:16/9;
-    overflow:hidden;
-    border-radius:16px;
-    background:#102a43;
-}
-
-.video-box iframe{
-    width:100%;
-    height:100%;
-    border:0;
-}
-
-.video-note{
-    margin:12px 5px 2px;
-    color:#667788;
-    font-size:13px;
-}
-
-/* =========================================================
-   AUDIO PANEL
-========================================================= */
-
-.audio-panel{
-    width:94%;
-    max-width:850px;
-    margin:20px auto;
-    background:#ffffff;
-    border-radius:20px;
-    padding:18px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-    text-align:center;
-}
-
-.audio-panel h2{
-    margin:4px 0 12px;
-    color:#11658f;
-}
-
-.audio-buttons{
-    display:flex;
-    gap:12px;
-    justify-content:center;
-    flex-wrap:wrap;
-}
-
-.audio-button{
-    border:0;
-    padding:13px 22px;
-    border-radius:30px;
-    color:white;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.audio-on{
-    background:#20a464;
-}
-
-.audio-off{
-    background:#e74c3c;
-}
-
-.audio-status{
-    margin-top:10px;
-    font-size:14px;
-    color:#687b89;
-}
-
-/* =========================================================
-   SYNCHRONIZATION
-========================================================= */
-
-.sync-box{
-    width:94%;
-    max-width:700px;
-    margin:20px auto;
-    padding:15px;
-    background:white;
-    border-radius:18px;
-    box-shadow:0 4px 15px rgba(0,0,0,.10);
-    text-align:center;
-    font-weight:bold;
-}
-
-.sync-dot{
-    display:inline-block;
-    width:13px;
-    height:13px;
-    border-radius:50%;
-    background:#f39c12;
-    margin-right:7px;
-}
-
-.sync-dot.connected{
-    background:#20a464;
-}
-
-.sync-dot.error{
-    background:#e74c3c;
-}
-
-/* =========================================================
-   MAIN
-========================================================= */
-
-.container{
-    width:94%;
-    max-width:1200px;
-    margin:auto;
-}
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-.status-card{
-    background:white;
-    margin:22px 0;
-    padding:22px;
-    border-radius:22px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-    text-align:center;
-}
-
-.status-card h2{
-    margin-top:0;
-    color:#11658f;
-}
-
-#dangerStatus{
-    padding:18px;
-    border-radius:16px;
-    color:white;
-    font-size:21px;
-    font-weight:bold;
-    background:#f39c12;
-    transition:.3s;
-}
-
-.safe{
-    background:#20a464 !important;
-}
-
-.warning{
-    background:#f39c12 !important;
-}
-
-.danger{
-    background:#e53935 !important;
-    animation:dangerFlash .8s infinite;
-}
-
-@keyframes dangerFlash{
-    50%{
-        opacity:.62;
-    }
-}
-
-/* =========================================================
-   SENSOR CARDS
-========================================================= */
-
-.sensor-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;
-    margin:22px 0;
-}
-
-.sensor-card{
-    background:white;
-    border-radius:22px;
-    padding:22px 15px;
-    text-align:center;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-    transition:.2s;
-}
-
-.sensor-card:hover{
-    transform:translateY(-3px);
-}
-
-.sensor-icon{
-    font-size:42px;
-}
-
-.sensor-card h3{
-    color:#11658f;
-    margin:9px 0;
-}
-
-.sensor-value{
-    font-size:34px;
-    font-weight:bold;
-    color:#17324d;
-}
-
-.sensor-unit{
-    color:#71818e;
-    font-size:13px;
-    margin-top:6px;
-}
-
-/* =========================================================
-   LIVE INFO
-========================================================= */
-
-.info-card{
-    background:white;
-    margin:24px 0;
-    padding:22px;
-    border-radius:22px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-}
-
-.info-card h2{
-    color:#11658f;
-    margin-top:0;
-}
-
-.info-row{
-    padding:9px 0;
-    border-bottom:1px solid #edf2f5;
-}
-
-/* =========================================================
-   DIRECTION
-========================================================= */
-
-.direction-card{
-    background:white;
-    padding:24px;
-    margin:25px 0;
-    border-radius:22px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-    text-align:center;
-}
-
-.direction-card h2{
-    color:#11658f;
-}
-
-.direction-box{
-    padding:20px;
-    border-radius:18px;
-    background:#eaf9ff;
-    border:2px solid #bce8f7;
-}
-
-.direction-arrow{
-    font-size:55px;
-    margin:5px;
-}
-
-.direction-main{
-    font-size:22px;
-    font-weight:bold;
-    color:#11658f;
-}
-
-.direction-detail{
-    color:#617685;
-    margin-top:8px;
-}
-
-/* =========================================================
-   GRAPHS
-========================================================= */
-
-.graph-title{
-    color:#11658f;
-    text-align:center;
-    margin:35px 0 20px;
-}
-
-.graph-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(310px,1fr));
-    gap:20px;
-}
-
-.graph-card{
-    background:white;
-    border-radius:22px;
-    padding:18px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-}
-
-.graph-card h3{
-    text-align:center;
-    color:#11658f;
-    margin:4px 0 15px;
-}
-
-.chart-container{
-    position:relative;
-    height:300px;
-}
-
-/* =========================================================
-   SAFETY PROTOCOLS
-========================================================= */
-
-.protocol-title{
-    text-align:center;
-    color:#11658f;
-    margin:38px 0 20px;
-}
-
-.protocol-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:18px;
-}
-
-.protocol{
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-}
-
-.protocol-icon{
-    font-size:35px;
-}
-
-.protocol h3{
-    color:#11658f;
-    margin:8px 0;
-}
-
-.protocol p{
-    color:#637684;
-    line-height:1.5;
-}
-
-/* =========================================================
-   ALERT GUIDE
-========================================================= */
-
-.alert-guide{
-    background:white;
-    margin:25px 0;
-    padding:22px;
-    border-radius:22px;
-    box-shadow:0 5px 18px rgba(0,0,0,.10);
-}
-
-.alert-guide h2{
-    color:#11658f;
-    text-align:center;
-}
-
-.alert-row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:13px;
-    margin:10px 0;
-    border-radius:14px;
-}
-
-.green{
-    background:#e7f8ef;
-}
-
-.yellow{
-    background:#fff7df;
-}
-
-.red{
-    background:#ffe8e8;
-}
-
-.alert-circle{
-    width:25px;
-    height:25px;
-    border-radius:50%;
-    flex-shrink:0;
-}
-
-.green .alert-circle{
-    background:#20a464;
-}
-
-.yellow .alert-circle{
-    background:#f2b01e;
-}
-
-.red .alert-circle{
-    background:#e53935;
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-footer{
-    margin-top:40px;
-    background:#11658f;
-    color:white;
-    text-align:center;
-    padding:28px 15px;
-}
-
-.developer{
-    font-size:18px;
-    font-weight:bold;
-    margin-top:12px;
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media(max-width:600px){
-
-    .header h1{
-        font-size:23px;
-    }
-
-    .header p{
-        font-size:14px;
-    }
-
-    .logo{
-        width:125px;
-    }
-
-    #dangerStatus{
-        font-size:18px;
-    }
-
-    .sensor-value{
-        font-size:29px;
-    }
-
-    .chart-container{
-        height:270px;
-    }
-
-}
-
-</style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Landslide Monitoring System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f5f7;
+            color: #222;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        #collegeLogo {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            color: #1d3557;
+            margin-bottom: 6px;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status-card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .status-label {
+            font-size: 15px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        #status {
+            font-size: 32px;
+            font-weight: bold;
+            padding: 14px;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        #statusMessage {
+            margin-top: 12px;
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* ================= SENSOR GRID ================= */
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .sensor-card {
+            background: white;
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .sensor-icon {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .sensor-card h2 {
+            font-size: 18px;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1d3557;
+        }
+
+        .unit {
+            color: #777;
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        /* ================= INFORMATION ================= */
+
+        .info-card {
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        #lastUpdate {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        #connection {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            text-align: center;
+            color: #777;
+            margin-top: 25px;
+            font-size: 14px;
+            padding-bottom: 15px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-text {
+                text-align: center;
+            }
+
+            .header-text h1 {
+                font-size: 23px;
+            }
+
+            .sensor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #status {
+                font-size: 26px;
+            }
+        }
+
+    </style>
 </head>
-
 
 <body>
 
-<!-- =====================================================
-     HEADER
-====================================================== -->
-
-<header class="header">
-
-    <img
-        src="Screenshot_20260826_204053_WhatsApp.jpg"
-        class="logo"
-        alt="Sanjivani logo"
-    >
-
-    <h1>🌧️ Smart Landslide Early Warning System</h1>
-
-    <p>
-        S.R.E.S. Sanjivani College of Engineering, Kopargaon
-    </p>
-
-</header>
-
-
-<!-- =====================================================
-     REAL LANDSLIDE VIDEO
-====================================================== -->
-
-<section class="video-section">
-
-    <h2 class="video-title">
-        🎥 Landslide Awareness Visual
-    </h2>
-
-    <div class="video-box">
-
-        <!-- Real rain-triggered landslide footage -->
-        <iframe
-            src="https://www.youtube.com/embed/L_b_yBruIRA?autoplay=1&mute=1&playsinline=1&rel=0"
-            title="Real rain triggered landslide footage"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen>
-        </iframe>
-
-    </div>
-
-    <p class="video-note">
-        Real footage of a rain-triggered landslide. Video starts muted
-        because modern mobile browsers restrict automatic sound.
-    </p>
-
-</section>
-
-
-<!-- =====================================================
-     SAFETY AUDIO
-====================================================== -->
-
-<section class="audio-panel">
-
-    <h2>🔊 Safety Audio System</h2>
-
-    <div class="audio-buttons">
-
-        <button
-            class="audio-button audio-on"
-            onclick="turnSafetyAudioOn()">
-            🔊 SAFETY AUDIO ON
-        </button>
-
-        <button
-            class="audio-button audio-off"
-            onclick="turnSafetyAudioOff()">
-            🔇 SAFETY AUDIO OFF
-        </button>
-
-    </div>
-
-    <div
-        id="audioStatus"
-        class="audio-status">
-        Safety audio is OFF.
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SYNCHRONIZATION
-====================================================== -->
-
-<div class="sync-box">
-
-    <span
-        id="syncDot"
-        class="sync-dot">
-    </span>
-
-    <span id="syncStatus">
-        Connecting to ThingSpeak...
-    </span>
-
-</div>
-
-
 <div class="container">
 
+    <!-- ================= HEADER ================= -->
 
-<!-- =====================================================
-     STATUS
-====================================================== -->
+    <div class="header">
 
-<section class="status-card">
+        <img
+            id="collegeLogo"
+            src="logo.png"
+            alt="College Logo"
+            onerror="this.style.display='none'"
+        >
 
-    <h2>🚨 Landslide Safety Status</h2>
-
-    <div id="dangerStatus">
-        ⏳ Waiting for sensor data...
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SENSORS
-====================================================== -->
-
-<div class="sensor-grid">
-
-
-    <div class="sensor-card">
-
-        <div class="sensor-icon">📏</div>
-
-        <h3>Ultrasonic Sensor</h3>
-
-        <div
-            id="ultrasonicValue"
-            class="sensor-value">
-            --
-        </div>
-
-        <div class="sensor-unit">
-            Field 1 • Distance
+        <div class="header-text">
+            <h1>Landslide Monitoring System</h1>
+            <p>Real-Time Sensor Monitoring Dashboard</p>
         </div>
 
     </div>
 
 
-    <div class="sensor-card">
+    <!-- ================= SAFETY STATUS ================= -->
 
-        <div class="sensor-icon">🌱</div>
+    <div class="status-card">
 
-        <h3>Soil Moisture</h3>
-
-        <div
-            id="soilValue"
-            class="sensor-value">
-            --
+        <div class="status-label">
+            CURRENT LANDSLIDE STATUS
         </div>
 
-        <div class="sensor-unit">
-            Field 2 • Soil Reading
+        <div id="status">
+            CONNECTING...
         </div>
 
-    </div>
-
-
-    <div class="sensor-card">
-
-        <div class="sensor-icon">📳</div>
-
-        <h3>Vibration Sensor</h3>
-
-        <div
-            id="vibrationValue"
-            class="sensor-value">
-            --
-        </div>
-
-        <div class="sensor-unit">
-            Field 3 • SW-420
+        <div id="statusMessage">
+            Connecting to ThingSpeak...
         </div>
 
     </div>
 
 
-    <div class="sensor-card">
+    <!-- ================= SENSORS ================= -->
 
-        <div class="sensor-icon">🌧️</div>
+    <div class="sensor-grid">
 
-        <h3>Rain Sensor</h3>
 
-        <div
-            id="rainValue"
-            class="sensor-value">
-            --
+        <!-- SOIL MOISTURE -->
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">🌱</div>
+
+            <h2>Soil Moisture</h2>
+
+            <div class="value" id="soilValue">
+                --
+            </div>
+
+            <div class="unit">
+                Sensor Reading
+            </div>
+
         </div>
 
-        <div class="sensor-unit">
-            Field 4 • Rain Reading
+
+        <!-- VIBRATION -->
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">📳</div>
+
+            <h2>Vibration Sensor</h2>
+
+            <div class="value" id="vibrationValue">
+                --
+            </div>
+
+            <div class="unit">
+                0 = Normal | 1 = Detected
+            </div>
+
         </div>
 
-    </div>
 
-</div>
+        <!-- RAIN -->
 
+        <div class="sensor-card">
 
-<!-- =====================================================
-     LIVE INFORMATION
-====================================================== -->
+            <div class="sensor-icon">🌧️</div>
 
-<section class="info-card">
+            <h2>Rain Sensor</h2>
 
-    <h2>📡 Live System Information</h2>
+            <div class="value" id="rainValue">
+                --
+            </div>
 
-    <div class="info-row">
-        <strong>ThingSpeak:</strong>
-        <span id="connectionStatus">Connecting...</span>
-    </div>
+            <div class="unit">
+                Sensor Reading
+            </div>
 
-    <div class="info-row">
-        <strong>Last Update:</strong>
-        <span id="lastUpdate">--</span>
-    </div>
-
-    <div class="info-row">
-        <strong>Entry ID:</strong>
-        <span id="entryId">--</span>
-    </div>
-
-    <div class="info-row">
-        <strong>Channel ID:</strong>
-        3456662
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SAFE DIRECTION
-====================================================== -->
-
-<section class="direction-card">
-
-    <h2>🧭 Recommended Safe Direction</h2>
-
-    <div
-        id="directionBox"
-        class="direction-box">
-
-        <div
-            id="directionArrow"
-            class="direction-arrow">
-            ➡️
         </div>
 
-        <div
-            id="directionMain"
-            class="direction-main">
-            Stay alert and monitor the system
+
+        <!-- ULTRASONIC -->
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">📏</div>
+
+            <h2>Distance Sensor</h2>
+
+            <div class="value" id="distanceValue">
+                --
+            </div>
+
+            <div class="unit">
+                Distance (cm)
+            </div>
+
         </div>
 
-        <div
-            id="directionDetail"
-            class="direction-detail">
-            If an alert appears, move toward open,
-            stable ground away from slopes.
-        </div>
 
     </div>
 
-</section>
 
+    <!-- ================= CONNECTION INFORMATION ================= -->
 
-<!-- =====================================================
-     GRAPHS
-====================================================== -->
+    <div class="info-card">
 
-<h2 class="graph-title">
-    📊 Live Sensor History
-</h2>
+        <div id="lastUpdate">
+            Last update: Waiting for data...
+        </div>
 
-
-<div class="graph-grid">
-
-
-    <div class="graph-card">
-
-        <h3>📏 Distance History</h3>
-
-        <div class="chart-container">
-
-            <canvas id="ultrasonicChart"></canvas>
-
+        <div id="connection">
+            ● Connecting to ThingSpeak
         </div>
 
     </div>
 
 
-    <div class="graph-card">
-
-        <h3>🌱 Soil History</h3>
-
-        <div class="chart-container">
-
-            <canvas id="soilChart"></canvas>
-
-        </div>
-
-    </div>
-
-
-    <div class="graph-card">
-
-        <h3>📳 Vibration History</h3>
-
-        <div class="chart-container">
-
-            <canvas id="vibrationChart"></canvas>
-
-        </div>
-
-    </div>
-
-
-    <div class="graph-card">
-
-        <h3>🌧️ Rain History</h3>
-
-        <div class="chart-container">
-
-            <canvas id="rainChart"></canvas>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     ALERT GUIDE
-====================================================== -->
-
-<section class="alert-guide">
-
-    <h2>🚦 Alert Guide</h2>
-
-
-    <div class="alert-row green">
-
-        <div class="alert-circle"></div>
-
-        <div>
-            <strong>GREEN — NORMAL</strong><br>
-            Sensor readings are currently within the
-            configured safe range.
-        </div>
-
-    </div>
-
-
-    <div class="alert-row yellow">
-
-        <div class="alert-circle"></div>
-
-        <div>
-            <strong>YELLOW — WARNING</strong><br>
-            Rain or soil conditions require attention.
-        </div>
-
-    </div>
-
-
-    <div class="alert-row red">
-
-        <div class="alert-circle"></div>
-
-        <div>
-            <strong>RED — ALERT</strong><br>
-            Vibration or critical distance has been detected.
-            Move away from unstable slopes.
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SAFETY PROTOCOLS
-====================================================== -->
-
-<h2 class="protocol-title">
-    🛡️ Landslide Safety Protocols
-</h2>
-
-
-<div class="protocol-grid">
-
-
-    <div class="protocol">
-
-        <div class="protocol-icon">🏃</div>
-
-        <h3>Move Away</h3>
-
-        <p>
-            If an alert is issued, move away from steep
-            slopes, cliffs and unstable ground.
-        </p>
-
-    </div>
-
-
-    <div class="protocol">
-
-        <div class="protocol-icon">🌧️</div>
-
-        <h3>During Heavy Rain</h3>
-
-        <p>
-            Stay away from landslide-prone slopes during
-            prolonged or intense rainfall.
-        </p>
-
-    </div>
-
-
-    <div class="protocol">
-
-        <div class="protocol-icon">🛣️</div>
-
-        <h3>Avoid Blocked Roads</h3>
-
-        <p>
-            Never approach debris or a newly collapsed
-            section of road to inspect it.
-        </p>
-
-    </div>
-
-
-    <div class="protocol">
-
-        <div class="protocol-icon">📱</div>
-
-        <h3>Follow Authorities</h3>
-
-        <p>
-            Follow evacuation instructions from local
-            authorities and emergency services.
-        </p>
-
-    </div>
-
-
-    <div class="protocol">
-
-        <div class="protocol-icon">👨‍👩‍👧</div>
-
-        <h3>Stay Together</h3>
-
-        <p>
-            Stay with your family, teachers or responsible
-            adults and use the designated safe route.
-        </p>
-
-    </div>
-
-
-    <div class="protocol">
-
-        <div class="protocol-icon">⚠️</div>
-
-        <h3>Never Return Early</h3>
-
-        <p>
-            Do not return to an affected area until
-            authorities say that it is safe.
-        </p>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     FINAL MESSAGE
-====================================================== -->
-
-<section class="status-card">
-
-    <h2>💙 Remember</h2>
-
-    <div class="direction-box">
-
-        <strong>
-            Early warning + quick evacuation + safe
-            decision-making can reduce risk.
-        </strong>
-
-        <p>
-            This dashboard is a monitoring and educational
-            system. Always follow official emergency
-            instructions during a real event.
-        </p>
-
-    </div>
-
-</section>
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+        Landslide Monitoring Project
+    </footer>
 
 
 </div>
-
-
-<!-- =====================================================
-     FOOTER
-====================================================== -->
-
-<footer>
-
-    <div>
-        🌧️ Smart Landslide Early Warning System
-    </div>
-
-    <div>
-        S.R.E.S. Sanjivani College of Engineering, Kopargaon
-    </div>
-
-    <div class="developer">
-        Developed by Om Baraskar
-    </div>
-
-</footer>
 
 
 <script>
 
-/* =========================================================
-   THINGSPEAK — ALREADY CONFIGURED
-========================================================= */
+    /* =============================================
+       THINGSPEAK SETTINGS
+       ============================================= */
 
-const CHANNEL_ID = "3456662";
+    const CHANNEL_ID = "3456662";
 
-const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
+    const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
 
-const UPDATE_INTERVAL = 15000;
 
+    /* =============================================
+       FETCH SENSOR DATA
+       ============================================= */
 
-/* =========================================================
-   FIELD ASSIGNMENT
-========================================================= */
+    async function getSensorData() {
 
-const ULTRASONIC_FIELD = "field1";
-const SOIL_FIELD = "field2";
-const VIBRATION_FIELD = "field3";
-const RAIN_FIELD = "field4";
+        const connection =
+            document.getElementById("connection");
 
+        try {
 
-/* =========================================================
-   CHART VARIABLES
-========================================================= */
+            connection.innerHTML =
+                "● Updating data...";
 
-let ultrasonicChart = null;
-let soilChart = null;
-let vibrationChart = null;
-let rainChart = null;
+            connection.style.color =
+                "#f57c00";
 
 
-/* =========================================================
-   AUDIO VARIABLES
-========================================================= */
+            const url =
+                "https://api.thingspeak.com/channels/"
+                + CHANNEL_ID
+                + "/feeds/last.json?api_key="
+                + READ_API_KEY;
 
-let audioContext = null;
-let audioEnabled = false;
-let alarmTimer = null;
 
-
-/* =========================================================
-   AUDIO INITIALIZATION
-========================================================= */
-
-async function initializeAudio(){
-
-    if(!audioContext){
-
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
-    }
-
-    if(audioContext.state === "suspended"){
-
-        await audioContext.resume();
-
-    }
-
-}
-
-
-/* =========================================================
-   SAFETY AUDIO ON
-========================================================= */
-
-async function turnSafetyAudioOn(){
-
-    try{
-
-        await initializeAudio();
-
-        audioEnabled = true;
-
-        document.getElementById("audioStatus").textContent =
-            "🟢 Safety audio is ON.";
-
-        speakSafetyMessage();
-
-        playSafetyBeep();
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        document.getElementById("audioStatus").textContent =
-            "Audio could not be started on this browser.";
-
-    }
-
-}
-
-
-/* =========================================================
-   SAFETY AUDIO OFF
-========================================================= */
-
-function turnSafetyAudioOff(){
-
-    audioEnabled = false;
-
-    stopAlarm();
-
-    if("speechSynthesis" in window){
-
-        window.speechSynthesis.cancel();
-
-    }
-
-    document.getElementById("audioStatus").textContent =
-        "🔴 Safety audio is OFF.";
-
-}
-
-
-/* =========================================================
-   SAFETY SPEECH
-========================================================= */
-
-function speakSafetyMessage(){
-
-    if(!audioEnabled){
-
-        return;
-
-    }
-
-    if(!("speechSynthesis" in window)){
-
-        return;
-
-    }
-
-    window.speechSynthesis.cancel();
-
-    const message =
-        "Landslide safety system protocol. " +
-        "Monitor rain, soil moisture, vibration and distance. " +
-        "If an alert is issued, move away from unstable slopes.";
-
-    const speech =
-        new SpeechSynthesisUtterance(message);
-
-    speech.rate = 0.9;
-    speech.pitch = 1;
-
-    window.speechSynthesis.speak(speech);
-
-}
-
-
-/* =========================================================
-   SAFETY BEEP
-========================================================= */
-
-function playSafetyBeep(){
-
-    if(!audioEnabled || !audioContext){
-
-        return;
-
-    }
-
-    const oscillator =
-        audioContext.createOscillator();
-
-    const gain =
-        audioContext.createGain();
-
-    oscillator.type = "sine";
-
-    oscillator.frequency.setValueAtTime(
-        850,
-        audioContext.currentTime
-    );
-
-    gain.gain.setValueAtTime(
-        0.12,
-        audioContext.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.01,
-        audioContext.currentTime + 0.3
-    );
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.start();
-
-    oscillator.stop(
-        audioContext.currentTime + 0.3
-    );
-
-}
-
-
-/* =========================================================
-   ALARM
-========================================================= */
-
-function startAlarm(){
-
-    if(!audioEnabled){
-
-        return;
-
-    }
-
-    if(alarmTimer){
-
-        return;
-
-    }
-
-    playSafetyBeep();
-
-    alarmTimer =
-        setInterval(
-            playSafetyBeep,
-            700
-        );
-
-}
-
-
-function stopAlarm(){
-
-    if(alarmTimer){
-
-        clearInterval(alarmTimer);
-
-        alarmTimer = null;
-
-    }
-
-}
-
-
-/* =========================================================
-   THINGSPEAK URL
-========================================================= */
-
-function getThingSpeakURL(){
-
-    return (
-        "https://api.thingspeak.com/channels/" +
-        CHANNEL_ID +
-        "/feeds.json?api_key=" +
-        READ_API_KEY +
-        "&results=60"
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE DASHBOARD
-========================================================= */
-
-async function updateDashboard(){
-
-    const syncStatus =
-        document.getElementById("syncStatus");
-
-    const syncDot =
-        document.getElementById("syncDot");
-
-    const connectionStatus =
-        document.getElementById("connectionStatus");
-
-    try{
-
-        syncStatus.textContent =
-            "Synchronizing with ThingSpeak...";
-
-        syncDot.className =
-            "sync-dot";
-
-        const response =
-            await fetch(
-                getThingSpeakURL(),
-                {
-                    cache:"no-store"
-                }
-            );
-
-        if(!response.ok){
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
-
-        const data =
-            await response.json();
-
-        const feeds =
-            data.feeds;
-
-        if(!feeds || feeds.length === 0){
-
-            throw new Error(
-                "No ThingSpeak readings."
-            );
-
-        }
-
-        const latest =
-            feeds[feeds.length - 1];
-
-
-        const ultrasonic =
-            parseFloat(
-                latest[ULTRASONIC_FIELD]
-            );
-
-        const soil =
-            parseFloat(
-                latest[SOIL_FIELD]
-            );
-
-        const vibration =
-            parseFloat(
-                latest[VIBRATION_FIELD]
-            );
-
-        const rain =
-            parseFloat(
-                latest[RAIN_FIELD]
+            const response = await fetch(
+                url + "&_=" + new Date().getTime()
             );
 
 
-        /* DISPLAY VALUES */
+            if (!response.ok) {
 
-        document.getElementById(
-            "ultrasonicValue"
-        ).textContent =
-            Number.isNaN(ultrasonic)
-            ? "--"
-            : ultrasonic.toFixed(1);
+                throw new Error(
+                    "ThingSpeak connection failed"
+                );
 
-
-        document.getElementById(
-            "soilValue"
-        ).textContent =
-            Number.isNaN(soil)
-            ? "--"
-            : soil;
+            }
 
 
-        document.getElementById(
-            "vibrationValue"
-        ).textContent =
-            Number.isNaN(vibration)
-            ? "--"
-            : vibration;
+            const data =
+                await response.json();
 
 
-        document.getElementById(
-            "rainValue"
-        ).textContent =
-            Number.isNaN(rain)
-            ? "--"
-            : rain;
+            /* =============================================
+               READ SENSOR VALUES
+
+               Field Mapping:
+
+               field1 = Soil Moisture
+               field2 = Vibration
+               field3 = Rain
+               field4 = Distance
+
+               Change these below ONLY if your
+               ThingSpeak fields are different.
+               ============================================= */
 
 
-        /* INFORMATION */
+            const soil =
+                Number(data.field1) || 0;
 
-        document.getElementById(
-            "lastUpdate"
-        ).textContent =
-            new Date(
-                latest.created_at
-            ).toLocaleString();
+            const vibration =
+                Number(data.field2) || 0;
 
+            const rain =
+                Number(data.field3) || 0;
 
-        document.getElementById(
-            "entryId"
-        ).textContent =
-            latest.entry_id;
-
-
-        syncStatus.textContent =
-            "✓ Synchronized Successfully";
-
-        syncDot.className =
-            "sync-dot connected";
-
-        connectionStatus.textContent =
-            "🟢 Connected to ThingSpeak";
-
-
-        updateSafetyStatus(
-            ultrasonic,
-            soil,
-            vibration,
-            rain
-        );
-
-
-        updateCharts(feeds);
-
-    }
-    catch(error){
-
-        console.error(
-            "ThingSpeak error:",
-            error
-        );
-
-        syncStatus.textContent =
-            "❌ Synchronization Failed";
-
-        syncDot.className =
-            "sync-dot error";
-
-        connectionStatus.textContent =
-            "🔴 Connection Error";
-
-        const status =
-            document.getElementById(
-                "dangerStatus"
-            );
-
-        status.className =
-            "warning";
-
-        status.textContent =
-            "⚠️ Waiting for ThingSpeak Data";
-
-        stopAlarm();
-
-    }
-
-}
-
-
-/* =========================================================
-   SAFETY STATUS
-========================================================= */
-
-function updateSafetyStatus(
-    ultrasonic,
-    soil,
-    vibration,
-    rain
-){
-
-    const status =
-        document.getElementById(
-            "dangerStatus"
-        );
-
-    const arrow =
-        document.getElementById(
-            "directionArrow"
-        );
-
-    const directionMain =
-        document.getElementById(
-            "directionMain"
-        );
-
-    const directionDetail =
-        document.getElementById(
-            "directionDetail"
-        );
-
-
-    status.className = "";
-
-
-    if(
-        Number.isNaN(ultrasonic) ||
-        Number.isNaN(soil) ||
-        Number.isNaN(vibration) ||
-        Number.isNaN(rain)
-    ){
-
-        status.classList.add("warning");
-
-        status.textContent =
-            "⏳ WAITING FOR COMPLETE SENSOR DATA";
-
-        arrow.textContent = "🧭";
-
-        directionMain.textContent =
-            "Monitor the system";
-
-        directionDetail.textContent =
-            "Sensor data is
+            const distance =
+                Number

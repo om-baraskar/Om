@@ -1,433 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Landslide Monitoring System</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f5f7;
-            color: #222;
-            min-height: 100vh;
-            padding: 15px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
-
-        /* ================= HEADER ================= */
-
-        .header {
-            background: white;
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-        }
-
-        #collegeLogo {
-            width: 75px;
-            height: 75px;
-            object-fit: contain;
-            border-radius: 10px;
-        }
-
-        .header-text {
-            text-align: left;
-        }
-
-        .header-text h1 {
-            font-size: 28px;
-            color: #1d3557;
-            margin-bottom: 6px;
-        }
-
-        .header-text p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        /* ================= STATUS ================= */
-
-        .status-card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        }
-
-        .status-label {
-            font-size: 15px;
-            color: #777;
-            margin-bottom: 10px;
-        }
-
-        #status {
-            font-size: 32px;
-            font-weight: bold;
-            padding: 14px;
-            border-radius: 12px;
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        #statusMessage {
-            margin-top: 12px;
-            color: #555;
-            font-size: 16px;
-        }
-
-        /* ================= SENSOR GRID ================= */
-
-        .sensor-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-        }
-
-        .sensor-card {
-            background: white;
-            border-radius: 18px;
-            padding: 22px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        }
-
-        .sensor-icon {
-            font-size: 34px;
-            margin-bottom: 10px;
-        }
-
-        .sensor-card h2 {
-            font-size: 18px;
-            color: #444;
-            margin-bottom: 12px;
-        }
-
-        .value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #1d3557;
-        }
-
-        .unit {
-            color: #777;
-            font-size: 15px;
-            margin-top: 5px;
-        }
-
-        /* ================= INFORMATION ================= */
-
-        .info-card {
-            background: white;
-            border-radius: 18px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-        #lastUpdate {
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        #connection {
-            font-weight: bold;
-            color: #2e7d32;
-        }
-
-        /* ================= FOOTER ================= */
-
-        footer {
-            text-align: center;
-            color: #777;
-            margin-top: 25px;
-            font-size: 14px;
-            padding-bottom: 15px;
-        }
-
-        /* ================= MOBILE ================= */
-
-        @media (max-width: 600px) {
-
-            body {
-                padding: 10px;
-            }
-
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header-text {
-                text-align: center;
-            }
-
-            .header-text h1 {
-                font-size: 23px;
-            }
-
-            .sensor-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #status {
-                font-size: 26px;
-            }
-        }
-
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <!-- ================= HEADER ================= -->
-
-    <div class="header">
-
-        <img
-            id="collegeLogo"
-            src="logo.png"
-            alt="College Logo"
-            onerror="this.style.display='none'"
-        >
-
-        <div class="header-text">
-            <h1>Landslide Monitoring System</h1>
-            <p>Real-Time Sensor Monitoring Dashboard</p>
-        </div>
-
-    </div>
-
-
-    <!-- ================= SAFETY STATUS ================= -->
-
-    <div class="status-card">
-
-        <div class="status-label">
-            CURRENT LANDSLIDE STATUS
-        </div>
-
-        <div id="status">
-            CONNECTING...
-        </div>
-
-        <div id="statusMessage">
-            Connecting to ThingSpeak...
-        </div>
-
-    </div>
-
-
-    <!-- ================= SENSORS ================= -->
-
-    <div class="sensor-grid">
-
-
-        <!-- SOIL MOISTURE -->
-
-        <div class="sensor-card">
-
-            <div class="sensor-icon">🌱</div>
-
-            <h2>Soil Moisture</h2>
-
-            <div class="value" id="soilValue">
-                --
-            </div>
-
-            <div class="unit">
-                Sensor Reading
-            </div>
-
-        </div>
-
-
-        <!-- VIBRATION -->
-
-        <div class="sensor-card">
-
-            <div class="sensor-icon">📳</div>
-
-            <h2>Vibration Sensor</h2>
-
-            <div class="value" id="vibrationValue">
-                --
-            </div>
-
-            <div class="unit">
-                0 = Normal | 1 = Detected
-            </div>
-
-        </div>
-
-
-        <!-- RAIN -->
-
-        <div class="sensor-card">
-
-            <div class="sensor-icon">🌧️</div>
-
-            <h2>Rain Sensor</h2>
-
-            <div class="value" id="rainValue">
-                --
-            </div>
-
-            <div class="unit">
-                Sensor Reading
-            </div>
-
-        </div>
-
-
-        <!-- ULTRASONIC -->
-
-        <div class="sensor-card">
-
-            <div class="sensor-icon">📏</div>
-
-            <h2>Distance Sensor</h2>
-
-            <div class="value" id="distanceValue">
-                --
-            </div>
-
-            <div class="unit">
-                Distance (cm)
-            </div>
-
-        </div>
-
-
-    </div>
-
-
-    <!-- ================= CONNECTION INFORMATION ================= -->
-
-    <div class="info-card">
-
-        <div id="lastUpdate">
-            Last update: Waiting for data...
-        </div>
-
-        <div id="connection">
-            ● Connecting to ThingSpeak
-        </div>
-
-    </div>
-
-
-    <!-- ================= FOOTER ================= -->
-
-    <footer>
-        Landslide Monitoring Project
-    </footer>
-
-
-</div>
-
-
-<script>
-
-    /* =============================================
-       THINGSPEAK SETTINGS
-       ============================================= */
-
-    const CHANNEL_ID = "3456662";
-
-    const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
-
-
-    /* =============================================
-       FETCH SENSOR DATA
-       ============================================= */
-
-    async function getSensorData() {
-
-        const connection =
-            document.getElementById("connection");
-
-        try {
-
-            connection.innerHTML =
-                "● Updating data...";
-
-            connection.style.color =
-                "#f57c00";
-
-
-            const url =
-                "https://api.thingspeak.com/channels/"
-                + CHANNEL_ID
-                + "/feeds/last.json?api_key="
-                + READ_API_KEY;
-
-
-            const response = await fetch(
-                url + "&_=" + new Date().getTime()
-            );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "ThingSpeak connection failed"
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            /* =============================================
-               READ SENSOR VALUES
-
-               Field Mapping:
-
-               field1 = Soil Moisture
-               field2 = Vibration
-               field3 = Rain
-               field4 = Distance
-
-               Change these below ONLY if your
-               ThingSpeak fields are different.
-               ============================================= */
-
-
-            const soil =
-                Number(data.field1) || 0;
-
-            const vibration =
-                Number(data.field2) || 0;
-
-            const rain =
-                Number(data.field3) || 0;
-
-            const distance =
-                Number
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Landslide Safety System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        linear-gradient(rgba(244, 250, 248, 0.92),
+                        rgba(235, 245, 255, 0.94)),
+        radial-gradient(circle at 10% 20%, #d8f3dc 0%, transparent 25%),
+        radial-gradient(circle at 90% 10%, #cfe8ff 0%, transparent 28%);
+    color: #18352b;
+    overflow-x: hidden;
+}
+
+/* BACKGROUND DECORATIONS */
+
+.background-decoration {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.mountain {
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    opacity: 0.10;
+    border-left: 260px solid transparent;
+    border-right: 260px solid transparent;
+    border-bottom: 420px solid #246b45;
+}
+
+.mountain.one {
+    left: -120px;
+}
+
+.mountain.two {
+    right: -150px;
+    border-bottom-color: #1f5d7a;
+    transform: scale(0.85);
+}
+
+.cloud {
+    position: absolute;
+    width: 180px;
+    height: 55px;
+    background: white;
+    border-radius: 100px;
+    opacity: 0.35;
+}
+
+.cloud:before,
+.cloud:after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+.cloud:before {
+    width: 75px;
+    height: 75px;
+    left: 25px;
+    top: -35px;
+}
+
+.cloud:after {
+    width: 95px;
+    height: 95px;
+    right: 20px;
+    top: -50px;
+}
+
+.cloud.one {
+    top: 130px;
+    left: 3%;
+}
+
+.cloud.two {
+    top: 310px;
+    right: 2%;
+    transform: scale(0.7);
+}
+
+/* HERO */
+
+.hero {
+    min-height: 100vh;
+    padding: 25px 6%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.top-bar {
+    position: absolute;
+    top: 20px;
+    left: 6%;
+    right: 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-box img {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    background: white;
+    border-radius: 50%;
+    padding: 4px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+}
+
+.logo-box span {
+    font-weight: bold;
+    font-size: 18px;
+    color: #185c3c;
+}
+
+.live-badge {
+    background: #e7fff0;
+    border: 1px solid #a8dfbd;
+    padding: 10px 16px;
+    border-radius: 30px;
+    color: #187a43;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.live-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: #20b65a;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.35;
+        transform: scale(1.5);
+    }
+}
+
+.hero-content {
+    max-width: 850px;
+    margin: auto;
+    text-align: center;
+}
+
+.hero-icon {
+    font-size: 80px;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+.hero h1 {
+    font-size: clamp(38px, 7vw, 76px);
+    line-height: 1.05;
+    color: #174a36;
+    margin-bottom: 20px;
+}
+
+.hero h1 span {
+    color: #e07a28;
+}
+
+.hero p {
+    max-width: 650px;
+    margin: auto;
+    font-size: 19px;
+    line-height: 1.7;
+    color: #52685f;
+}
+
+.hero-buttons {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    padding: 15px 25px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.25s;
+}
+
+.primary-btn {
+    background: #216b49;
+    color: white;
+    box-shadow: 0 8px 20px rgba(33,107,73,0.25);
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+}
+
+.secondary-btn {
+    background: white;
+    color: #216b49;
+    border: 1px solid #d7e7dd;
+}
+
+.secondary-btn:hover {
+    transform: translateY(-3px);
+}
+
+/* GENERAL */
+
+.section {
+    width: min(1150px, 92%);
+    margin: 0 auto 80px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 35px;
+    color: #174a36;
+    margin-bottom: 12px;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: #6c7f76;
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+/* STATUS */
+
+.status-panel {
+    background: rgba(255,255,255,0.90);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: 0 15px 40px rgba(30,70,50,0.10);
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+.status-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.status-text small {
+    color: #75847d;
+    display: block;
+    margin-bottom: 7px;
+}
+
+.status-text h2 {
+    font-size: 30px;
+    color: #217448;
+}
+
+.status-message {
+    color: #617169;
+    line-height: 1.6;
+}
+
+.last-update {
+    margin-top: 18px;
+    color: #7b8982;
+    font-size: 14px;
+}
+
+/* SENSOR CARDS */
+
+.sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.sensor-card {
+    background: rgba(255,255,255,0.94);
+    padding: 25px 18px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(30,70,50,0.08);
+    transition: 0.25s;
+}
+
+.sensor-card:hover {
+    transform: translateY(-7px);
+}
+
+.sensor-icon {
+    width: 60px;
+    height: 60px;
+    margin: auto auto 15px;
+    display: grid;
+    place-items: center;
+    background: #edf8f1;
+    border-radius: 20px;
+    font-size: 28px;
+}
+
+.sensor-card h3 {
+    color: #4c6057;
+    font-size: 16px;
+}
+
+.sensor-value {
+    font-size: 34px;
+    color: #174a36;
+    font-weight: bold;
+    margin: 12px 0 5px;
+}
+
+.sensor-unit {
+    font-size: 13px;
+    color: #819087;
+}
+
+/* GRAPHS */
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 25px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(30,70,50,0.08);
+}
+
+.chart

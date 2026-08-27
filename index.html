@@ -3,88 +3,484 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Sanjivani College — Landslide Monitoring</title>
+<title>Sanjivani College | Landslide Safety Dashboard</title>
 
 <style>
+
+/* =========================================================
+   BASIC
+========================================================= */
 
 *{
     box-sizing:border-box;
 }
 
-body{
-    margin:0;
-    font-family:Segoe UI,Arial,sans-serif;
-    color:#fff;
-    min-height:100vh;
-    background:#07131a;
-    overflow-x:hidden;
+html{
+    scroll-behavior:smooth;
 }
 
-/* =========================================================
-   KEEP YOUR EXISTING BACKGROUND HERE
-   ========================================================= */
+body{
+    margin:0;
+    min-height:100vh;
+    overflow-x:hidden;
 
-.background{
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color:#fff;
+
+    background:#06131b;
+}
+
+
+/* =========================================================
+   CREATIVE STORM BACKGROUND
+========================================================= */
+
+.storm{
     position:fixed;
     inset:0;
-    z-index:-5;
+    z-index:-20;
+    overflow:hidden;
+
     background:
         linear-gradient(
             180deg,
-            rgba(4,15,21,.38),
-            rgba(3,12,18,.82)
-        ),
-        url("Screenshot_20260826_204053_WhatsApp.jpg")
-        center/cover no-repeat;
-
-    filter:blur(1.5px);
-    transform:scale(1.03);
+            #07151d 0%,
+            #0a2029 38%,
+            #102d32 62%,
+            #061318 100%
+        );
 }
 
-/* Rain glass layer */
 
-body::before{
+/* distant sky */
+
+.storm::before{
     content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 25%,
+            rgba(91,150,169,.18),
+            transparent 42%
+        ),
+        radial-gradient(
+            ellipse at 80% 15%,
+            rgba(122,164,185,.12),
+            transparent 30%
+        );
+
+    filter:blur(8px);
+}
+
+
+/* mountain */
+
+.mountain{
+    position:absolute;
+
+    left:-8%;
+    bottom:18%;
+
+    width:116%;
+    height:58%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #182f35,
+            #0b1d24 55%,
+            #071319
+        );
+
+    clip-path:
+        polygon(
+            0 82%,
+            10% 65%,
+            18% 72%,
+            29% 37%,
+            39% 60%,
+            51% 17%,
+            61% 48%,
+            70% 29%,
+            80% 58%,
+            91% 42%,
+            100% 64%,
+            100% 100%,
+            0 100%
+        );
+
+    filter:
+        blur(1.5px);
+
+    opacity:.95;
+}
+
+
+/* mountain landslide path */
+
+.slide{
+    position:absolute;
+
+    left:46%;
+    bottom:20%;
+
+    width:20%;
+    height:42%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #493f35,
+            #29251f 55%,
+            #171716
+        );
+
+    clip-path:
+        polygon(
+            45% 0,
+            65% 18%,
+            55% 39%,
+            83% 65%,
+            70% 100%,
+            15% 100%,
+            28% 72%,
+            12% 55%,
+            32% 32%
+        );
+
+    opacity:.9;
+
+    filter:blur(.6px);
+}
+
+
+/* trees */
+
+.tree{
+    position:absolute;
+    bottom:17%;
+
+    width:0;
+    height:0;
+
+    border-left:18px solid transparent;
+    border-right:18px solid transparent;
+    border-bottom:65px solid #071a19;
+
+    filter:
+        drop-shadow(
+            5px 8px 5px rgba(0,0,0,.55)
+        );
+
+    opacity:.92;
+}
+
+.tree::before{
+    content:"";
+
+    position:absolute;
+
+    left:-14px;
+    top:28px;
+
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:52px solid #092320;
+}
+
+.tree::after{
+    content:"";
+
+    position:absolute;
+
+    left:-9px;
+    top:51px;
+
+    width:18px;
+    height:55px;
+
+    background:#171d19;
+}
+
+
+.tree1{left:3%;transform:scale(1.3);}
+.tree2{left:12%;transform:scale(.9);}
+.tree3{left:23%;transform:scale(1.5);}
+.tree4{right:16%;transform:scale(1.25);}
+.tree5{right:6%;transform:scale(1.6);}
+.tree6{right:29%;transform:scale(.8);}
+
+
+/* mist */
+
+.mist{
+    position:absolute;
+
+    left:-10%;
+    bottom:21%;
+
+    width:120%;
+    height:25%;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(191,225,228,.11),
+            transparent
+        );
+
+    filter:blur(18px);
+
+    animation:
+        mistMove 9s ease-in-out infinite alternate;
+}
+
+@keyframes mistMove{
+    from{
+        transform:translateX(-3%);
+    }
+
+    to{
+        transform:translateX(3%);
+    }
+}
+
+
+/* =========================================================
+   RAIN
+========================================================= */
+
+.rain{
+    position:absolute;
+    inset:-20%;
+
+    opacity:.48;
+
+    background-image:
+        repeating-linear-gradient(
+            103deg,
+            transparent 0 32px,
+            rgba(194,232,242,.35) 33px,
+            transparent 34px 74px
+        );
+
+    background-size:
+        90px 90px;
+
+    animation:
+        rainFall .55s linear infinite;
+}
+
+@keyframes rainFall{
+    from{
+        transform:translateY(-30px);
+    }
+
+    to{
+        transform:translateY(90px);
+    }
+}
+
+
+/* second rain layer */
+
+.rain2{
+    position:absolute;
+    inset:-20%;
+
+    opacity:.23;
+
+    background-image:
+        repeating-linear-gradient(
+            105deg,
+            transparent 0 18px,
+            rgba(255,255,255,.48) 19px,
+            transparent 20px 47px
+        );
+
+    background-size:55px 75px;
+
+    animation:
+        rainFall2 .35s linear infinite;
+}
+
+@keyframes rainFall2{
+    from{
+        transform:translateY(-40px);
+    }
+
+    to{
+        transform:translateY(70px);
+    }
+}
+
+
+/* =========================================================
+   LIGHTNING
+========================================================= */
+
+.lightning{
+    position:absolute;
+
+    top:0;
+    right:15%;
+
+    width:5px;
+    height:100%;
+
+    opacity:0;
+
+    background:#e8fbff;
+
+    filter:
+        drop-shadow(
+            0 0 15px #bdf6ff
+        );
+
+    clip-path:
+        polygon(
+            55% 0,
+            100% 0,
+            63% 35%,
+            88% 35%,
+            15% 100%,
+            40% 48%,
+            10% 48%
+        );
+
+    animation:
+        lightning 8s infinite;
+}
+
+@keyframes lightning{
+
+    0%,86%,100%{
+        opacity:0;
+    }
+
+    87%{
+        opacity:1;
+    }
+
+    88%{
+        opacity:.15;
+    }
+
+    89%{
+        opacity:1;
+    }
+
+    90%{
+        opacity:0;
+    }
+
+    92%{
+        opacity:.7;
+    }
+
+    93%{
+        opacity:0;
+    }
+}
+
+
+/* =========================================================
+   WINDSHIELD GLASS
+========================================================= */
+
+.windshield{
     position:fixed;
     inset:0;
-    z-index:-4;
+
+    z-index:-10;
+
     pointer-events:none;
 
     background:
         radial-gradient(
-            circle at 15% 20%,
-            rgba(255,255,255,.12) 0 2px,
-            transparent 5px
-        ),
-        radial-gradient(
-            circle at 75% 30%,
-            rgba(255,255,255,.10) 0 3px,
-            transparent 7px
-        ),
-        radial-gradient(
-            circle at 45% 75%,
-            rgba(255,255,255,.08) 0 2px,
-            transparent 6px
+            ellipse at 50% 100%,
+            transparent 35%,
+            rgba(0,0,0,.25) 100%
         );
 
-    background-size:
-        170px 190px,
-        230px 250px,
-        190px 220px;
+    box-shadow:
+        inset 0 0 100px rgba(0,0,0,.55);
 
-    opacity:.55;
+    backdrop-filter:
+        blur(.4px);
 }
 
+
+/* water droplets */
+
+.drop{
+    position:absolute;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255,255,255,.7),
+            rgba(180,230,240,.17) 38%,
+            rgba(255,255,255,.04) 70%,
+            transparent 72%
+        );
+
+    border:
+        1px solid rgba(220,248,255,.18);
+
+    box-shadow:
+        0 1px 5px rgba(0,0,0,.35);
+
+    filter:
+        blur(.1px);
+
+    animation:
+        dropMove 6s ease-in-out infinite alternate;
+}
+
+@keyframes dropMove{
+    from{
+        transform:translateY(-3px);
+    }
+
+    to{
+        transform:translateY(7px);
+    }
+}
+
+.d1{width:19px;height:27px;left:8%;top:16%;}
+.d2{width:10px;height:15px;left:21%;top:38%;animation-delay:1s;}
+.d3{width:24px;height:32px;left:77%;top:20%;animation-delay:2s;}
+.d4{width:13px;height:19px;right:11%;top:49%;animation-delay:3s;}
+.d5{width:29px;height:37px;left:53%;top:10%;animation-delay:1.5s;}
+.d6{width:9px;height:13px;left:39%;top:57%;animation-delay:2.5s;}
+.d7{width:18px;height:26px;right:30%;top:66%;animation-delay:4s;}
+.d8{width:12px;height:18px;left:4%;top:72%;animation-delay:2s;}
+.d9{width:25px;height:34px;right:4%;top:82%;animation-delay:3.5s;}
+
+
 /* =========================================================
-   MAIN CONTAINER
+   DASHBOARD
 ========================================================= */
 
 .dashboard{
     width:min(1120px,94%);
     margin:auto;
-    padding:18px 0 35px;
+
+    padding:
+        18px 0 40px;
 }
+
 
 /* =========================================================
    HEADER
@@ -94,153 +490,151 @@ body::before{
     position:relative;
     overflow:hidden;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
+    text-align:center;
 
-    padding:24px 18px 22px;
+    padding:
+        25px 16px 23px;
 
-    border-radius:28px;
+    border-radius:30px;
 
     background:
         linear-gradient(
-            135deg,
-            rgba(14,43,55,.88),
-            rgba(5,21,29,.78)
+            145deg,
+            rgba(8,39,51,.91),
+            rgba(3,17,25,.79)
         );
 
-    border:1px solid rgba(150,230,245,.22);
+    border:
+        1px solid
+        rgba(160,231,245,.25);
+
+    backdrop-filter:
+        blur(18px);
 
     box-shadow:
-        0 20px 55px rgba(0,0,0,.38),
+        0 22px 60px rgba(0,0,0,.48),
         inset 0 1px 0 rgba(255,255,255,.10);
-
-    backdrop-filter:blur(18px);
-}
-
-.header::after{
-    content:"";
-    position:absolute;
-    width:260px;
-    height:260px;
-
-    right:-100px;
-    top:-150px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(50,220,255,.22),
-            transparent 70%
-        );
-
-    pointer-events:none;
 }
 
 .logo{
-    width:92px;
-    height:92px;
+    width:94px;
+    height:94px;
 
     object-fit:contain;
 
-    background:rgba(255,255,255,.94);
+    padding:7px;
+
+    background:#fff;
 
     border-radius:50%;
 
-    padding:7px;
-
     box-shadow:
-        0 0 0 4px rgba(100,225,255,.10),
-        0 0 30px rgba(65,220,255,.28);
+        0 0 0 5px rgba(80,215,245,.10),
+        0 0 35px rgba(65,220,255,.35);
 }
 
 .college{
     margin-top:12px;
 
-    font-size:clamp(25px,5vw,40px);
+    font-size:
+        clamp(26px,6vw,43px);
 
-    font-weight:950;
+    font-weight:1000;
 
-    letter-spacing:.8px;
-
-    text-align:center;
+    letter-spacing:1px;
 
     background:
         linear-gradient(
             90deg,
-            #ffffff,
-            #8cecff,
-            #ffffff
+            #fff,
+            #86eaff,
+            #fff
         );
 
     -webkit-background-clip:text;
     background-clip:text;
+
     color:transparent;
 }
 
 .subtitle{
     margin-top:5px;
 
-    color:#a8c5cf;
+    color:#9bb8c1;
 
-    font-size:12px;
+    font-size:11px;
+
     letter-spacing:2px;
 
     text-transform:uppercase;
 }
 
+
 /* =========================================================
-   STATUS HERO
+   STATUS
 ========================================================= */
 
 .status-card{
     margin-top:16px;
 
-    position:relative;
-    overflow:hidden;
+    padding:20px;
 
     border-radius:25px;
 
-    padding:20px;
-
     background:
         linear-gradient(
-            135deg,
-            rgba(8,39,51,.91),
-            rgba(5,20,29,.86)
+            145deg,
+            rgba(11,45,58,.90),
+            rgba(4,20,28,.88)
         );
 
-    border:1px solid rgba(103,223,245,.25);
+    border:
+        1px solid
+        rgba(130,225,242,.22);
+
+    backdrop-filter:
+        blur(18px);
 
     box-shadow:
-        0 18px 45px rgba(0,0,0,.35),
+        0 20px 50px rgba(0,0,0,.38),
         inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .status-top{
     display:flex;
-    justify-content:space-between;
+
     align-items:center;
+    justify-content:space-between;
+
     gap:15px;
 }
 
 .status-label{
-    color:#8eaeb9;
-    font-size:11px;
+    color:#8daab4;
+
+    font-size:10px;
+
     text-transform:uppercase;
-    letter-spacing:1.8px;
+
+    letter-spacing:2px;
 }
 
 .status{
-    font-size:clamp(27px,6vw,48px);
-    font-weight:1000;
     margin-top:5px;
+
+    font-size:
+        clamp(29px,7vw,50px);
+
+    font-weight:1000;
+
+    letter-spacing:.5px;
 }
 
 .status-sub{
-    color:#9eb9c2;
     margin-top:4px;
+
+    color:#9bb6bf;
+
     font-size:12px;
 }
 
@@ -248,26 +642,30 @@ body::before{
     width:58px;
     height:58px;
 
+    flex:none;
+
     border-radius:50%;
 
-    background:#36e59b;
+    background:#3ee4a0;
 
     box-shadow:
-        0 0 0 7px rgba(54,229,155,.10),
-        0 0 35px rgba(54,229,155,.65);
+        0 0 0 7px rgba(62,228,160,.10),
+        0 0 35px rgba(62,228,160,.65);
 
-    animation:pulse 2s infinite;
+    animation:
+        statusPulse 2s infinite;
 }
 
-@keyframes pulse{
+@keyframes statusPulse{
     50%{
         transform:scale(1.08);
         opacity:.72;
     }
 }
 
+
 /* =========================================================
-   SENSOR GRID
+   SENSOR CARDS
 ========================================================= */
 
 .sensor-grid{
@@ -283,47 +681,51 @@ body::before{
 
 .sensor-card{
     position:relative;
-    overflow:hidden;
 
-    min-height:145px;
+    overflow:hidden;
 
     padding:17px;
 
-    border-radius:22px;
+    min-height:150px;
+
+    border-radius:23px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(18,54,67,.88),
-            rgba(6,24,33,.88)
+            rgba(16,52,64,.91),
+            rgba(5,23,31,.88)
         );
 
-    border:1px solid rgba(144,225,239,.20);
+    border:
+        1px solid
+        rgba(145,226,240,.19);
+
+    backdrop-filter:
+        blur(15px);
 
     box-shadow:
-        0 15px 35px rgba(0,0,0,.30),
-        inset 0 1px 0 rgba(255,255,255,.08);
+        0 17px 40px rgba(0,0,0,.34),
+        inset 0 1px 0 rgba(255,255,255,.07);
 
     transition:
-        transform .2s ease,
-        border .2s ease,
-        box-shadow .2s ease;
+        .2s ease;
 }
 
 .sensor-card:hover{
     transform:translateY(-4px);
 
     border-color:
-        rgba(83,225,255,.50);
+        rgba(75,220,245,.48);
 
     box-shadow:
-        0 20px 45px rgba(0,0,0,.38),
-        0 0 25px rgba(60,220,255,.09);
+        0 22px 45px rgba(0,0,0,.42),
+        0 0 25px rgba(55,220,245,.10);
 }
 
 .sensor-icon{
-    width:40px;
-    height:40px;
+    width:42px;
+    height:42px;
 
     display:flex;
     align-items:center;
@@ -332,11 +734,11 @@ body::before{
     border-radius:13px;
 
     background:
-        rgba(66,213,240,.10);
+        rgba(69,219,244,.10);
 
     border:
         1px solid
-        rgba(86,222,245,.20);
+        rgba(90,223,244,.20);
 
     font-size:20px;
 }
@@ -344,42 +746,48 @@ body::before{
 .sensor-name{
     margin-top:12px;
 
-    color:#8faeb8;
+    color:#91adb6;
 
-    font-size:11px;
-    font-weight:700;
+    font-size:10px;
 
     text-transform:uppercase;
-    letter-spacing:1px;
+
+    letter-spacing:1.2px;
+
+    font-weight:800;
 }
 
 .sensor-value{
     margin-top:3px;
 
-    font-size:27px;
-    font-weight:950;
+    font-size:28px;
+
+    font-weight:1000;
 }
 
 .sensor-unit{
-    font-size:11px;
-    color:#78939d;
+    color:#78949d;
+
+    font-size:10px;
 }
 
 .sensor-bar{
+    height:5px;
+
     margin-top:13px;
 
-    height:5px;
+    overflow:hidden;
 
     border-radius:20px;
 
-    background:rgba(255,255,255,.07);
-
-    overflow:hidden;
+    background:
+        rgba(255,255,255,.07);
 }
 
 .sensor-fill{
     height:100%;
-    width:0%;
+
+    width:3%;
 
     border-radius:20px;
 
@@ -387,27 +795,30 @@ body::before{
         linear-gradient(
             90deg,
             #32d8ff,
-            #67f5ce
+            #5df1bc
         );
 
     box-shadow:
-        0 0 12px rgba(56,225,255,.5);
+        0 0 12px rgba(55,225,255,.55);
 
     transition:
         width .5s ease;
 }
+
 
 /* =========================================================
    GRAPH SECTION
 ========================================================= */
 
 .section-title{
-    margin:22px 4px 11px;
+    margin:
+        24px 4px 11px;
 
-    font-size:16px;
-    font-weight:900;
+    font-size:17px;
 
-    color:#d8f6fc;
+    font-weight:950;
+
+    color:#d8f7fc;
 }
 
 .graph-grid{
@@ -422,37 +833,43 @@ body::before{
 .graph-card{
     position:relative;
 
-    border-radius:23px;
-
     padding:15px;
+
+    border-radius:24px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(10,37,48,.88),
-            rgba(4,18,26,.90)
+            rgba(9,38,50,.90),
+            rgba(3,17,25,.90)
         );
 
     border:
         1px solid
-        rgba(125,220,239,.18);
+        rgba(126,221,240,.18);
+
+    backdrop-filter:
+        blur(15px);
 
     box-shadow:
-        0 17px 40px rgba(0,0,0,.30),
+        0 18px 43px rgba(0,0,0,.35),
         inset 0 1px 0 rgba(255,255,255,.07);
 }
 
 .graph-title{
     display:flex;
+
     align-items:center;
+
     justify-content:space-between;
 
     margin-bottom:7px;
 }
 
 .graph-name{
-    font-weight:900;
     font-size:13px;
+
+    font-weight:950;
 }
 
 .live-dot{
@@ -461,33 +878,38 @@ body::before{
 
     border-radius:50%;
 
-    background:#45e6ff;
+    background:#48e6ff;
 
     box-shadow:
-        0 0 10px #45e6ff;
+        0 0 12px #48e6ff;
 }
 
 .graph{
     position:relative;
+
     width:100%;
+
     height:220px;
 }
 
 .graph svg{
     width:100%;
     height:100%;
+
     overflow:visible;
 }
 
 .graph-grid-line{
-    stroke:rgba(190,230,245,.08);
+    stroke:
+        rgba(190,230,245,.08);
+
     stroke-width:1;
 }
 
 .graph-line{
     fill:none;
 
-    stroke:#45e5ff;
+    stroke:#48e5ff;
 
     stroke-width:3.5;
 
@@ -503,13 +925,13 @@ body::before{
 
 .graph-area{
     fill:
-        rgba(50,215,255,.08);
+        rgba(55,220,255,.08);
 }
 
 .graph-dot{
     fill:#fff;
 
-    stroke:#48e4ff;
+    stroke:#45e4ff;
 
     stroke-width:3;
 
@@ -517,8 +939,8 @@ body::before{
 
     filter:
         drop-shadow(
-            0 0 6px
-            rgba(60,230,255,.85)
+            0 0 7px
+            rgba(55,230,255,.9)
         );
 }
 
@@ -527,16 +949,16 @@ body::before{
 }
 
 .graph-dot.selected{
-    stroke:#ff70b8;
+    stroke:#ff67b3;
+
     stroke-width:4;
 
     filter:
-        drop-shadow(0 0 8px #ff70b8);
+        drop-shadow(0 0 9px #ff67b3);
 }
 
-/* =========================================================
-   TOOLTIP
-========================================================= */
+
+/* tooltip */
 
 .graph-tooltip{
     position:absolute;
@@ -548,14 +970,14 @@ body::before{
     border-radius:14px;
 
     background:
-        rgba(3,17,25,.97);
+        rgba(3,17,25,.98);
 
     border:
         1px solid
         rgba(76,220,246,.55);
 
     box-shadow:
-        0 12px 30px rgba(0,0,0,.55),
+        0 14px 32px rgba(0,0,0,.58),
         0 0 20px rgba(50,215,255,.15);
 
     pointer-events:none;
@@ -568,7 +990,7 @@ body::before{
 
     transition:.15s;
 
-    z-index:20;
+    z-index:50;
 }
 
 .graph-tooltip.show{
@@ -581,6 +1003,7 @@ body::before{
 
 .tooltip-date{
     color:#8da8b2;
+
     font-size:9px;
 }
 
@@ -590,6 +1013,7 @@ body::before{
     color:#59eaff;
 
     font-size:18px;
+
     font-weight:950;
 }
 
@@ -597,6 +1021,7 @@ body::before{
     margin-top:4px;
 
     font-size:10px;
+
     font-weight:900;
 }
 
@@ -616,15 +1041,142 @@ body::before{
     color:#ff4f9d;
 }
 
+
 /* =========================================================
-   ALARM PANEL
+   SAFETY PRECAUTIONS
 ========================================================= */
 
-.alarm-panel{
-    margin-top:16px;
+.precautions{
+    margin-top:18px;
+
+    padding:20px;
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12,43,52,.92),
+            rgba(4,19,27,.91)
+        );
+
+    border:
+        1px solid
+        rgba(126,221,240,.20);
+
+    backdrop-filter:
+        blur(17px);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.38);
+}
+
+.precaution-heading{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:18px;
+
+    font-weight:950;
+}
+
+.precaution-intro{
+    margin-top:5px;
+
+    color:#8faab3;
+
+    font-size:11px;
+}
+
+.precaution-list{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.precaution{
+    padding:15px 12px;
+
+    min-height:145px;
+
+    border-radius:18px;
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid
+        rgba(150,225,237,.13);
+
+    transition:.2s ease;
+}
+
+.precaution:hover{
+    transform:translateY(-3px);
+
+    background:
+        rgba(75,215,240,.08);
+
+    border-color:
+        rgba(75,215,240,.35);
+}
+
+.precaution-number{
+    width:31px;
+    height:31px;
 
     display:flex;
     align-items:center;
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:
+        rgba(70,218,242,.13);
+
+    color:#61e8ff;
+
+    font-weight:950;
+}
+
+.precaution-title{
+    margin-top:10px;
+
+    font-size:12px;
+
+    font-weight:900;
+}
+
+.precaution-text{
+    margin-top:5px;
+
+    color:#91aab2;
+
+    font-size:10px;
+
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   ALARM
+========================================================= */
+
+.alarm-panel{
+    margin-top:17px;
+
+    display:flex;
+
+    align-items:center;
+
     justify-content:space-between;
 
     gap:15px;
@@ -635,14 +1187,17 @@ body::before{
 
     background:
         linear-gradient(
-            135deg,
-            rgba(35,29,22,.86),
-            rgba(13,19,24,.90)
+            145deg,
+            rgba(38,31,23,.89),
+            rgba(11,19,24,.91)
         );
 
     border:
         1px solid
         rgba(255,205,80,.20);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.30);
 }
 
 .alarm-title{
@@ -652,27 +1207,29 @@ body::before{
 .alarm-text{
     margin-top:4px;
 
-    font-size:11px;
     color:#94adb6;
+
+    font-size:10px;
 }
 
 .alarm-button{
     border:0;
 
-    padding:12px 18px;
+    padding:
+        12px 18px;
 
     border-radius:14px;
 
     background:
         linear-gradient(
             135deg,
-            #21d9ff,
+            #20d8ff,
             #168bbd
         );
 
     color:#fff;
 
-    font-weight:900;
+    font-weight:950;
 
     cursor:pointer;
 
@@ -690,64 +1247,54 @@ body::before{
         );
 }
 
+
 /* =========================================================
    FOOTER
 ========================================================= */
 
 .footer{
+    margin-top:18px;
+
     text-align:center;
 
-    margin-top:17px;
-
-    color:#708a94;
+    color:#718b94;
 
     font-size:9px;
 
     letter-spacing:1px;
 }
 
+
 /* =========================================================
    MOBILE
 ========================================================= */
 
-@media(max-width:850px){
+@media(max-width:900px){
 
     .sensor-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .precaution-list{
         grid-template-columns:
             repeat(2,1fr);
     }
 
 }
 
-@media(max-width:620px){
+@media(max-width:650px){
 
     .dashboard{
         width:94%;
         padding-top:10px;
     }
 
-    .header{
-        padding:20px 12px;
-    }
-
-    .logo{
-        width:78px;
-        height:78px;
-    }
-
-    .sensor-grid{
-        grid-template-columns:
-            repeat(2,1fr);
-
-        gap:10px;
-    }
-
-    .sensor-card{
-        min-height:135px;
-        padding:13px;
-    }
-
     .graph-grid{
+        grid-template-columns:1fr;
+    }
+
+    .precaution-list{
         grid-template-columns:1fr;
     }
 
@@ -756,20 +1303,34 @@ body::before{
     }
 
     .status-light{
-        width:45px;
-        height:45px;
+        width:46px;
+        height:46px;
+    }
+
+    .alarm-panel{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .alarm-button{
+        width:100%;
     }
 
 }
 
-@media(max-width:400px){
+@media(max-width:410px){
 
-    .sensor-value{
-        font-size:23px;
+    .sensor-grid{
+        gap:9px;
     }
 
     .sensor-card{
-        min-height:125px;
+        padding:12px;
+        min-height:135px;
+    }
+
+    .sensor-value{
+        font-size:23px;
     }
 
 }
@@ -780,13 +1341,57 @@ body::before{
 
 <body>
 
-<div class="background"></div>
 
-<div class="dashboard">
+<!-- =======================================================
+     CREATIVE BACKGROUND
+======================================================== -->
 
-    <!-- =====================================================
-         COLLEGE HEADER
-    ====================================================== -->
+<div class="storm">
+
+    <div class="mountain"></div>
+
+    <div class="slide"></div>
+
+    <div class="tree tree1"></div>
+    <div class="tree tree2"></div>
+    <div class="tree tree3"></div>
+    <div class="tree tree4"></div>
+    <div class="tree tree5"></div>
+    <div class="tree tree6"></div>
+
+    <div class="mist"></div>
+
+    <div class="rain"></div>
+    <div class="rain2"></div>
+
+    <div class="lightning"></div>
+
+</div>
+
+
+<div class="windshield">
+
+    <div class="drop d1"></div>
+    <div class="drop d2"></div>
+    <div class="drop d3"></div>
+    <div class="drop d4"></div>
+    <div class="drop d5"></div>
+    <div class="drop d6"></div>
+    <div class="drop d7"></div>
+    <div class="drop d8"></div>
+    <div class="drop d9"></div>
+
+</div>
+
+
+<!-- =======================================================
+     DASHBOARD
+======================================================== -->
+
+<main class="dashboard">
+
+
+    <!-- HEADER -->
 
     <header class="header">
 
@@ -807,9 +1412,7 @@ body::before{
     </header>
 
 
-    <!-- =====================================================
-         MAIN RISK STATUS
-    ====================================================== -->
+    <!-- RISK -->
 
     <section class="status-card">
 
@@ -847,11 +1450,10 @@ body::before{
     </section>
 
 
-    <!-- =====================================================
-         SENSOR CARDS
-    ====================================================== -->
+    <!-- SENSOR CARDS -->
 
     <div class="sensor-grid">
+
 
         <div class="sensor-card">
 
@@ -860,7 +1462,7 @@ body::before{
             </div>
 
             <div class="sensor-name">
-                Soil
+                Soil Moisture
             </div>
 
             <div
@@ -871,7 +1473,7 @@ body::before{
             </div>
 
             <div class="sensor-unit">
-                moisture
+                sensor value
             </div>
 
             <div class="sensor-bar">
@@ -918,7 +1520,7 @@ body::before{
         <div class="sensor-card">
 
             <div class="sensor-icon">
-                💧
+                🌧️
             </div>
 
             <div class="sensor-name">
@@ -933,7 +1535,7 @@ body::before{
             </div>
 
             <div class="sensor-unit">
-                sensor
+                sensor value
             </div>
 
             <div class="sensor-bar">
@@ -964,7 +1566,7 @@ body::before{
             </div>
 
             <div class="sensor-unit">
-                sensor
+                sensor value
             </div>
 
             <div class="sensor-bar">
@@ -979,31 +1581,35 @@ body::before{
     </div>
 
 
-    <!-- =====================================================
-         GRAPHS
-    ====================================================== -->
+    <!-- GRAPHS -->
 
     <div class="section-title">
-        Live Sensor Trends
+        📊 Live Sensor Trends
     </div>
 
+
     <div class="graph-grid">
+
 
         <div class="graph-card">
 
             <div class="graph-title">
+
                 <span class="graph-name">
                     Soil Moisture
                 </span>
 
                 <span class="live-dot"></span>
+
             </div>
 
             <div class="graph">
+
                 <svg
                     id="soilGraph"
                     viewBox="0 0 600 220"
                 ></svg>
+
             </div>
 
         </div>
@@ -1012,18 +1618,22 @@ body::before{
         <div class="graph-card">
 
             <div class="graph-title">
+
                 <span class="graph-name">
                     Distance
                 </span>
 
                 <span class="live-dot"></span>
+
             </div>
 
             <div class="graph">
+
                 <svg
                     id="distanceGraph"
                     viewBox="0 0 600 220"
                 ></svg>
+
             </div>
 
         </div>
@@ -1032,18 +1642,22 @@ body::before{
         <div class="graph-card">
 
             <div class="graph-title">
+
                 <span class="graph-name">
                     Rain
                 </span>
 
                 <span class="live-dot"></span>
+
             </div>
 
             <div class="graph">
+
                 <svg
                     id="rainGraph"
                     viewBox="0 0 600 220"
                 ></svg>
+
             </div>
 
         </div>
@@ -1052,28 +1666,152 @@ body::before{
         <div class="graph-card">
 
             <div class="graph-title">
+
                 <span class="graph-name">
-                    Ultrasonic / Vibration
+                    Vibration
                 </span>
 
                 <span class="live-dot"></span>
+
             </div>
 
             <div class="graph">
+
                 <svg
                     id="vibrationGraph"
                     viewBox="0 0 600 220"
                 ></svg>
+
             </div>
 
         </div>
 
+
     </div>
 
 
-    <!-- =====================================================
+    <!-- ===================================================
+         SAFETY PRECAUTIONS
+    ==================================================== -->
+
+    <section class="precautions">
+
+        <div class="precaution-heading">
+            🛡️ Landslide Safety Precautions
+        </div>
+
+        <div class="precaution-intro">
+            Follow these five precautions whenever the system
+            reports increasing landslide risk.
+        </div>
+
+
+        <div class="precaution-list">
+
+
+            <div class="precaution">
+
+                <div class="precaution-number">
+                    01
+                </div>
+
+                <div class="precaution-title">
+                    Move to Safety
+                </div>
+
+                <div class="precaution-text">
+                    If HIGH DANGER is announced, move away
+                    from the affected slope and follow
+                    emergency instructions.
+                </div>
+
+            </div>
+
+
+            <div class="precaution">
+
+                <div class="precaution-number">
+                    02
+                </div>
+
+                <div class="precaution-title">
+                    Avoid Steep Slopes
+                </div>
+
+                <div class="precaution-text">
+                    Stay away from steep hillsides, cliffs,
+                    unstable ground and areas showing signs
+                    of slope movement.
+                </div>
+
+            </div>
+
+
+            <div class="precaution">
+
+                <div class="precaution-number">
+                    03
+                </div>
+
+                <div class="precaution-title">
+                    Avoid Heavy-Rain Travel
+                </div>
+
+                <div class="precaution-text">
+                    During intense rainfall, avoid unnecessary
+                    travel through areas known to have
+                    landslide risk.
+                </div>
+
+            </div>
+
+
+            <div class="precaution">
+
+                <div class="precaution-number">
+                    04
+                </div>
+
+                <div class="precaution-title">
+                    Keep Communication Ready
+                </div>
+
+                <div class="precaution-text">
+                    Keep your phone charged and pay attention
+                    to official emergency warnings and
+                    evacuation instructions.
+                </div>
+
+            </div>
+
+
+            <div class="precaution">
+
+                <div class="precaution-number">
+                    05
+                </div>
+
+                <div class="precaution-title">
+                    Never Cross Debris
+                </div>
+
+                <div class="precaution-text">
+                    Never attempt to walk or drive across an
+                    active landslide, debris flow or newly
+                    damaged road.
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ===================================================
          MOBILE ALARM
-    ====================================================== -->
+    ==================================================== -->
 
     <section class="alarm-panel">
 
@@ -1087,10 +1825,11 @@ body::before{
                 id="alarmText"
                 class="alarm-text"
             >
-                Tap enable once to allow the phone speaker.
+                Tap once to enable the phone speaker.
             </div>
 
         </div>
+
 
         <button
             id="alarmButton"
@@ -1104,32 +1843,37 @@ body::before{
 
 
     <div class="footer">
-        LIVE DATA • THINGSPEAK • SANJIVANI COLLEGE
+        LIVE THINGSPEAK DATA • SANJIVANI COLLEGE
     </div>
 
-</div>
+
+</main>
 
 
 <script>
 
 /* =========================================================
-   THINGSPEAK SETTINGS
+   THINGSPEAK
 ========================================================= */
 
 const CHANNEL_ID = "3456662";
 
+
 /*
- IMPORTANT:
- Your private Read API key is intentionally not exposed
- here. Put the existing key in your private deployment
- configuration rather than publishing it in the HTML.
+   Field mapping used by your existing dashboard:
+
+   Field 1 = Soil
+   Field 2 = Distance
+   Field 3 = Vibration
+   Field 4 = Rain
 */
+
 
 const READ_API_KEY = "";
 
 
 /* =========================================================
-   DATA ARRAYS
+   ARRAYS
 ========================================================= */
 
 let soilValues = [];
@@ -1140,12 +1884,12 @@ let dates = [];
 
 
 /* =========================================================
-   MOBILE ALARM
+   ALARM
 ========================================================= */
 
 let alarmEnabled = false;
-
 let audioContext = null;
+let lastDangerState = false;
 
 
 function enableAlarm(){
@@ -1158,11 +1902,7 @@ function enableAlarm(){
                 window.webkitAudioContext
             )();
 
-        if(
-            audioContext.state === "suspended"
-        ){
-            audioContext.resume();
-        }
+        audioContext.resume();
 
         alarmEnabled = true;
 
@@ -1178,12 +1918,12 @@ function enableAlarm(){
         document
             .getElementById("alarmText")
             .textContent =
-                "Mobile emergency alarm is ready.";
+                "Emergency mobile alarm is ready.";
 
     }
     catch(error){
 
-        console.log(error);
+        console.error(error);
 
     }
 
@@ -1191,22 +1931,28 @@ function enableAlarm(){
 
 
 /* =========================================================
-   MOBILE HORN
+   HORN
 ========================================================= */
 
 function playHorn(){
 
-    if(!alarmEnabled)
+    if(
+        !alarmEnabled ||
+        !audioContext
+    ){
         return;
+    }
 
-    if(!audioContext)
-        return;
 
     const now =
         audioContext.currentTime;
 
 
-    for(let i=0;i<3;i++){
+    for(
+        let i=0;
+        i<4;
+        i++
+    ){
 
         const oscillator =
             audioContext.createOscillator();
@@ -1214,33 +1960,40 @@ function playHorn(){
         const gain =
             audioContext.createGain();
 
+
         oscillator.type =
             "sawtooth";
 
+
         oscillator.frequency.setValueAtTime(
-            420,
-            now + i*.55
+            430,
+            now+i*.55
         );
+
 
         oscillator.frequency.linearRampToValueAtTime(
             680,
-            now + i*.55 + .25
+            now+i*.55+.25
         );
+
 
         gain.gain.setValueAtTime(
             .0001,
-            now + i*.55
+            now+i*.55
         );
 
+
         gain.gain.exponentialRampToValueAtTime(
-            .22,
-            now + i*.55 + .04
+            .20,
+            now+i*.55+.04
         );
+
 
         gain.gain.exponentialRampToValueAtTime(
             .0001,
-            now + i*.55 + .45
+            now+i*.55+.45
         );
+
 
         oscillator.connect(gain);
 
@@ -1248,12 +2001,14 @@ function playHorn(){
             audioContext.destination
         );
 
+
         oscillator.start(
-            now + i*.55
+            now+i*.55
         );
 
+
         oscillator.stop(
-            now + i*.55 + .5
+            now+i*.55+.5
         );
 
     }
@@ -1262,7 +2017,7 @@ function playHorn(){
 
 
 /* =========================================================
-   FETCH THINGSPEAK
+   LOAD THINGSPEAK DATA
 ========================================================= */
 
 async function loadData(){
@@ -1271,6 +2026,7 @@ async function loadData(){
 
         let url =
             `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
+
 
         if(READ_API_KEY){
 
@@ -1285,69 +2041,60 @@ async function loadData(){
         const response =
             await fetch(url);
 
+
+        if(!response.ok){
+
+            throw new Error(
+                "ThingSpeak request failed"
+            );
+
+        }
+
+
         const data =
             await response.json();
 
 
         if(
             !data.feeds ||
-            data.feeds.length === 0
+            !data.feeds.length
         ){
+
             throw new Error(
-                "No ThingSpeak data"
+                "No ThingSpeak readings"
             );
+
         }
 
 
-        soilValues = [];
-
-        distanceValues = [];
-
-        rainValues = [];
-
-        vibrationValues = [];
-
-        dates = [];
+        soilValues=[];
+        distanceValues=[];
+        rainValues=[];
+        vibrationValues=[];
+        dates=[];
 
 
         data.feeds.forEach(
-            feed => {
+            feed=>{
 
-                const soil =
-                    Number(feed.field1);
-
-                const distance =
-                    Number(feed.field2);
-
-                const vibration =
-                    Number(feed.field3);
-
-                const rain =
-                    Number(feed.field4);
+                soilValues.push(
+                    Number(feed.field1)||0
+                );
 
 
-                if(!isNaN(soil))
-                    soilValues.push(soil);
-                else
-                    soilValues.push(0);
+                distanceValues.push(
+                    Number(feed.field2)||0
+                );
 
 
-                if(!isNaN(distance))
-                    distanceValues.push(distance);
-                else
-                    distanceValues.push(0);
+                vibrationValues.push(
+                    Number(feed.field3)||0
+                );
 
 
-                if(!isNaN(rain))
-                    rainValues.push(rain);
-                else
-                    rainValues.push(0);
-
-
-                if(!isNaN(vibration))
-                    vibrationValues.push(vibration);
-                else
-                    vibrationValues.push(0);
+                rainValues.push(
+                    Number(feed.field4)||0
+                );
 
 
                 const date =
@@ -1372,21 +2119,21 @@ async function loadData(){
 
         const last =
             data.feeds[
-                data.feeds.length - 1
+                data.feeds.length-1
             ];
 
 
         const soil =
-            Number(last.field1) || 0;
+            Number(last.field1)||0;
 
         const distance =
-            Number(last.field2) || 0;
+            Number(last.field2)||0;
 
         const vibration =
-            Number(last.field3) || 0;
+            Number(last.field3)||0;
 
         const rain =
-            Number(last.field4) || 0;
+            Number(last.field4)||0;
 
 
         updateCards(
@@ -1426,21 +2173,21 @@ async function loadData(){
             "vibrationGraph",
             vibrationValues,
             dates,
-            "Ultrasonic"
+            "Vibration"
         );
+
 
     }
     catch(error){
 
-        console.error(
-            "ThingSpeak error:",
-            error
-        );
+        console.error(error);
+
 
         document
             .getElementById("riskStatus")
             .textContent =
                 "OFFLINE";
+
 
         document
             .getElementById("riskMessage")
@@ -1453,7 +2200,7 @@ async function loadData(){
 
 
 /* =========================================================
-   UPDATE SENSOR CARDS
+   SENSOR CARDS
 ========================================================= */
 
 function updateCards(
@@ -1492,8 +2239,8 @@ function updateCards(
         .style.width =
             Math.min(
                 100,
-                soil / 10
-            ) + "%";
+                soil/10
+            )+"%";
 
 
     document
@@ -1501,8 +2248,8 @@ function updateCards(
         .style.width =
             Math.min(
                 100,
-                distance * 2
-            ) + "%";
+                distance*2
+            )+"%";
 
 
     document
@@ -1510,8 +2257,8 @@ function updateCards(
         .style.width =
             Math.min(
                 100,
-                rain / 10
-            ) + "%";
+                rain/10
+            )+"%";
 
 
     document
@@ -1533,12 +2280,8 @@ function updateCards(
 
 
 /* =========================================================
-   RISK SYSTEM
+   RISK CALCULATION
 ========================================================= */
-
-let lastDangerState =
-    false;
-
 
 function calculateRisk(
     soil,
@@ -1547,61 +2290,57 @@ function calculateRisk(
     vibration
 ){
 
-    let score = 0;
+    let score=0;
 
 
-    if(soil >= 700)
-        score += 3;
-    else if(soil >= 500)
-        score += 2;
-    else if(soil >= 350)
-        score += 1;
+    if(soil>=700)
+        score+=3;
+
+    else if(soil>=500)
+        score+=2;
+
+    else if(soil>=350)
+        score+=1;
 
 
     if(
-        distance > 0 &&
-        distance <= 10
+        distance>0 &&
+        distance<=10
     )
-        score += 3;
+        score+=3;
+
     else if(
-        distance > 0 &&
-        distance <= 20
+        distance>0 &&
+        distance<=20
     )
-        score += 2;
+        score+=2;
+
     else if(
-        distance > 0 &&
-        distance <= 40
+        distance>0 &&
+        distance<=40
     )
-        score += 1;
+        score+=1;
 
 
-    if(rain >= 700)
-        score += 3;
-    else if(rain >= 500)
-        score += 2;
-    else if(rain >= 300)
-        score += 1;
+    if(rain>=700)
+        score+=3;
+
+    else if(rain>=500)
+        score+=2;
+
+    else if(rain>=300)
+        score+=1;
 
 
-    if(vibration >= 1)
-        score += 2;
+    if(vibration>=1)
+        score+=2;
 
 
-    let status;
-    let message;
-
-
-    if(score >= 7){
-
-        status =
-            "HIGH DANGER";
-
-        message =
-            "Evacuate immediately — emergency alarm activated.";
+    if(score>=7){
 
         setStatus(
-            status,
-            message,
+            "HIGH DANGER",
+            "Evacuate immediately — dangerous landslide conditions detected.",
             "danger"
         );
 
@@ -1610,24 +2349,17 @@ function calculateRisk(
 
             playHorn();
 
-            lastDangerState =
-                true;
+            lastDangerState=true;
 
         }
 
     }
 
-    else if(score >= 4){
-
-        status =
-            "HIGH RISK";
-
-        message =
-            "Landslide conditions detected.";
+    else if(score>=4){
 
         setStatus(
-            status,
-            message,
+            "HIGH RISK",
+            "Landslide risk is elevated. Follow safety precautions.",
             "high"
         );
 
@@ -1636,48 +2368,35 @@ function calculateRisk(
 
             playHorn();
 
-            lastDangerState =
-                true;
+            lastDangerState=true;
 
         }
 
     }
 
-    else if(score >= 2){
-
-        status =
-            "MODERATE";
-
-        message =
-            "Please continue monitoring the sensors.";
+    else if(score>=2){
 
         setStatus(
-            status,
-            message,
+            "MODERATE",
+            "Continue monitoring the live sensor conditions.",
             "moderate"
         );
 
-        lastDangerState =
-            false;
+
+        lastDangerState=false;
 
     }
 
     else{
 
-        status =
-            "SAFE";
-
-        message =
-            "Current sensor conditions are normal.";
-
         setStatus(
-            status,
-            message,
+            "SAFE",
+            "Current sensor conditions are normal.",
             "safe"
         );
 
-        lastDangerState =
-            false;
+
+        lastDangerState=false;
 
     }
 
@@ -1685,7 +2404,7 @@ function calculateRisk(
 
 
 /* =========================================================
-   STATUS VISUAL
+   STATUS
 ========================================================= */
 
 function setStatus(
@@ -1699,10 +2418,12 @@ function setStatus(
             "riskStatus"
         );
 
+
     const messageElement =
         document.getElementById(
             "riskMessage"
         );
+
 
     const light =
         document.getElementById(
@@ -1713,11 +2434,12 @@ function setStatus(
     statusElement.textContent =
         status;
 
+
     messageElement.textContent =
         message;
 
 
-    if(type === "danger"){
+    if(type==="danger"){
 
         statusElement.style.color =
             "#ff4f7b";
@@ -1726,24 +2448,24 @@ function setStatus(
             "#ff426d";
 
         light.style.boxShadow =
-            "0 0 0 7px rgba(255,66,109,.12),0 0 38px rgba(255,66,109,.75)";
+            "0 0 0 7px rgba(255,66,109,.12),0 0 40px rgba(255,66,109,.80)";
 
     }
 
-    else if(type === "high"){
+    else if(type==="high"){
 
         statusElement.style.color =
-            "#ff795c";
+            "#ff765c";
 
         light.style.background =
             "#ff7055";
 
         light.style.boxShadow =
-            "0 0 0 7px rgba(255,112,85,.12),0 0 38px rgba(255,112,85,.7)";
+            "0 0 0 7px rgba(255,112,85,.12),0 0 38px rgba(255,112,85,.72)";
 
     }
 
-    else if(type === "moderate"){
+    else if(type==="moderate"){
 
         statusElement.style.color =
             "#ffd45b";
@@ -1773,7 +2495,7 @@ function setStatus(
 
 
 /* =========================================================
-   GRAPH FUNCTION
+   GRAPH
 ========================================================= */
 
 function createGraph(
@@ -1789,7 +2511,8 @@ function createGraph(
             svgId
         );
 
-    if(!svg)
+
+    if(!svg || !values.length)
         return;
 
 
@@ -1797,7 +2520,7 @@ function createGraph(
         svg.parentElement;
 
 
-    svg.innerHTML = "";
+    svg.innerHTML="";
 
 
     const oldTooltip =
@@ -1805,54 +2528,51 @@ function createGraph(
             ".graph-tooltip"
         );
 
+
     if(oldTooltip)
         oldTooltip.remove();
 
 
-    if(!values.length)
-        return;
+    const W=600;
+    const H=220;
+
+    const left=42;
+    const right=12;
+    const top=12;
+    const bottom=32;
 
 
-    const W = 600;
-    const H = 220;
-
-    const left = 42;
-    const right = 12;
-    const top = 12;
-    const bottom = 32;
-
-
-    const gw =
+    const gw=
         W-left-right;
 
-    const gh =
+    const gh=
         H-top-bottom;
 
 
-    let min =
+    let min=
         Math.min(...values);
 
-    let max =
+    let max=
         Math.max(...values);
 
 
-    if(min === max){
+    if(min===max){
 
-        min -= 1;
-        max += 1;
+        min-=1;
+        max+=1;
 
     }
 
 
-    const padding =
+    const padding=
         (max-min)*.12;
 
 
-    min -= padding;
-    max += padding;
+    min-=padding;
+    max+=padding;
 
 
-    /* Grid */
+    /* grid */
 
     for(
         let i=0;
@@ -1860,54 +2580,56 @@ function createGraph(
         i++
     ){
 
-        const y =
+        const y=
             top+
             gh*(i/4);
 
 
-        const line =
+        const grid=
             document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "line"
             );
 
 
-        line.setAttribute(
+        grid.setAttribute(
             "x1",
             left
         );
 
-        line.setAttribute(
+        grid.setAttribute(
             "x2",
             W-right
         );
 
-        line.setAttribute(
+        grid.setAttribute(
             "y1",
             y
         );
 
-        line.setAttribute(
+        grid.setAttribute(
             "y2",
             y
         );
 
-        line.setAttribute(
+        grid.setAttribute(
             "class",
             "graph-grid-line"
         );
 
 
-        svg.appendChild(line);
+        svg.appendChild(grid);
 
     }
 
 
-    const points =
+    /* points */
+
+    const points=
         values.map(
             (value,index)=>{
 
-                const x =
+                const x=
                     left+
                     (
                         index/
@@ -1918,7 +2640,7 @@ function createGraph(
                     )*gw;
 
 
-                const y =
+                const y=
                     top+
                     gh-
                     (
@@ -1936,17 +2658,16 @@ function createGraph(
                     y,
                     value,
                     date:
-                        dates[index] ||
-                        "--"
+                        dates[index]||"--"
                 };
 
             }
         );
 
 
-    /* Area */
+    /* area */
 
-    const areaPoints =
+    const areaPoints=
         [
             `${points[0].x},${H-bottom}`,
             ...points.map(
@@ -1956,7 +2677,7 @@ function createGraph(
         ].join(" ");
 
 
-    const area =
+    const area=
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "polygon"
@@ -1977,9 +2698,9 @@ function createGraph(
     svg.appendChild(area);
 
 
-    /* Line */
+    /* curve */
 
-    let path = "";
+    let path="";
 
 
     points.forEach(
@@ -1987,24 +2708,24 @@ function createGraph(
 
             if(index===0){
 
-                path =
+                path=
                     `M ${p.x} ${p.y}`;
 
             }
             else{
 
-                const previous =
+                const prev=
                     points[index-1];
 
-                const mid =
+
+                const mid=
                     (
-                        previous.x+
-                        p.x
+                        prev.x+p.x
                     )/2;
 
 
-                path +=
-                    ` C ${mid} ${previous.y},
+                path+=
+                    ` C ${mid} ${prev.y},
                     ${mid} ${p.y},
                     ${p.x} ${p.y}`;
 
@@ -2014,35 +2735,36 @@ function createGraph(
     );
 
 
-    const line =
+    const curve=
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "path"
         );
 
 
-    line.setAttribute(
+    curve.setAttribute(
         "d",
         path
     );
 
-    line.setAttribute(
+    curve.setAttribute(
         "class",
         "graph-line"
     );
 
 
-    svg.appendChild(line);
+    svg.appendChild(curve);
 
 
-    /* Tooltip */
+    /* tooltip */
 
-    const tooltip =
+    const tooltip=
         document.createElement(
             "div"
         );
 
-    tooltip.className =
+
+    tooltip.className=
         "graph-tooltip";
 
 
@@ -2051,12 +2773,12 @@ function createGraph(
     );
 
 
-    /* Points */
+    /* circles */
 
     points.forEach(
         (p,index)=>{
 
-            const dot =
+            const dot=
                 document.createElementNS(
                     "http://www.w3.org/2000/svg",
                     "circle"
@@ -2076,8 +2798,8 @@ function createGraph(
             dot.setAttribute(
                 "r",
                 index===points.length-1
-                ? 5.5
-                : 4
+                ?5.5
+                :4
             );
 
 
@@ -2089,9 +2811,9 @@ function createGraph(
 
             dot.addEventListener(
                 "click",
-                e=>{
+                event=>{
 
-                    e.stopPropagation();
+                    event.stopPropagation();
 
 
                     svg
@@ -2099,7 +2821,7 @@ function createGraph(
                             ".graph-dot"
                         )
                         .forEach(
-                            d =>
+                            d=>
                                 d.classList.remove(
                                     "selected"
                                 )
@@ -2111,14 +2833,14 @@ function createGraph(
                     );
 
 
-                    const rating =
+                    const rating=
                         getRating(
                             p.value,
                             label
                         );
 
 
-                    tooltip.innerHTML =
+                    tooltip.innerHTML=
 
                         `<div class="tooltip-date">
                             ${p.date}
@@ -2136,38 +2858,29 @@ function createGraph(
                         </div>`;
 
 
-                    const rect =
+                    const svgRect=
                         svg.getBoundingClientRect();
 
-                    const parent =
+
+                    const graphRect=
                         graph.getBoundingClientRect();
 
 
-                    const x =
-                        p.x*
-                        rect.width/
-                        W;
-
-
-                    const y =
-                        p.y*
-                        rect.height/
-                        H;
-
-
-                    tooltip.style.left =
+                    tooltip.style.left=
                         (
-                            rect.left-
-                            parent.left+
-                            x
+                            svgRect.left-
+                            graphRect.left+
+                            p.x*
+                            svgRect.width/W
                         )+"px";
 
 
-                    tooltip.style.top =
+                    tooltip.style.top=
                         (
-                            rect.top-
-                            parent.top+
-                            y
+                            svgRect.top-
+                            graphRect.top+
+                            p.y*
+                            svgRect.height/H
                         )+"px";
 
 
@@ -2185,9 +2898,9 @@ function createGraph(
     );
 
 
-    /* Dates */
+    /* date labels */
 
-    const indexes =
+    const indexes=
         getDateIndexes(
             dates.length
         );
@@ -2196,7 +2909,7 @@ function createGraph(
     indexes.forEach(
         index=>{
 
-            const text =
+            const text=
                 document.createElementNS(
                     "http://www.w3.org/2000/svg",
                     "text"
@@ -2213,6 +2926,7 @@ function createGraph(
                 H-8
             );
 
+
             text.setAttribute(
                 "text-anchor",
                 index===0
@@ -2224,10 +2938,12 @@ function createGraph(
                 "middle"
             );
 
+
             text.setAttribute(
                 "fill",
                 "#8da5af"
             );
+
 
             text.setAttribute(
                 "font-size",
@@ -2235,7 +2951,7 @@ function createGraph(
             );
 
 
-            text.textContent =
+            text.textContent=
                 dates[index];
 
 
@@ -2256,12 +2972,16 @@ function getDateIndexes(length){
     if(length<=1)
         return [0];
 
+
     if(length<=5)
         return [...Array(length).keys()];
 
+
     return [
         0,
-        Math.floor((length-1)/2),
+        Math.floor(
+            (length-1)/2
+        ),
         length-1
     ];
 
@@ -2269,7 +2989,7 @@ function getDateIndexes(length){
 
 
 /* =========================================================
-   GRAPH RATING
+   GRAPH RATINGS
 ========================================================= */
 
 function getRating(
@@ -2277,11 +2997,9 @@ function getRating(
     label
 ){
 
-    let name =
-        "LOW";
+    let name="LOW";
 
-    let className =
-        "low";
+    let className="low";
 
 
     if(label==="Soil"){
@@ -2292,12 +3010,14 @@ function getRating(
             className="critical";
 
         }
+
         else if(value>=600){
 
             name="HIGH";
             className="high";
 
         }
+
         else if(value>=400){
 
             name="MODERATE";
@@ -2316,12 +3036,14 @@ function getRating(
             className="critical";
 
         }
+
         else if(value>=500){
 
             name="HIGH";
             className="high";
 
         }
+
         else if(value>=250){
 
             name="MODERATE";
@@ -2343,6 +3065,7 @@ function getRating(
             className="critical";
 
         }
+
         else if(
             value>0 &&
             value<=20
@@ -2352,6 +3075,7 @@ function getRating(
             className="high";
 
         }
+
         else if(
             value>0 &&
             value<=40
@@ -2359,6 +3083,18 @@ function getRating(
 
             name="MODERATE";
             className="moderate";
+
+        }
+
+    }
+
+
+    else if(label==="Vibration"){
+
+        if(value>=1){
+
+            name="HIGH";
+            className="high";
 
         }
 
@@ -2374,14 +3110,14 @@ function getRating(
 
 
 /* =========================================================
-   START
+   START DASHBOARD
 ========================================================= */
 
 loadData();
 
 
 /*
-   Refresh every 15 seconds.
+   Refresh live ThingSpeak data every 15 seconds.
 */
 
 setInterval(

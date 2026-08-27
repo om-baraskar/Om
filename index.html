@@ -2,1697 +2,776 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Sanjivani College | Landslide Safety System</title>
+<title>Sanjivani College — Landslide Monitoring</title>
 
 <style>
+
 *{
     box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-html,body{
-    min-height:100%;
 }
 
 body{
-    font-family:"Segoe UI",Arial,sans-serif;
-    color:white;
-    background:#02080c;
+    margin:0;
+    font-family:Segoe UI,Arial,sans-serif;
+    color:#fff;
+    min-height:100vh;
+    background:#07131a;
     overflow-x:hidden;
 }
 
-
 /* =========================================================
-   REALISTIC 3D WINDSHIELD BACKGROUND
-========================================================= */
+   KEEP YOUR EXISTING BACKGROUND HERE
+   ========================================================= */
 
 .background{
     position:fixed;
     inset:0;
-    z-index:-50;
-    overflow:hidden;
-
+    z-index:-5;
     background:
         linear-gradient(
-            rgba(2,10,13,.30),
-            rgba(1,8,11,.78)
+            180deg,
+            rgba(4,15,21,.38),
+            rgba(3,12,18,.82)
         ),
-        radial-gradient(
-            ellipse at 50% 20%,
-            #28545a 0%,
-            #102e34 42%,
-            #030c10 100%
-        );
+        url("Screenshot_20260826_204053_WhatsApp.jpg")
+        center/cover no-repeat;
+
+    filter:blur(1.5px);
+    transform:scale(1.03);
 }
 
+/* Rain glass layer */
 
-/* distant landscape */
-
-.hills{
-    position:absolute;
-    left:-10%;
-    right:-10%;
-    bottom:4%;
-    height:42%;
-
-    background:
-        radial-gradient(
-            ellipse at 25% 100%,
-            #102e28 0 25%,
-            transparent 26%
-        ),
-        radial-gradient(
-            ellipse at 75% 100%,
-            #09231f 0 32%,
-            transparent 33%
-        );
-
-    opacity:.85;
-}
-
-
-/* =========================================================
-   TREES
-========================================================= */
-
-.forest{
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    height:55%;
-}
-
-.tree{
-    position:absolute;
-    bottom:3%;
-    width:80px;
-    height:300px;
-    opacity:.92;
-    filter:drop-shadow(0 12px 10px rgba(0,0,0,.55));
-}
-
-.tree:after{
+body::before{
     content:"";
-    position:absolute;
-    bottom:0;
-    left:34px;
-    width:13px;
-    height:145px;
-    border-radius:7px;
-    background:linear-gradient(
-        90deg,
-        #020907,
-        #0b1812,
-        #010504
-    );
-}
-
-.leaf{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-
-    width:0;
-    height:0;
-
-    border-left:55px solid transparent;
-    border-right:55px solid transparent;
-    border-bottom:120px solid #03120e;
-
-    filter:drop-shadow(0 5px 8px rgba(0,0,0,.6));
-}
-
-.leaf:nth-child(1){
-    top:0;
-}
-
-.leaf:nth-child(2){
-    top:55px;
-    transform:translateX(-50%) scale(.82);
-}
-
-.leaf:nth-child(3){
-    top:105px;
-    transform:translateX(-50%) scale(.64);
-}
-
-.tree1{
-    left:-2%;
-    transform:scale(1.2);
-}
-
-.tree2{
-    left:13%;
-    transform:scale(.76);
-    opacity:.7;
-}
-
-.tree3{
-    left:25%;
-    transform:scale(1.15);
-}
-
-.tree4{
-    right:24%;
-    transform:scale(.78);
-    opacity:.7;
-}
-
-.tree5{
-    right:10%;
-    transform:scale(1.25);
-}
-
-.tree6{
-    right:-3%;
-    transform:scale(1.05);
-}
-
-
-/* =========================================================
-   WIND AND WATER ON GLASS
-========================================================= */
-
-/* soft glass layer */
-
-.windshield{
-    position:absolute;
+    position:fixed;
     inset:0;
-
-    background:
-        radial-gradient(
-            ellipse at 50% 50%,
-            transparent 25%,
-            rgba(0,0,0,.16) 80%,
-            rgba(0,0,0,.40) 100%
-        );
-
-    backdrop-filter:blur(1.3px);
-}
-
-
-/* tiny rain streaks behind droplets */
-
-.rainFine{
-    position:absolute;
-    inset:-120px;
-
-    background-image:
-        repeating-linear-gradient(
-            103deg,
-            transparent 0px,
-            transparent 23px,
-            rgba(210,240,250,.18) 24px,
-            rgba(210,240,250,.18) 25px,
-            transparent 27px,
-            transparent 47px
-        );
-
-    background-size:62px 85px;
-
-    animation:
-        fineRain .65s linear infinite;
-
-    opacity:.75;
-}
-
-@keyframes fineRain{
-    from{
-        transform:translateY(-80px);
-    }
-
-    to{
-        transform:translateY(100px);
-    }
-}
-
-
-/* =========================================================
-   LARGE REALISTIC WATER DROPS
-========================================================= */
-
-.drops{
-    position:absolute;
-    inset:0;
+    z-index:-4;
     pointer-events:none;
-}
-
-
-/* common drop */
-
-.drop{
-    position:absolute;
-
-    width:var(--size);
-    height:calc(var(--size) * 1.55);
-
-    border-radius:
-        55% 45%
-        62% 38%;
-
-    transform:
-        rotate(var(--rotation));
 
     background:
         radial-gradient(
-            circle at 28% 20%,
-            rgba(255,255,255,.82) 0 4%,
-            rgba(220,248,255,.42) 5% 13%,
-            rgba(90,180,210,.20) 28%,
-            rgba(10,70,90,.16) 62%,
-            rgba(0,20,30,.05) 100%
+            circle at 15% 20%,
+            rgba(255,255,255,.12) 0 2px,
+            transparent 5px
+        ),
+        radial-gradient(
+            circle at 75% 30%,
+            rgba(255,255,255,.10) 0 3px,
+            transparent 7px
+        ),
+        radial-gradient(
+            circle at 45% 75%,
+            rgba(255,255,255,.08) 0 2px,
+            transparent 6px
         );
 
-    border:
-        1px solid
-        rgba(220,250,255,.45);
+    background-size:
+        170px 190px,
+        230px 250px,
+        190px 220px;
 
-    box-shadow:
-        inset
-        2px 3px 5px
-        rgba(255,255,255,.28),
-
-        inset
-        -3px -5px 8px
-        rgba(0,20,30,.22),
-
-        0 2px 7px
-        rgba(0,0,0,.35);
-
-    backdrop-filter:
-        blur(2px);
-
-    animation:
-        dropShimmer 3.5s ease-in-out infinite;
+    opacity:.55;
 }
-
-
-/* realistic shine */
-
-.drop:before{
-    content:"";
-
-    position:absolute;
-
-    width:25%;
-    height:32%;
-
-    left:19%;
-    top:13%;
-
-    border-radius:50%;
-
-    background:
-        rgba(255,255,255,.72);
-
-    filter:blur(.4px);
-}
-
-.drop:after{
-    content:"";
-
-    position:absolute;
-
-    width:55%;
-    height:15%;
-
-    left:25%;
-    bottom:10%;
-
-    border-radius:50%;
-
-    background:
-        rgba(150,230,250,.16);
-
-    filter:blur(2px);
-}
-
-
-@keyframes dropShimmer{
-
-    0%,100%{
-        opacity:.62;
-    }
-
-    50%{
-        opacity:.94;
-    }
-}
-
-
-/* individual drops */
-
-.d1{
-    --size:34px;
-    --rotation:9deg;
-    left:7%;
-    top:17%;
-}
-
-.d2{
-    --size:23px;
-    --rotation:-8deg;
-    left:19%;
-    top:31%;
-    animation-delay:.8s;
-}
-
-.d3{
-    --size:45px;
-    --rotation:12deg;
-    left:36%;
-    top:12%;
-    animation-delay:1.3s;
-}
-
-.d4{
-    --size:27px;
-    --rotation:-12deg;
-    left:52%;
-    top:29%;
-    animation-delay:.3s;
-}
-
-.d5{
-    --size:51px;
-    --rotation:8deg;
-    right:19%;
-    top:14%;
-    animation-delay:1.1s;
-}
-
-.d6{
-    --size:29px;
-    --rotation:-6deg;
-    right:6%;
-    top:34%;
-    animation-delay:1.8s;
-}
-
-.d7{
-    --size:39px;
-    --rotation:10deg;
-    left:72%;
-    top:53%;
-    animation-delay:.6s;
-}
-
-.d8{
-    --size:22px;
-    --rotation:-11deg;
-    left:45%;
-    top:68%;
-    animation-delay:1.6s;
-}
-
-.d9{
-    --size:48px;
-    --rotation:7deg;
-    left:13%;
-    top:69%;
-    animation-delay:2s;
-}
-
-.d10{
-    --size:26px;
-    --rotation:-7deg;
-    right:34%;
-    top:76%;
-    animation-delay:.9s;
-}
-
 
 /* =========================================================
-   MOVING WATER DROPS
+   MAIN CONTAINER
 ========================================================= */
 
-.movingDrop{
-    position:absolute;
-
-    width:5px;
-    height:48px;
-
-    border-radius:50%;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255,255,255,.55),
-            rgba(150,225,245,.12),
-            transparent
-        );
-
-    filter:
-        blur(.25px)
-        drop-shadow(
-            0 0 3px
-            rgba(180,240,255,.25)
-        );
-
-    animation:
-        slideDrop linear infinite;
+.dashboard{
+    width:min(1120px,94%);
+    margin:auto;
+    padding:18px 0 35px;
 }
-
-.m1{
-    left:17%;
-    top:-10%;
-    animation-duration:4.8s;
-}
-
-.m2{
-    left:48%;
-    top:-20%;
-    animation-duration:5.7s;
-    animation-delay:1.4s;
-}
-
-.m3{
-    left:67%;
-    top:-15%;
-    animation-duration:4.2s;
-    animation-delay:.7s;
-}
-
-.m4{
-    right:12%;
-    top:-12%;
-    animation-duration:6.2s;
-    animation-delay:2s;
-}
-
-.m5{
-    left:84%;
-    top:-15%;
-    animation-duration:4.9s;
-    animation-delay:2.7s;
-}
-
-@keyframes slideDrop{
-
-    0%{
-        transform:
-            translateY(-80px)
-            translateX(0)
-            scaleY(.65);
-
-        opacity:0;
-    }
-
-    12%{
-        opacity:.65;
-    }
-
-    85%{
-        opacity:.5;
-    }
-
-    100%{
-        transform:
-            translateY(115vh)
-            translateX(22px)
-            scaleY(1.15);
-
-        opacity:0;
-    }
-}
-
 
 /* =========================================================
    HEADER
 ========================================================= */
 
-header{
-    text-align:center;
+.header{
+    position:relative;
+    overflow:hidden;
 
-    padding:
-        28px 15px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+
+    padding:24px 18px 22px;
+
+    border-radius:28px;
 
     background:
-        rgba(2,10,14,.28);
+        linear-gradient(
+            135deg,
+            rgba(14,43,55,.88),
+            rgba(5,21,29,.78)
+        );
 
-    border-bottom:
-        1px solid
-        rgba(160,220,240,.15);
+    border:1px solid rgba(150,230,245,.22);
 
-    backdrop-filter:
-        blur(8px);
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.38),
+        inset 0 1px 0 rgba(255,255,255,.10);
+
+    backdrop-filter:blur(18px);
 }
 
+.header::after{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
 
-/* logo */
+    right:-100px;
+    top:-150px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(50,220,255,.22),
+            transparent 70%
+        );
+
+    pointer-events:none;
+}
 
 .logo{
-    display:block;
-
-    width:105px;
-    height:105px;
-
-    margin:
-        0 auto 14px;
+    width:92px;
+    height:92px;
 
     object-fit:contain;
 
+    background:rgba(255,255,255,.94);
+
     border-radius:50%;
 
-    background:white;
-
-    padding:4px;
-
-    border:
-        2px solid
-        rgba(255,255,255,.85);
+    padding:7px;
 
     box-shadow:
-        0 0 30px
-        rgba(80,210,255,.30),
-
-        0 12px 35px
-        rgba(0,0,0,.50);
+        0 0 0 4px rgba(100,225,255,.10),
+        0 0 30px rgba(65,220,255,.28);
 }
 
+.college{
+    margin-top:12px;
 
-/* college name */
-
-.college-name{
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-
-    font-size:
-        clamp(30px,5vw,48px);
+    font-size:clamp(25px,5vw,40px);
 
     font-weight:950;
 
-    letter-spacing:1.5px;
+    letter-spacing:.8px;
+
+    text-align:center;
 
     background:
         linear-gradient(
             90deg,
             #ffffff,
-            #b4f0ff,
+            #8cecff,
             #ffffff
         );
 
     -webkit-background-clip:text;
     background-clip:text;
-
     color:transparent;
-
-    text-shadow:
-        0 0 22px
-        rgba(100,220,255,.18);
 }
 
-.college-subtitle{
-    margin-top:6px;
+.subtitle{
+    margin-top:5px;
 
-    color:#b7d0d8;
-
-    font-size:11px;
-
-    letter-spacing:2px;
-
-    font-weight:700;
-}
-
-
-/* live pill */
-
-.live-status{
-    display:inline-flex;
-
-    align-items:center;
-
-    margin-top:16px;
-
-    padding:8px 16px;
-
-    border-radius:30px;
-
-    background:
-        rgba(0,85,65,.40);
-
-    border:
-        1px solid
-        rgba(70,245,185,.28);
-
-    color:#58ffc0;
-
-    font-size:11px;
-
-    font-weight:900;
-}
-
-.live-dot{
-    width:9px;
-    height:9px;
-
-    margin-right:8px;
-
-    border-radius:50%;
-
-    background:#2bff98;
-
-    box-shadow:
-        0 0 13px
-        #2bff98;
-
-    animation:
-        blink 1s infinite;
-}
-
-@keyframes blink{
-    50%{
-        opacity:.3;
-    }
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero{
-    position:relative;
-
-    margin:20px 3%;
-
-    min-height:400px;
-
-    overflow:hidden;
-
-    border-radius:28px;
-
-    border:
-        1px solid
-        rgba(120,220,240,.20);
-
-    background:
-        linear-gradient(
-            100deg,
-            rgba(1,7,10,.91),
-            rgba(3,17,23,.62),
-            rgba(1,8,12,.42)
-        );
-
-    box-shadow:
-        0 25px 65px
-        rgba(0,0,0,.58);
-
-    backdrop-filter:
-        blur(3px);
-}
-
-.heroContent{
-    position:relative;
-    z-index:10;
-
-    max-width:720px;
-
-    padding:
-        clamp(55px,8vw,90px)
-        clamp(25px,6vw,65px);
-}
-
-.hero h1{
-    font-size:
-        clamp(39px,7vw,68px);
-
-    line-height:1;
-
-    font-weight:950;
-
-    text-shadow:
-        0 8px 30px
-        rgba(0,0,0,.9);
-}
-
-.hero h1 span{
-    display:block;
-
-    margin-top:9px;
-
-    color:#ff68aa;
-
-    text-shadow:
-        0 0 24px
-        rgba(255,50,145,.42);
-}
-
-.hero p{
-    margin-top:22px;
-
-    max-width:590px;
-
-    color:#d4e5eb;
-
-    font-size:16px;
-
-    line-height:1.65;
-}
-
-
-/* alarm button */
-
-.alarm-button{
-    margin-top:27px;
-
-    padding:14px 21px;
-
-    border:0;
-
-    border-radius:13px;
-
-    color:white;
-
-    cursor:pointer;
-
-    font-size:13px;
-
-    font-weight:900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #67216e,
-            #d62f86
-        );
-
-    box-shadow:
-        0 0 25px
-        rgba(220,40,150,.24);
-
-    transition:.2s;
-}
-
-.alarm-button:hover{
-    transform:translateY(-2px);
-}
-
-.alarm-button.enabled{
-    background:
-        linear-gradient(
-            135deg,
-            #08754f,
-            #12c987
-        );
-
-    box-shadow:
-        0 0 25px
-        rgba(20,220,130,.30);
-}
-
-
-/* =========================================================
-   ALERT
-========================================================= */
-
-.alert-banner{
-    display:none;
-
-    margin:20px 3%;
-
-    padding:21px;
-
-    text-align:center;
-
-    border-radius:19px;
-
-    border:2px solid #ff3048;
-
-    background:
-        linear-gradient(
-            90deg,
-            #4a0610,
-            #c80b26,
-            #4a0610
-        );
-
-    box-shadow:
-        0 0 45px
-        rgba(255,0,35,.45);
-
-    animation:
-        alertPulse .75s infinite;
-}
-
-.alert-banner.show{
-    display:block;
-}
-
-.alert-banner h2{
-    font-size:
-        clamp(21px,4vw,29px);
-}
-
-.alert-banner p{
-    margin-top:7px;
-
-    color:#ffe0e5;
-
-    font-size:13px;
-}
-
-@keyframes alertPulse{
-    50%{
-        opacity:.55;
-    }
-}
-
-
-/* =========================================================
-   SENSOR DASHBOARD
-========================================================= */
-
-.dashboard{
-    margin:20px 3%;
-
-    display:grid;
-
-    grid-template-columns:
-        1.4fr
-        repeat(4,1fr);
-
-    gap:16px;
-}
-
-.card{
-    padding:20px;
-
-    border-radius:20px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(10,31,43,.92),
-            rgba(3,15,23,.95)
-        );
-
-    border:
-        1px solid
-        rgba(110,190,220,.20);
-
-    box-shadow:
-        0 14px 34px
-        rgba(0,0,0,.34);
-
-    backdrop-filter:blur(8px);
-}
-
-
-/* risk */
-
-.risk-card.high{
-    border-color:#ff3838;
-
-    animation:
-        riskGlow 1s infinite;
-}
-
-.risk-card.critical{
-    border-color:#ff0055;
-
-    animation:
-        criticalGlow .55s infinite;
-}
-
-@keyframes riskGlow{
-    50%{
-        box-shadow:
-            0 0 45px
-            rgba(255,30,30,.5);
-    }
-}
-
-@keyframes criticalGlow{
-    50%{
-        box-shadow:
-            0 0 65px
-            rgba(255,0,70,.7);
-    }
-}
-
-.risk-title{
-    color:#d5e1e9;
-
-    font-size:13px;
-}
-
-.risk-value{
-    margin-top:8px;
-
-    color:#45e99a;
-
-    font-size:30px;
-
-    font-weight:950;
-}
-
-.risk-message{
-    margin-top:9px;
-
-    font-size:13px;
-}
-
-.risk-bar{
-    display:flex;
-
-    gap:4px;
-
-    margin-top:23px;
-}
-
-.risk-bar span{
-    flex:1;
-
-    height:13px;
-
-    border-radius:4px;
-
-    background:#183140;
-}
-
-.risk-bar span.active{
-    background:#ff3030;
-
-    box-shadow:
-        0 0 9px
-        #ff3030;
-}
-
-
-/* sensor */
-
-.sensor{
-    text-align:center;
-}
-
-.sensor-icon{
-    width:62px;
-    height:62px;
-
-    margin:auto;
-
-    display:flex;
-
-    justify-content:center;
-    align-items:center;
-
-    border-radius:50%;
-
-    font-size:28px;
-
-    background:
-        rgba(20,100,180,.24);
-
-    border:
-        1px solid
-        #3299e7;
-}
-
-.sensor-name{
-    margin-top:13px;
-
-    color:#8cdbff;
+    color:#a8c5cf;
 
     font-size:12px;
+    letter-spacing:2px;
 
-    font-weight:700;
+    text-transform:uppercase;
 }
-
-.sensor-value{
-    margin-top:6px;
-
-    font-size:29px;
-
-    font-weight:950;
-}
-
-.sensor-unit{
-    color:#9aafbd;
-
-    font-size:11px;
-}
-
-.sensor-live{
-    margin-top:9px;
-
-    color:#3de79d;
-
-    font-size:11px;
-}
-
 
 /* =========================================================
-   BEAUTIFUL GRAPHS
+   STATUS HERO
 ========================================================= */
 
-.charts{
-    margin:20px 3%;
+.status-card{
+    margin-top:16px;
 
+    position:relative;
+    overflow:hidden;
+
+    border-radius:25px;
+
+    padding:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(8,39,51,.91),
+            rgba(5,20,29,.86)
+        );
+
+    border:1px solid rgba(103,223,245,.25);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.status-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.status-label{
+    color:#8eaeb9;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.8px;
+}
+
+.status{
+    font-size:clamp(27px,6vw,48px);
+    font-weight:1000;
+    margin-top:5px;
+}
+
+.status-sub{
+    color:#9eb9c2;
+    margin-top:4px;
+    font-size:12px;
+}
+
+.status-light{
+    width:58px;
+    height:58px;
+
+    border-radius:50%;
+
+    background:#36e59b;
+
+    box-shadow:
+        0 0 0 7px rgba(54,229,155,.10),
+        0 0 35px rgba(54,229,155,.65);
+
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        transform:scale(1.08);
+        opacity:.72;
+    }
+}
+
+/* =========================================================
+   SENSOR GRID
+========================================================= */
+
+.sensor-grid{
     display:grid;
 
     grid-template-columns:
-        1fr 1fr;
+        repeat(4,1fr);
 
-    gap:17px;
+    gap:13px;
+
+    margin-top:16px;
 }
 
-
-/* graph card */
-
-.chart-card{
+.sensor-card{
     position:relative;
-
-    min-height:285px;
-
     overflow:hidden;
 
-    padding:19px 18px 15px;
+    min-height:145px;
+
+    padding:17px;
 
     border-radius:22px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(9,30,43,.95),
-            rgba(3,13,21,.97)
+            rgba(18,54,67,.88),
+            rgba(6,24,33,.88)
         );
+
+    border:1px solid rgba(144,225,239,.20);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.30),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:
+        transform .2s ease,
+        border .2s ease,
+        box-shadow .2s ease;
+}
+
+.sensor-card:hover{
+    transform:translateY(-4px);
+
+    border-color:
+        rgba(83,225,255,.50);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.38),
+        0 0 25px rgba(60,220,255,.09);
+}
+
+.sensor-icon{
+    width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    background:
+        rgba(66,213,240,.10);
 
     border:
         1px solid
-        rgba(105,205,235,.22);
+        rgba(86,222,245,.20);
 
-    box-shadow:
-        0 15px 38px
-        rgba(0,0,0,.40);
+    font-size:20px;
 }
 
+.sensor-name{
+    margin-top:12px;
 
-/* glowing top */
+    color:#8faeb8;
 
-.chart-card:before{
-    content:"";
+    font-size:11px;
+    font-weight:700;
 
-    position:absolute;
-
-    left:10%;
-    right:10%;
-    top:0;
-
-    height:2px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #48dfff,
-            transparent
-        );
-
-    box-shadow:
-        0 0 15px
-        rgba(50,220,255,.55);
+    text-transform:uppercase;
+    letter-spacing:1px;
 }
 
-.chart-head{
-    display:flex;
+.sensor-value{
+    margin-top:3px;
 
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:5px;
+    font-size:27px;
+    font-weight:950;
 }
 
-.chart-title{
-    color:#72e7ff;
-
-    font-size:16px;
-
-    font-weight:900;
+.sensor-unit{
+    font-size:11px;
+    color:#78939d;
 }
 
-.chart-badge{
-    padding:5px 9px;
+.sensor-bar{
+    margin-top:13px;
+
+    height:5px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.07);
+
+    overflow:hidden;
+}
+
+.sensor-fill{
+    height:100%;
+    width:0%;
 
     border-radius:20px;
 
     background:
-        rgba(40,220,180,.10);
+        linear-gradient(
+            90deg,
+            #32d8ff,
+            #67f5ce
+        );
 
-    color:#58f5bd;
+    box-shadow:
+        0 0 12px rgba(56,225,255,.5);
+
+    transition:
+        width .5s ease;
+}
+
+/* =========================================================
+   GRAPH SECTION
+========================================================= */
+
+.section-title{
+    margin:22px 4px 11px;
+
+    font-size:16px;
+    font-weight:900;
+
+    color:#d8f6fc;
+}
+
+.graph-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:15px;
+}
+
+.graph-card{
+    position:relative;
+
+    border-radius:23px;
+
+    padding:15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,37,48,.88),
+            rgba(4,18,26,.90)
+        );
 
     border:
         1px solid
-        rgba(50,240,190,.18);
+        rgba(125,220,239,.18);
 
-    font-size:9px;
-
-    font-weight:800;
+    box-shadow:
+        0 17px 40px rgba(0,0,0,.30),
+        inset 0 1px 0 rgba(255,255,255,.07);
 }
 
-.chart-description{
-    color:#8ea7b3;
-
-    font-size:10px;
+.graph-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
     margin-bottom:7px;
 }
 
+.graph-name{
+    font-weight:900;
+    font-size:13px;
+}
 
-/* graph area */
+.live-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#45e6ff;
+
+    box-shadow:
+        0 0 10px #45e6ff;
+}
 
 .graph{
-    width:100%;
-    height:205px;
-
     position:relative;
+    width:100%;
+    height:220px;
 }
 
 .graph svg{
     width:100%;
     height:100%;
-
     overflow:visible;
 }
 
-.graph-grid{
-    stroke:
-        rgba(170,220,235,.08);
-
+.graph-grid-line{
+    stroke:rgba(190,230,245,.08);
     stroke-width:1;
-}
-
-.graph-axis{
-    stroke:
-        rgba(170,220,235,.20);
-
-    stroke-width:1;
-}
-
-.graph-area{
-    fill:
-        rgba(50,205,255,.08);
 }
 
 .graph-line{
     fill:none;
 
-    stroke:#48dfff;
+    stroke:#45e5ff;
 
-    stroke-width:3;
+    stroke-width:3.5;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
     filter:
         drop-shadow(
-            0 0 5px
-            rgba(50,220,255,.65)
+            0 0 6px
+            rgba(55,225,255,.75)
         );
+}
+
+.graph-area{
+    fill:
+        rgba(50,215,255,.08);
 }
 
 .graph-dot{
-    fill:#d9fbff;
+    fill:#fff;
 
-    stroke:#42ddff;
+    stroke:#48e4ff;
 
-    stroke-width:2;
+    stroke-width:3;
+
+    cursor:pointer;
 
     filter:
         drop-shadow(
-            0 0 5px
-            rgba(40,220,255,.8)
+            0 0 6px
+            rgba(60,230,255,.85)
         );
 }
 
-
-/* labels */
-
-.y-label{
-    position:absolute;
-
-    left:0;
-
-    top:50%;
-
-    transform:
-        translateY(-50%)
-        rotate(-90deg);
-
-    transform-origin:center;
-
-    color:#a9c2cb;
-
-    font-size:10px;
-
-    font-weight:800;
-
-    letter-spacing:.5px;
+.graph-dot:hover{
+    r:7;
 }
 
-.x-label{
-    position:absolute;
-
-    bottom:0;
-
-    right:7px;
-
-    color:#8da5af;
-
-    font-size:9px;
-}
-
-
-/* graph empty */
-
-.graph-empty{
-    position:absolute;
-
-    inset:45px 10px 25px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    color:#79929d;
-
-    font-size:12px;
-}
-
-
-/* =========================================================
-   RISK CIRCLE
-========================================================= */
-
-.risk-card-chart{
-    grid-column:1/-1;
-
-    min-height:230px;
-
-    text-align:center;
-}
-
-.risk-circle{
-    width:145px;
-    height:145px;
-
-    margin:10px auto;
-
-    border-radius:50%;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    background:
-        radial-gradient(
-            circle,
-            #102034 53%,
-            transparent 54%
-        ),
-        conic-gradient(
-            #20d979 0deg,
-            #20d979 72deg,
-            #ffc400 72deg,
-            #ffc400 180deg,
-            #ff3030 180deg,
-            #ff3030 315deg,
-            #d71f9c 315deg,
-            #d71f9c 360deg
-        );
-
-    box-shadow:
-        0 0 28px
-        rgba(50,220,255,.12);
-}
-
-.risk-circle-title{
-    color:#ffb277;
-
-    font-size:13px;
-}
-
-.risk-circle-value{
-    margin-top:2px;
-
-    font-size:25px;
-
-    font-weight:950;
-}
-
-
-/* =========================================================
-   EVACUATION
-========================================================= */
-
-.evacuation{
-    margin:20px 3%;
-
-    display:grid;
-
-    grid-template-columns:
-        1fr 1.7fr;
-
-    gap:16px;
-}
-
-.safe-direction{
-    display:flex;
-
-    align-items:center;
-
-    gap:20px;
-}
-
-.direction-icon{
-    font-size:60px;
-}
-
-.safe-label{
-    color:#4dffb1;
-
-    font-size:13px;
-
-    font-weight:800;
-}
-
-.direction{
-    margin-top:5px;
-
-    color:#5feaff;
-
-    font-size:24px;
-
-    font-weight:950;
-}
-
-.safe-distance{
-    margin-top:9px;
-
-    color:#c5d7e1;
-
-    font-size:12px;
-}
-
-.route{
-    position:relative;
-
-    overflow:hidden;
-
-    min-height:150px;
-}
-
-.route-title{
-    color:#54eaff;
-
-    font-size:17px;
-
-    font-weight:900;
-}
-
-.route-sub{
-    margin-top:5px;
-
-    color:#c7d7e0;
-
-    font-size:12px;
-}
-
-.route-line{
-    position:absolute;
-
-    left:9%;
-    right:9%;
-    top:69%;
-
-    border-top:
-        4px dashed
-        #2bffd1;
-
-    transform:rotate(-5deg);
+.graph-dot.selected{
+    stroke:#ff70b8;
+    stroke-width:4;
 
     filter:
-        drop-shadow(
-            0 0 7px
-            #2bffd1
-        );
+        drop-shadow(0 0 8px #ff70b8);
 }
-
-.route-point{
-    position:absolute;
-
-    top:50%;
-
-    font-size:32px;
-}
-
-.route-start{
-    left:5%;
-}
-
-.route-end{
-    right:5%;
-}
-
 
 /* =========================================================
-   SAFETY PROTOCOLS
+   TOOLTIP
 ========================================================= */
 
-.protocol-section{
-    margin:20px 3%;
-}
+.graph-tooltip{
+    position:absolute;
 
-.section-title{
-    margin-bottom:13px;
+    min-width:150px;
 
-    color:#ff6db3;
+    padding:11px;
 
-    font-size:17px;
-
-    font-weight:900;
-}
-
-.protocols{
-    display:grid;
-
-    grid-template-columns:
-        repeat(5,1fr);
-
-    gap:12px;
-}
-
-.protocol{
-    padding:16px;
-
-    text-align:center;
-
-    border-radius:15px;
+    border-radius:14px;
 
     background:
-        rgba(7,25,39,.90);
+        rgba(3,17,25,.97);
 
     border:
         1px solid
-        rgba(120,170,210,.18);
+        rgba(76,220,246,.55);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.55),
+        0 0 20px rgba(50,215,255,.15);
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transform:
+        translate(-50%,-110%)
+        scale(.9);
+
+    transition:.15s;
+
+    z-index:20;
 }
 
-.protocol-icon{
-    margin-bottom:8px;
+.graph-tooltip.show{
+    opacity:1;
 
-    font-size:29px;
+    transform:
+        translate(-50%,-110%)
+        scale(1);
 }
 
-.protocol p{
-    color:#d4e2ec;
-
-    font-size:12px;
-
-    line-height:1.45;
+.tooltip-date{
+    color:#8da8b2;
+    font-size:9px;
 }
 
+.tooltip-value{
+    margin-top:3px;
 
-/* =========================================================
-   BOTTOM
-========================================================= */
+    color:#59eaff;
 
-.bottom{
-    margin:20px 3%;
-
-    display:grid;
-
-    grid-template-columns:
-        1fr 1fr 1fr;
-
-    gap:16px;
-}
-
-.status-item{
-    margin-top:10px;
-
-    color:#50e9a5;
-
-    font-size:13px;
-}
-
-.history-item{
-    padding:8px 0;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.08);
-
-    font-size:12px;
-}
-
-.weather-icon{
-    margin-top:6px;
-
-    font-size:40px;
-}
-
-.weather-temp{
-    margin-top:4px;
-
-    font-size:28px;
-
+    font-size:18px;
     font-weight:950;
 }
 
-.weather-text{
+.tooltip-rating{
     margin-top:4px;
 
-    color:#d0dfe7;
-
-    font-size:13px;
+    font-size:10px;
+    font-weight:900;
 }
 
+.low{
+    color:#48e6a4;
+}
+
+.moderate{
+    color:#ffd45b;
+}
+
+.high{
+    color:#ff6d6d;
+}
+
+.critical{
+    color:#ff4f9d;
+}
+
+/* =========================================================
+   ALARM PANEL
+========================================================= */
+
+.alarm-panel{
+    margin-top:16px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:17px;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(35,29,22,.86),
+            rgba(13,19,24,.90)
+        );
+
+    border:
+        1px solid
+        rgba(255,205,80,.20);
+}
+
+.alarm-title{
+    font-weight:950;
+}
+
+.alarm-text{
+    margin-top:4px;
+
+    font-size:11px;
+    color:#94adb6;
+}
+
+.alarm-button{
+    border:0;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #21d9ff,
+            #168bbd
+        );
+
+    color:#fff;
+
+    font-weight:900;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 7px 20px
+        rgba(25,190,240,.25);
+}
+
+.alarm-button.enabled{
+    background:
+        linear-gradient(
+            135deg,
+            #32e89a,
+            #159d6d
+        );
+}
 
 /* =========================================================
    FOOTER
 ========================================================= */
 
-footer{
-    margin-top:28px;
-
-    padding:20px;
-
+.footer{
     text-align:center;
 
-    color:#8497a4;
+    margin-top:17px;
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.07);
+    color:#708a94;
+
+    font-size:9px;
+
+    letter-spacing:1px;
 }
-
-footer span{
-    color:#ff62ae;
-}
-
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
 ========================================================= */
 
-@media(max-width:1050px){
+@media(max-width:850px){
 
-    .dashboard{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .risk-card{
-        grid-column:1/-1;
-    }
-
-    .protocols{
+    .sensor-grid{
         grid-template-columns:
-            repeat(3,1fr);
+            repeat(2,1fr);
     }
+
 }
 
-
-@media(max-width:750px){
-
-    .charts{
-        grid-template-columns:1fr;
-    }
-
-    .risk-card-chart{
-        grid-column:auto;
-    }
-
-    .evacuation{
-        grid-template-columns:1fr;
-    }
-
-    .bottom{
-        grid-template-columns:1fr;
-    }
-
-    .protocols{
-        grid-template-columns:1fr 1fr;
-    }
-}
-
-
-@media(max-width:560px){
+@media(max-width:620px){
 
     .dashboard{
-        grid-template-columns:1fr;
+        width:94%;
+        padding-top:10px;
     }
 
-    .risk-card{
-        grid-column:auto;
-    }
-
-    .protocols{
-        grid-template-columns:1fr;
+    .header{
+        padding:20px 12px;
     }
 
     .logo{
-        width:90px;
-        height:90px;
+        width:78px;
+        height:78px;
     }
 
-    .college-name{
-        font-size:30px;
+    .sensor-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+
+        gap:10px;
     }
 
-    .hero{
-        margin:14px;
+    .sensor-card{
+        min-height:135px;
+        padding:13px;
     }
 
-    .dashboard,
-    .charts,
-    .evacuation,
-    .protocol-section,
-    .bottom{
-        margin-left:14px;
-        margin-right:14px;
+    .graph-grid{
+        grid-template-columns:1fr;
     }
 
-    .tree2,
-    .tree4{
-        display:none;
+    .status-card{
+        padding:16px;
     }
 
-    .drop{
-        opacity:.65;
+    .status-light{
+        width:45px;
+        height:45px;
     }
+
+}
+
+@media(max-width:400px){
+
+    .sensor-value{
+        font-size:23px;
+    }
+
+    .sensor-card{
+        min-height:125px;
+    }
+
 }
 
 </style>
@@ -1701,767 +780,375 @@ footer span{
 
 <body>
 
+<div class="background"></div>
 
-<!-- =========================================================
-     REALISTIC BACKGROUND
-========================================================= -->
+<div class="dashboard">
 
-<div class="background">
+    <!-- =====================================================
+         COLLEGE HEADER
+    ====================================================== -->
 
-    <div class="hills"></div>
+    <header class="header">
 
-    <div class="forest">
+        <img
+            class="logo"
+            src="Screenshot_20260826_204053_WhatsApp.jpg"
+            alt="Sanjivani College Logo"
+        >
 
-        <div class="tree tree1">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+        <div class="college">
+            Sanjivani College
         </div>
 
-        <div class="tree tree2">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+        <div class="subtitle">
+            Smart Landslide Monitoring System
         </div>
 
-        <div class="tree tree3">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+    </header>
+
+
+    <!-- =====================================================
+         MAIN RISK STATUS
+    ====================================================== -->
+
+    <section class="status-card">
+
+        <div class="status-top">
+
+            <div>
+
+                <div class="status-label">
+                    Current Safety Status
+                </div>
+
+                <div
+                    id="riskStatus"
+                    class="status"
+                >
+                    CONNECTING...
+                </div>
+
+                <div
+                    id="riskMessage"
+                    class="status-sub"
+                >
+                    Reading live sensor data...
+                </div>
+
+            </div>
+
+            <div
+                id="statusLight"
+                class="status-light"
+            ></div>
+
         </div>
 
-        <div class="tree tree4">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+    </section>
+
+
+    <!-- =====================================================
+         SENSOR CARDS
+    ====================================================== -->
+
+    <div class="sensor-grid">
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">
+                🌱
+            </div>
+
+            <div class="sensor-name">
+                Soil
+            </div>
+
+            <div
+                id="soilValue"
+                class="sensor-value"
+            >
+                --
+            </div>
+
+            <div class="sensor-unit">
+                moisture
+            </div>
+
+            <div class="sensor-bar">
+                <div
+                    id="soilBar"
+                    class="sensor-fill"
+                ></div>
+            </div>
+
         </div>
 
-        <div class="tree tree5">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">
+                📏
+            </div>
+
+            <div class="sensor-name">
+                Distance
+            </div>
+
+            <div
+                id="distanceValue"
+                class="sensor-value"
+            >
+                --
+            </div>
+
+            <div class="sensor-unit">
+                cm
+            </div>
+
+            <div class="sensor-bar">
+                <div
+                    id="distanceBar"
+                    class="sensor-fill"
+                ></div>
+            </div>
+
         </div>
 
-        <div class="tree tree6">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">
+                💧
+            </div>
+
+            <div class="sensor-name">
+                Rain
+            </div>
+
+            <div
+                id="rainValue"
+                class="sensor-value"
+            >
+                --
+            </div>
+
+            <div class="sensor-unit">
+                sensor
+            </div>
+
+            <div class="sensor-bar">
+                <div
+                    id="rainBar"
+                    class="sensor-fill"
+                ></div>
+            </div>
+
+        </div>
+
+
+        <div class="sensor-card">
+
+            <div class="sensor-icon">
+                📳
+            </div>
+
+            <div class="sensor-name">
+                Vibration
+            </div>
+
+            <div
+                id="vibrationValue"
+                class="sensor-value"
+            >
+                --
+            </div>
+
+            <div class="sensor-unit">
+                sensor
+            </div>
+
+            <div class="sensor-bar">
+                <div
+                    id="vibrationBar"
+                    class="sensor-fill"
+                ></div>
+            </div>
+
         </div>
 
     </div>
 
 
-    <!-- fine rain -->
+    <!-- =====================================================
+         GRAPHS
+    ====================================================== -->
 
-    <div class="rainFine"></div>
+    <div class="section-title">
+        Live Sensor Trends
+    </div>
+
+    <div class="graph-grid">
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                <span class="graph-name">
+                    Soil Moisture
+                </span>
+
+                <span class="live-dot"></span>
+            </div>
+
+            <div class="graph">
+                <svg
+                    id="soilGraph"
+                    viewBox="0 0 600 220"
+                ></svg>
+            </div>
+
+        </div>
 
 
-    <!-- windshield water drops -->
+        <div class="graph-card">
 
-    <div class="drops">
+            <div class="graph-title">
+                <span class="graph-name">
+                    Distance
+                </span>
 
-        <div class="drop d1"></div>
-        <div class="drop d2"></div>
-        <div class="drop d3"></div>
-        <div class="drop d4"></div>
-        <div class="drop d5"></div>
-        <div class="drop d6"></div>
-        <div class="drop d7"></div>
-        <div class="drop d8"></div>
-        <div class="drop d9"></div>
-        <div class="drop d10"></div>
+                <span class="live-dot"></span>
+            </div>
+
+            <div class="graph">
+                <svg
+                    id="distanceGraph"
+                    viewBox="0 0 600 220"
+                ></svg>
+            </div>
+
+        </div>
 
 
-        <div class="movingDrop m1"></div>
-        <div class="movingDrop m2"></div>
-        <div class="movingDrop m3"></div>
-        <div class="movingDrop m4"></div>
-        <div class="movingDrop m5"></div>
+        <div class="graph-card">
+
+            <div class="graph-title">
+                <span class="graph-name">
+                    Rain
+                </span>
+
+                <span class="live-dot"></span>
+            </div>
+
+            <div class="graph">
+                <svg
+                    id="rainGraph"
+                    viewBox="0 0 600 220"
+                ></svg>
+            </div>
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                <span class="graph-name">
+                    Ultrasonic / Vibration
+                </span>
+
+                <span class="live-dot"></span>
+            </div>
+
+            <div class="graph">
+                <svg
+                    id="vibrationGraph"
+                    viewBox="0 0 600 220"
+                ></svg>
+            </div>
+
+        </div>
 
     </div>
 
 
-    <div class="windshield"></div>
+    <!-- =====================================================
+         MOBILE ALARM
+    ====================================================== -->
 
-</div>
+    <section class="alarm-panel">
 
+        <div>
 
-<!-- =========================================================
-     HEADER
-========================================================= -->
+            <div class="alarm-title">
+                📢 Mobile Emergency Alarm
+            </div>
 
-<header>
+            <div
+                id="alarmText"
+                class="alarm-text"
+            >
+                Tap enable once to allow the phone speaker.
+            </div>
 
-    <img
-        class="logo"
-        src="Screenshot_20260826_204053_WhatsApp.jpg"
-        alt="Sanjivani College Logo"
-    >
-
-    <div class="college-name">
-        Sanjivani College
-    </div>
-
-    <div class="college-subtitle">
-        COLLEGE OF ENGINEERING, KOPARGAON
-    </div>
-
-    <div class="live-status">
-        <span class="live-dot"></span>
-        LIVE LANDSLIDE MONITORING
-    </div>
-
-</header>
-
-
-<!-- =========================================================
-     HERO
-========================================================= -->
-
-<section class="hero">
-
-    <div class="heroContent">
-
-        <h1>
-            LANDSLIDE
-            <span>SAFETY SYSTEM</span>
-        </h1>
-
-        <p>
-            Real-time monitoring and early warning
-            system for landslide detection,
-            environmental monitoring and emergency
-            risk prevention.
-        </p>
+        </div>
 
         <button
             id="alarmButton"
             class="alarm-button"
-            onclick="enableMobileAlarm()"
+            onclick="enableAlarm()"
         >
-            🔊 ENABLE MOBILE ALARM
+            ENABLE ALARM
         </button>
 
+    </section>
+
+
+    <div class="footer">
+        LIVE DATA • THINGSPEAK • SANJIVANI COLLEGE
     </div>
-
-</section>
-
-
-<!-- =========================================================
-     ALERT
-========================================================= -->
-
-<div
-    id="alertBanner"
-    class="alert-banner"
->
-
-    <h2>
-        🚨 LANDSLIDE ALERT — EVACUATE 🚨
-    </h2>
-
-    <p>
-        HIGH / CRITICAL RISK DETECTED —
-        MOBILE HORN ACTIVATED
-    </p>
 
 </div>
-
-
-<!-- =========================================================
-     SENSOR CARDS
-========================================================= -->
-
-<section class="dashboard">
-
-
-    <div
-        id="riskCard"
-        class="card risk-card"
-    >
-
-        <div class="risk-title">
-            CURRENT RISK LEVEL
-        </div>
-
-        <div
-            id="riskValue"
-            class="risk-value"
-        >
-            LOW RISK
-        </div>
-
-        <div
-            id="riskMessage"
-            class="risk-message"
-        >
-            System operating normally.
-        </div>
-
-        <div class="risk-bar">
-            <span id="r1"></span>
-            <span id="r2"></span>
-            <span id="r3"></span>
-            <span id="r4"></span>
-            <span id="r5"></span>
-            <span id="r6"></span>
-        </div>
-
-    </div>
-
-
-    <div class="card sensor">
-
-        <div class="sensor-icon">
-            🌧️
-        </div>
-
-        <div class="sensor-name">
-            RAIN
-        </div>
-
-        <div
-            id="rainfall"
-            class="sensor-value"
-        >
-            --
-        </div>
-
-        <div class="sensor-unit">
-            SENSOR VALUE
-        </div>
-
-        <div class="sensor-live">
-            ↑ LIVE
-        </div>
-
-    </div>
-
-
-    <div class="card sensor">
-
-        <div class="sensor-icon">
-            〰️
-        </div>
-
-        <div class="sensor-name">
-            VIBRATION
-        </div>
-
-        <div
-            id="vibration"
-            class="sensor-value"
-        >
-            --
-        </div>
-
-        <div class="sensor-unit">
-            SW-420
-        </div>
-
-        <div class="sensor-live">
-            ↑ LIVE
-        </div>
-
-    </div>
-
-
-    <div class="card sensor">
-
-        <div class="sensor-icon">
-            📐
-        </div>
-
-        <div class="sensor-name">
-            DISTANCE
-        </div>
-
-        <div
-            id="distance"
-            class="sensor-value"
-        >
-            --
-        </div>
-
-        <div class="sensor-unit">
-            cm
-        </div>
-
-        <div class="sensor-live">
-            ULTRASONIC
-        </div>
-
-    </div>
-
-
-    <div class="card sensor">
-
-        <div class="sensor-icon">
-            💧
-        </div>
-
-        <div class="sensor-name">
-            SOIL
-        </div>
-
-        <div
-            id="soil"
-            class="sensor-value"
-        >
-            --
-        </div>
-
-        <div class="sensor-unit">
-            SENSOR VALUE
-        </div>
-
-        <div class="sensor-live">
-            ↑ LIVE
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     BEAUTIFUL LIVE GRAPHS
-========================================================= -->
-
-<section class="charts">
-
-
-    <!-- RAIN GRAPH -->
-
-    <div class="chart-card">
-
-        <div class="chart-head">
-
-            <div class="chart-title">
-                🌧️ Rain
-            </div>
-
-            <div class="chart-badge">
-                LIVE
-            </div>
-
-        </div>
-
-        <div class="chart-description">
-            Recent rainfall sensor trend
-        </div>
-
-        <div class="graph">
-
-            <div class="y-label">
-                Rain
-            </div>
-
-            <svg
-                id="rainGraph"
-                viewBox="0 0 600 205"
-                preserveAspectRatio="none"
-            ></svg>
-
-            <div class="x-label">
-                Date
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- SOIL GRAPH -->
-
-    <div class="chart-card">
-
-        <div class="chart-head">
-
-            <div class="chart-title">
-                💧 Soil
-            </div>
-
-            <div class="chart-badge">
-                LIVE
-            </div>
-
-        </div>
-
-        <div class="chart-description">
-            Recent soil moisture sensor trend
-        </div>
-
-        <div class="graph">
-
-            <div class="y-label">
-                Soil
-            </div>
-
-            <svg
-                id="soilGraph"
-                viewBox="0 0 600 205"
-                preserveAspectRatio="none"
-            ></svg>
-
-            <div class="x-label">
-                Date
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- DISTANCE GRAPH -->
-
-    <div class="chart-card">
-
-        <div class="chart-head">
-
-            <div class="chart-title">
-                📐 Distance
-            </div>
-
-            <div class="chart-badge">
-                LIVE
-            </div>
-
-        </div>
-
-        <div class="chart-description">
-            Ultrasonic ground-distance trend
-        </div>
-
-        <div class="graph">
-
-            <div class="y-label">
-                Distance
-            </div>
-
-            <svg
-                id="distanceGraph"
-                viewBox="0 0 600 205"
-                preserveAspectRatio="none"
-            ></svg>
-
-            <div class="x-label">
-                Date
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- VIBRATION GRAPH -->
-
-    <div class="chart-card">
-
-        <div class="chart-head">
-
-            <div class="chart-title">
-                〰️ Ultrasonic / Vibration
-            </div>
-
-            <div class="chart-badge">
-                LIVE
-            </div>
-
-        </div>
-
-        <div class="chart-description">
-            Ground movement monitoring
-        </div>
-
-        <div class="graph">
-
-            <div class="y-label">
-                Ultrasonic
-            </div>
-
-            <svg
-                id="vibrationGraph"
-                viewBox="0 0 600 205"
-                preserveAspectRatio="none"
-            ></svg>
-
-            <div class="x-label">
-                Date
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- RISK -->
-
-    <div class="chart-card risk-card-chart">
-
-        <div class="chart-title">
-            Overall Risk
-        </div>
-
-        <div class="risk-circle">
-
-            <div class="risk-circle-title">
-                CURRENT
-            </div>
-
-            <div
-                id="riskPercentage"
-                class="risk-circle-value"
-            >
-                0%
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     EVACUATION
-========================================================= -->
-
-<section class="evacuation">
-
-
-    <div class="card">
-
-        <div class="safe-direction">
-
-            <div class="direction-icon">
-                🪧
-            </div>
-
-            <div>
-
-                <div class="safe-label">
-                    SAFE DIRECTION
-                </div>
-
-                <div class="direction">
-                    NORTH EAST →
-                </div>
-
-                <div class="safe-distance">
-                    Move away from the danger zone.
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card route">
-
-        <div class="route-title">
-            EVACUATION ROUTE
-        </div>
-
-        <div class="route-sub">
-            Follow the safest path to higher ground.
-        </div>
-
-        <div class="route-line"></div>
-
-        <div class="route-point route-start">
-            📍
-        </div>
-
-        <div class="route-point route-end">
-            🛡️
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     SAFETY PROTOCOLS
-========================================================= -->
-
-<section class="protocol-section">
-
-    <div class="section-title">
-        SAFETY PROTOCOLS
-    </div>
-
-    <div class="protocols">
-
-        <div class="protocol">
-            <div class="protocol-icon">🏃</div>
-            <p>
-                Move immediately to higher
-                ground or a safe location.
-            </p>
-        </div>
-
-        <div class="protocol">
-            <div class="protocol-icon">📢</div>
-            <p>
-                Follow evacuation routes
-                and official instructions.
-            </p>
-        </div>
-
-        <div class="protocol">
-            <div class="protocol-icon">🏠</div>
-            <p>
-                Do not return until officials
-                declare the area safe.
-            </p>
-        </div>
-
-        <div class="protocol">
-            <div class="protocol-icon">🎒</div>
-            <p>
-                Keep emergency supplies,
-                water and first aid ready.
-            </p>
-        </div>
-
-        <div class="protocol">
-            <div class="protocol-icon">📱</div>
-            <p>
-                Stay updated through
-                official alerts.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     SYSTEM INFORMATION
-========================================================= -->
-
-<section class="bottom">
-
-
-    <div class="card">
-
-        <div class="section-title">
-            SYSTEM STATUS
-        </div>
-
-        <div class="status-item">
-            🟢 Sensors: 04 Active
-        </div>
-
-        <div class="status-item">
-            🟢 ThingSpeak: Connected
-        </div>
-
-        <div
-            id="alarmStatus"
-            class="status-item"
-        >
-            🔴 Mobile Alarm: Not Enabled
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div class="section-title">
-            ALERT HISTORY
-        </div>
-
-        <div id="history">
-
-            <div class="history-item">
-                🟢 System started
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div class="section-title">
-            WEATHER CONDITIONS
-        </div>
-
-        <div class="weather-icon">
-            🌧️
-        </div>
-
-        <div class="weather-temp">
-            Rain Monitoring
-        </div>
-
-        <div class="weather-text">
-            Environmental sensors active
-        </div>
-
-    </div>
-
-</section>
-
-
-<footer>
-
-    Landslide Safety System —
-    <span>Sanjivani College</span>
-
-</footer>
 
 
 <script>
 
 /* =========================================================
-   THINGSPEAK
+   THINGSPEAK SETTINGS
 ========================================================= */
 
 const CHANNEL_ID = "3456662";
 
-const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
+/*
+ IMPORTANT:
+ Your private Read API key is intentionally not exposed
+ here. Put the existing key in your private deployment
+ configuration rather than publishing it in the HTML.
+*/
+
+const READ_API_KEY = "";
 
 
 /* =========================================================
-   FIELD MAPPING
+   DATA ARRAYS
 ========================================================= */
 
-const FIELD_DISTANCE  = "field1";
-const FIELD_SOIL      = "field2";
-const FIELD_VIBRATION = "field3";
-const FIELD_RAIN      = "field4";
+let soilValues = [];
+let distanceValues = [];
+let rainValues = [];
+let vibrationValues = [];
+let dates = [];
 
 
 /* =========================================================
-   ALARM
+   MOBILE ALARM
 ========================================================= */
 
 let alarmEnabled = false;
-let alarmPlaying = false;
 
 let audioContext = null;
 
-let oscillator1 = null;
-let oscillator2 = null;
 
-let alarmGain = null;
-let alarmInterval = null;
-
-
-/* =========================================================
-   ENABLE MOBILE ALARM
-========================================================= */
-
-function enableMobileAlarm(){
+function enableAlarm(){
 
     try{
 
@@ -2479,34 +1166,286 @@ function enableMobileAlarm(){
 
         alarmEnabled = true;
 
-        document.getElementById(
-            "alarmButton"
-        ).innerHTML =
-            "🔊 MOBILE ALARM ENABLED";
+        document
+            .getElementById("alarmButton")
+            .classList.add("enabled");
 
-        document.getElementById(
-            "alarmButton"
-        ).classList.add(
-            "enabled"
+        document
+            .getElementById("alarmButton")
+            .textContent =
+                "✓ ALARM ENABLED";
+
+        document
+            .getElementById("alarmText")
+            .textContent =
+                "Mobile emergency alarm is ready.";
+
+    }
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE HORN
+========================================================= */
+
+function playHorn(){
+
+    if(!alarmEnabled)
+        return;
+
+    if(!audioContext)
+        return;
+
+    const now =
+        audioContext.currentTime;
+
+
+    for(let i=0;i<3;i++){
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        oscillator.type =
+            "sawtooth";
+
+        oscillator.frequency.setValueAtTime(
+            420,
+            now + i*.55
         );
 
-        document.getElementById(
-            "alarmStatus"
-        ).innerHTML =
-            "🟢 Mobile Alarm: Ready";
+        oscillator.frequency.linearRampToValueAtTime(
+            680,
+            now + i*.55 + .25
+        );
 
-        addHistory(
-            "🟢 Mobile alarm enabled"
+        gain.gain.setValueAtTime(
+            .0001,
+            now + i*.55
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .22,
+            now + i*.55 + .04
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .0001,
+            now + i*.55 + .45
+        );
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+        oscillator.start(
+            now + i*.55
+        );
+
+        oscillator.stop(
+            now + i*.55 + .5
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FETCH THINGSPEAK
+========================================================= */
+
+async function loadData(){
+
+    try{
+
+        let url =
+            `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
+
+        if(READ_API_KEY){
+
+            url +=
+                `&api_key=${encodeURIComponent(
+                    READ_API_KEY
+                )}`;
+
+        }
+
+
+        const response =
+            await fetch(url);
+
+        const data =
+            await response.json();
+
+
+        if(
+            !data.feeds ||
+            data.feeds.length === 0
+        ){
+            throw new Error(
+                "No ThingSpeak data"
+            );
+        }
+
+
+        soilValues = [];
+
+        distanceValues = [];
+
+        rainValues = [];
+
+        vibrationValues = [];
+
+        dates = [];
+
+
+        data.feeds.forEach(
+            feed => {
+
+                const soil =
+                    Number(feed.field1);
+
+                const distance =
+                    Number(feed.field2);
+
+                const vibration =
+                    Number(feed.field3);
+
+                const rain =
+                    Number(feed.field4);
+
+
+                if(!isNaN(soil))
+                    soilValues.push(soil);
+                else
+                    soilValues.push(0);
+
+
+                if(!isNaN(distance))
+                    distanceValues.push(distance);
+                else
+                    distanceValues.push(0);
+
+
+                if(!isNaN(rain))
+                    rainValues.push(rain);
+                else
+                    rainValues.push(0);
+
+
+                if(!isNaN(vibration))
+                    vibrationValues.push(vibration);
+                else
+                    vibrationValues.push(0);
+
+
+                const date =
+                    new Date(
+                        feed.created_at
+                    );
+
+
+                dates.push(
+                    date.toLocaleDateString(
+                        "en-IN",
+                        {
+                            day:"2-digit",
+                            month:"short"
+                        }
+                    )
+                );
+
+            }
+        );
+
+
+        const last =
+            data.feeds[
+                data.feeds.length - 1
+            ];
+
+
+        const soil =
+            Number(last.field1) || 0;
+
+        const distance =
+            Number(last.field2) || 0;
+
+        const vibration =
+            Number(last.field3) || 0;
+
+        const rain =
+            Number(last.field4) || 0;
+
+
+        updateCards(
+            soil,
+            distance,
+            rain,
+            vibration
+        );
+
+
+        createGraph(
+            "soilGraph",
+            soilValues,
+            dates,
+            "Soil"
+        );
+
+
+        createGraph(
+            "distanceGraph",
+            distanceValues,
+            dates,
+            "Distance",
+            " cm"
+        );
+
+
+        createGraph(
+            "rainGraph",
+            rainValues,
+            dates,
+            "Rain"
+        );
+
+
+        createGraph(
+            "vibrationGraph",
+            vibrationValues,
+            dates,
+            "Ultrasonic"
         );
 
     }
     catch(error){
 
-        console.error(error);
-
-        alert(
-            "Please tap the alarm button again."
+        console.error(
+            "ThingSpeak error:",
+            error
         );
+
+        document
+            .getElementById("riskStatus")
+            .textContent =
+                "OFFLINE";
+
+        document
+            .getElementById("riskMessage")
+            .textContent =
+                "Unable to read live sensor data.";
 
     }
 
@@ -2514,482 +1453,319 @@ function enableMobileAlarm(){
 
 
 /* =========================================================
-   START HORN
+   UPDATE SENSOR CARDS
 ========================================================= */
 
-function startHorn(){
+function updateCards(
+    soil,
+    distance,
+    rain,
+    vibration
+){
 
-    if(!alarmEnabled){
-        return;
-    }
+    document
+        .getElementById("soilValue")
+        .textContent =
+            soil.toFixed(0);
 
-    if(alarmPlaying){
-        return;
-    }
 
-    if(!audioContext){
-        return;
-    }
+    document
+        .getElementById("distanceValue")
+        .textContent =
+            distance.toFixed(1);
 
-    alarmPlaying = true;
 
-    if(
-        audioContext.state === "suspended"
-    ){
-        audioContext.resume();
-    }
+    document
+        .getElementById("rainValue")
+        .textContent =
+            rain.toFixed(0);
 
-    oscillator1 =
-        audioContext.createOscillator();
 
-    oscillator2 =
-        audioContext.createOscillator();
+    document
+        .getElementById("vibrationValue")
+        .textContent =
+            vibration.toFixed(0);
 
-    alarmGain =
-        audioContext.createGain();
 
-    oscillator1.type =
-        "sawtooth";
+    document
+        .getElementById("soilBar")
+        .style.width =
+            Math.min(
+                100,
+                soil / 10
+            ) + "%";
 
-    oscillator2.type =
-        "square";
 
-    oscillator1.frequency.value =
-        500;
+    document
+        .getElementById("distanceBar")
+        .style.width =
+            Math.min(
+                100,
+                distance * 2
+            ) + "%";
 
-    oscillator2.frequency.value =
-        250;
 
-    alarmGain.gain.value =
-        0;
+    document
+        .getElementById("rainBar")
+        .style.width =
+            Math.min(
+                100,
+                rain / 10
+            ) + "%";
 
-    oscillator1.connect(
-        alarmGain
+
+    document
+        .getElementById("vibrationBar")
+        .style.width =
+            vibration
+            ? "100%"
+            : "4%";
+
+
+    calculateRisk(
+        soil,
+        distance,
+        rain,
+        vibration
     );
 
-    oscillator2.connect(
-        alarmGain
-    );
-
-    alarmGain.connect(
-        audioContext.destination
-    );
-
-    oscillator1.start();
-    oscillator2.start();
-
-    let high = false;
-
-    alarmInterval =
-        setInterval(
-            function(){
-
-                high = !high;
-
-                const now =
-                    audioContext.currentTime;
-
-                oscillator1.frequency
-                    .setTargetAtTime(
-                        high ? 760 : 420,
-                        now,
-                        .07
-                    );
-
-                oscillator2.frequency
-                    .setTargetAtTime(
-                        high ? 380 : 210,
-                        now,
-                        .07
-                    );
-
-                alarmGain.gain
-                    .setTargetAtTime(
-                        .20,
-                        now,
-                        .04
-                    );
-
-            },
-            600
-        );
-
-    document.getElementById(
-        "alarmStatus"
-    ).innerHTML =
-        "🔴 MOBILE HORN: ACTIVE";
-
-    addHistory(
-        "🚨 Emergency mobile horn activated"
-    );
 }
 
 
 /* =========================================================
-   STOP HORN
+   RISK SYSTEM
 ========================================================= */
 
-function stopHorn(){
+let lastDangerState =
+    false;
 
-    if(!alarmPlaying){
-        return;
-    }
-
-    alarmPlaying = false;
-
-    if(alarmInterval){
-
-        clearInterval(
-            alarmInterval
-        );
-
-        alarmInterval = null;
-
-    }
-
-    if(
-        alarmGain &&
-        audioContext
-    ){
-
-        alarmGain.gain.setTargetAtTime(
-            0,
-            audioContext.currentTime,
-            .05
-        );
-
-    }
-
-    setTimeout(
-        function(){
-
-            try{
-
-                if(oscillator1){
-                    oscillator1.stop();
-                }
-
-                if(oscillator2){
-                    oscillator2.stop();
-                }
-
-            }
-            catch(e){}
-
-            oscillator1 = null;
-            oscillator2 = null;
-            alarmGain = null;
-
-        },
-        150
-    );
-
-    document.getElementById(
-        "alarmStatus"
-    ).innerHTML =
-        alarmEnabled
-        ? "🟢 Mobile Alarm: Ready"
-        : "🔴 Mobile Alarm: Not Enabled";
-}
-
-
-/* =========================================================
-   RISK
-========================================================= */
 
 function calculateRisk(
-    rain,
-    vibration,
+    soil,
     distance,
-    soil
+    rain,
+    vibration
 ){
 
     let score = 0;
 
 
-    if(rain >= 800){
-        score += 30;
-    }
-    else if(rain >= 500){
-        score += 20;
-    }
-    else if(rain >= 250){
-        score += 10;
-    }
-
-
-    if(vibration >= 1){
-        score += 35;
-    }
-
-
-    if(soil >= 800){
-        score += 25;
-    }
-    else if(soil >= 600){
-        score += 18;
-    }
-    else if(soil >= 400){
-        score += 10;
-    }
+    if(soil >= 700)
+        score += 3;
+    else if(soil >= 500)
+        score += 2;
+    else if(soil >= 350)
+        score += 1;
 
 
     if(
         distance > 0 &&
         distance <= 10
-    ){
-        score += 10;
-    }
+    )
+        score += 3;
+    else if(
+        distance > 0 &&
+        distance <= 20
+    )
+        score += 2;
+    else if(
+        distance > 0 &&
+        distance <= 40
+    )
+        score += 1;
 
 
-    score =
-        Math.min(
-            score,
-            100
+    if(rain >= 700)
+        score += 3;
+    else if(rain >= 500)
+        score += 2;
+    else if(rain >= 300)
+        score += 1;
+
+
+    if(vibration >= 1)
+        score += 2;
+
+
+    let status;
+    let message;
+
+
+    if(score >= 7){
+
+        status =
+            "HIGH DANGER";
+
+        message =
+            "Evacuate immediately — emergency alarm activated.";
+
+        setStatus(
+            status,
+            message,
+            "danger"
         );
 
 
-    if(score >= 70){
+        if(!lastDangerState){
 
-        return {
-            level:"CRITICAL",
-            score:score
-        };
+            playHorn();
 
-    }
+            lastDangerState =
+                true;
 
-    if(score >= 45){
-
-        return {
-            level:"HIGH",
-            score:score
-        };
+        }
 
     }
 
-    if(score >= 25){
+    else if(score >= 4){
 
-        return {
-            level:"MODERATE",
-            score:score
-        };
+        status =
+            "HIGH RISK";
+
+        message =
+            "Landslide conditions detected.";
+
+        setStatus(
+            status,
+            message,
+            "high"
+        );
+
+
+        if(!lastDangerState){
+
+            playHorn();
+
+            lastDangerState =
+                true;
+
+        }
 
     }
 
-    return {
-        level:"LOW",
-        score:score
-    };
+    else if(score >= 2){
+
+        status =
+            "MODERATE";
+
+        message =
+            "Please continue monitoring the sensors.";
+
+        setStatus(
+            status,
+            message,
+            "moderate"
+        );
+
+        lastDangerState =
+            false;
+
+    }
+
+    else{
+
+        status =
+            "SAFE";
+
+        message =
+            "Current sensor conditions are normal.";
+
+        setStatus(
+            status,
+            message,
+            "safe"
+        );
+
+        lastDangerState =
+            false;
+
+    }
 
 }
 
 
-let previousRisk = "";
-
-
 /* =========================================================
-   UPDATE RISK
+   STATUS VISUAL
 ========================================================= */
 
-function updateRisk(
-    rain,
-    vibration,
-    distance,
-    soil
+function setStatus(
+    status,
+    message,
+    type
 ){
 
-    const risk =
-        calculateRisk(
-            rain,
-            vibration,
-            distance,
-            soil
-        );
-
-
-    const riskCard =
+    const statusElement =
         document.getElementById(
-            "riskCard"
+            "riskStatus"
         );
 
-    const riskValue =
-        document.getElementById(
-            "riskValue"
-        );
-
-    const riskMessage =
+    const messageElement =
         document.getElementById(
             "riskMessage"
         );
 
-    const alertBanner =
+    const light =
         document.getElementById(
-            "alertBanner"
-        );
-
-    const percentage =
-        document.getElementById(
-            "riskPercentage"
+            "statusLight"
         );
 
 
-    riskCard.classList.remove(
-        "high",
-        "critical"
-    );
+    statusElement.textContent =
+        status;
+
+    messageElement.textContent =
+        message;
 
 
-    for(
-        let i=1;
-        i<=6;
-        i++
-    ){
+    if(type === "danger"){
 
-        document
-            .getElementById("r"+i)
-            .classList.remove(
-                "active"
-            );
+        statusElement.style.color =
+            "#ff4f7b";
+
+        light.style.background =
+            "#ff426d";
+
+        light.style.boxShadow =
+            "0 0 0 7px rgba(255,66,109,.12),0 0 38px rgba(255,66,109,.75)";
 
     }
 
+    else if(type === "high"){
 
-    let bars = 1;
+        statusElement.style.color =
+            "#ff795c";
 
+        light.style.background =
+            "#ff7055";
 
-    if(
-        risk.level === "LOW"
-    ){
-
-        riskValue.innerHTML =
-            "LOW RISK";
-
-        riskValue.style.color =
-            "#45e89a";
-
-        riskMessage.innerHTML =
-            "System operating normally.";
-
-        bars = 1;
-
-        alertBanner.classList.remove(
-            "show"
-        );
-
-        stopHorn();
+        light.style.boxShadow =
+            "0 0 0 7px rgba(255,112,85,.12),0 0 38px rgba(255,112,85,.7)";
 
     }
 
+    else if(type === "moderate"){
 
-    else if(
-        risk.level === "MODERATE"
-    ){
+        statusElement.style.color =
+            "#ffd45b";
 
-        riskValue.innerHTML =
-            "MODERATE RISK";
+        light.style.background =
+            "#ffd45b";
 
-        riskValue.style.color =
-            "#ffd32a";
-
-        riskMessage.innerHTML =
-            "Monitor conditions carefully.";
-
-        bars = 3;
-
-        alertBanner.classList.remove(
-            "show"
-        );
-
-        stopHorn();
+        light.style.boxShadow =
+            "0 0 0 7px rgba(255,212,91,.10),0 0 35px rgba(255,212,91,.55)";
 
     }
-
-
-    else if(
-        risk.level === "HIGH"
-    ){
-
-        riskCard.classList.add(
-            "high"
-        );
-
-        riskValue.innerHTML =
-            "HIGH RISK";
-
-        riskValue.style.color =
-            "#ff3d3d";
-
-        riskMessage.innerHTML =
-            "⚠️ IMMEDIATE ATTENTION REQUIRED!";
-
-        bars = 5;
-
-        alertBanner.classList.add(
-            "show"
-        );
-
-        startHorn();
-
-    }
-
 
     else{
 
-        riskCard.classList.add(
-            "critical"
-        );
+        statusElement.style.color =
+            "#42e4a0";
 
-        riskValue.innerHTML =
-            "CRITICAL DANGER";
+        light.style.background =
+            "#42e4a0";
 
-        riskValue.style.color =
-            "#ff0055";
-
-        riskMessage.innerHTML =
-            "🚨 EVACUATE IMMEDIATELY!";
-
-        bars = 6;
-
-        alertBanner.classList.add(
-            "show"
-        );
-
-        startHorn();
-
-    }
-
-
-    for(
-        let i=1;
-        i<=bars;
-        i++
-    ){
-
-        document
-            .getElementById("r"+i)
-            .classList.add(
-                "active"
-            );
-
-    }
-
-
-    percentage.innerHTML =
-        risk.score + "%";
-
-
-    if(
-        previousRisk !==
-        risk.level
-    ){
-
-        addHistory(
-            "Risk level: " +
-            risk.level
-        );
-
-        previousRisk =
-            risk.level;
+        light.style.boxShadow =
+            "0 0 0 7px rgba(66,228,160,.10),0 0 35px rgba(66,228,160,.60)";
 
     }
 
@@ -2997,14 +1773,15 @@ function updateRisk(
 
 
 /* =========================================================
-   GRAPH HELPERS
+   GRAPH FUNCTION
 ========================================================= */
 
 function createGraph(
     svgId,
     values,
     dates,
-    label
+    label,
+    units=""
 ){
 
     const svg =
@@ -3012,36 +1789,44 @@ function createGraph(
             svgId
         );
 
+    if(!svg)
+        return;
+
+
+    const graph =
+        svg.parentElement;
+
 
     svg.innerHTML = "";
 
 
-    if(
-        !values ||
-        values.length === 0
-    ){
+    const oldTooltip =
+        graph.querySelector(
+            ".graph-tooltip"
+        );
 
-        svg.innerHTML =
-            '<text x="300" y="105" text-anchor="middle" fill="#78909c" font-size="13">Waiting for sensor data...</text>';
+    if(oldTooltip)
+        oldTooltip.remove();
 
+
+    if(!values.length)
         return;
-
-    }
 
 
     const W = 600;
-    const H = 205;
+    const H = 220;
 
-    const left = 46;
+    const left = 42;
     const right = 12;
-    const top = 15;
-    const bottom = 31;
+    const top = 12;
+    const bottom = 32;
 
-    const graphW =
-        W - left - right;
 
-    const graphH =
-        H - top - bottom;
+    const gw =
+        W-left-right;
+
+    const gh =
+        H-top-bottom;
 
 
     let min =
@@ -3060,14 +1845,14 @@ function createGraph(
 
 
     const padding =
-        (max - min) * .12;
+        (max-min)*.12;
 
 
     min -= padding;
     max += padding;
 
 
-    /* grid */
+    /* Grid */
 
     for(
         let i=0;
@@ -3076,9 +1861,8 @@ function createGraph(
     ){
 
         const y =
-            top +
-            graphH *
-            (i/4);
+            top+
+            gh*(i/4);
 
 
         const line =
@@ -3086,6 +1870,7 @@ function createGraph(
                 "http://www.w3.org/2000/svg",
                 "line"
             );
+
 
         line.setAttribute(
             "x1",
@@ -3109,98 +1894,63 @@ function createGraph(
 
         line.setAttribute(
             "class",
-            "graph-grid"
+            "graph-grid-line"
         );
+
 
         svg.appendChild(line);
 
     }
 
 
-    /* axis */
+    const points =
+        values.map(
+            (value,index)=>{
 
-    const axis =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
+                const x =
+                    left+
+                    (
+                        index/
+                        Math.max(
+                            values.length-1,
+                            1
+                        )
+                    )*gw;
+
+
+                const y =
+                    top+
+                    gh-
+                    (
+                        (
+                            value-min
+                        )/
+                        (
+                            max-min
+                        )
+                    )*gh;
+
+
+                return {
+                    x,
+                    y,
+                    value,
+                    date:
+                        dates[index] ||
+                        "--"
+                };
+
+            }
         );
 
-    axis.setAttribute(
-        "x1",
-        left
-    );
 
-    axis.setAttribute(
-        "x2",
-        left
-    );
-
-    axis.setAttribute(
-        "y1",
-        top
-    );
-
-    axis.setAttribute(
-        "y2",
-        H-bottom
-    );
-
-    axis.setAttribute(
-        "class",
-        "graph-axis"
-    );
-
-    svg.appendChild(axis);
-
-
-    /* points */
-
-    const points = values.map(
-        function(value,index){
-
-            const x =
-                left +
-                (
-                    index /
-                    Math.max(
-                        values.length-1,
-                        1
-                    )
-                ) *
-                graphW;
-
-
-            const y =
-                top +
-                graphH -
-                (
-                    (
-                        value-min
-                    ) /
-                    (
-                        max-min
-                    )
-                ) *
-                graphH;
-
-
-            return {
-                x:x,
-                y:y
-            };
-
-        }
-    );
-
-
-    /* filled area */
+    /* Area */
 
     const areaPoints =
         [
             `${points[0].x},${H-bottom}`,
             ...points.map(
-                p =>
-                    `${p.x},${p.y}`
+                p=>`${p.x},${p.y}`
             ),
             `${points[points.length-1].x},${H-bottom}`
         ].join(" ");
@@ -3212,6 +1962,7 @@ function createGraph(
             "polygon"
         );
 
+
     area.setAttribute(
         "points",
         areaPoints
@@ -3222,17 +1973,19 @@ function createGraph(
         "graph-area"
     );
 
+
     svg.appendChild(area);
 
 
-    /* smooth-looking line */
+    /* Line */
 
     let path = "";
 
-    points.forEach(
-        function(p,index){
 
-            if(index === 0){
+    points.forEach(
+        (p,index)=>{
+
+            if(index===0){
 
                 path =
                     `M ${p.x} ${p.y}`;
@@ -3243,15 +1996,17 @@ function createGraph(
                 const previous =
                     points[index-1];
 
-                const midX =
+                const mid =
                     (
-                        previous.x +
+                        previous.x+
                         p.x
-                    ) / 2;
+                    )/2;
 
 
                 path +=
-                    ` C ${midX} ${previous.y}, ${midX} ${p.y}, ${p.x} ${p.y}`;
+                    ` C ${mid} ${previous.y},
+                    ${mid} ${p.y},
+                    ${p.x} ${p.y}`;
 
             }
 
@@ -3265,6 +2020,7 @@ function createGraph(
             "path"
         );
 
+
     line.setAttribute(
         "d",
         path
@@ -3275,19 +2031,37 @@ function createGraph(
         "graph-line"
     );
 
+
     svg.appendChild(line);
 
 
-    /* cute dots */
+    /* Tooltip */
+
+    const tooltip =
+        document.createElement(
+            "div"
+        );
+
+    tooltip.className =
+        "graph-tooltip";
+
+
+    graph.appendChild(
+        tooltip
+    );
+
+
+    /* Points */
 
     points.forEach(
-        function(p,index){
+        (p,index)=>{
 
             const dot =
                 document.createElementNS(
                     "http://www.w3.org/2000/svg",
                     "circle"
                 );
+
 
             dot.setAttribute(
                 "cx",
@@ -3301,15 +2075,109 @@ function createGraph(
 
             dot.setAttribute(
                 "r",
-                index === values.length-1
-                ? "5"
-                : "3"
+                index===points.length-1
+                ? 5.5
+                : 4
             );
+
 
             dot.setAttribute(
                 "class",
                 "graph-dot"
             );
+
+
+            dot.addEventListener(
+                "click",
+                e=>{
+
+                    e.stopPropagation();
+
+
+                    svg
+                        .querySelectorAll(
+                            ".graph-dot"
+                        )
+                        .forEach(
+                            d =>
+                                d.classList.remove(
+                                    "selected"
+                                )
+                        );
+
+
+                    dot.classList.add(
+                        "selected"
+                    );
+
+
+                    const rating =
+                        getRating(
+                            p.value,
+                            label
+                        );
+
+
+                    tooltip.innerHTML =
+
+                        `<div class="tooltip-date">
+                            ${p.date}
+                        </div>
+
+                        <div class="tooltip-value">
+                            ${Number(
+                                p.value
+                            ).toFixed(2)}
+                            ${units}
+                        </div>
+
+                        <div class="tooltip-rating ${rating.className}">
+                            ● ${rating.name} RATING
+                        </div>`;
+
+
+                    const rect =
+                        svg.getBoundingClientRect();
+
+                    const parent =
+                        graph.getBoundingClientRect();
+
+
+                    const x =
+                        p.x*
+                        rect.width/
+                        W;
+
+
+                    const y =
+                        p.y*
+                        rect.height/
+                        H;
+
+
+                    tooltip.style.left =
+                        (
+                            rect.left-
+                            parent.left+
+                            x
+                        )+"px";
+
+
+                    tooltip.style.top =
+                        (
+                            rect.top-
+                            parent.top+
+                            y
+                        )+"px";
+
+
+                    tooltip.classList.add(
+                        "show"
+                    );
+
+                }
+            );
+
 
             svg.appendChild(dot);
 
@@ -3317,16 +2185,16 @@ function createGraph(
     );
 
 
-    /* only a few clean date labels */
+    /* Dates */
 
-    const labelIndexes =
+    const indexes =
         getDateIndexes(
             dates.length
         );
 
 
-    labelIndexes.forEach(
-        function(index){
+    indexes.forEach(
+        index=>{
 
             const text =
                 document.createElementNS(
@@ -3334,27 +2202,26 @@ function createGraph(
                     "text"
                 );
 
-            const p =
-                points[index];
-
 
             text.setAttribute(
                 "x",
-                p.x
+                points[index].x
             );
 
             text.setAttribute(
                 "y",
-                H-9
+                H-8
             );
 
             text.setAttribute(
                 "text-anchor",
-                index === 0
-                ? "start"
-                : index === dates.length-1
-                ? "end"
-                : "middle"
+                index===0
+                ?"start"
+                :
+                index===dates.length-1
+                ?"end"
+                :
+                "middle"
             );
 
             text.setAttribute(
@@ -3366,6 +2233,7 @@ function createGraph(
                 "font-size",
                 "10"
             );
+
 
             text.textContent =
                 dates[index];
@@ -3383,54 +2251,17 @@ function createGraph(
    DATE LABELS
 ========================================================= */
 
-function formatDate(value){
-
-    const d =
-        new Date(value);
-
-
-    if(
-        Number.isNaN(
-            d.getTime()
-        )
-    ){
-
-        return "--";
-
-    }
-
-
-    return d.toLocaleDateString(
-        undefined,
-        {
-            day:"numeric",
-            month:"short"
-        }
-    );
-
-}
-
-
-/* show only 3 clean dates */
-
 function getDateIndexes(length){
 
-    if(length <= 1){
+    if(length<=1)
         return [0];
-    }
 
-    if(length <= 3){
-        return Array.from(
-            {length:length},
-            (_,i)=>i
-        );
-    }
+    if(length<=5)
+        return [...Array(length).keys()];
 
     return [
         0,
-        Math.floor(
-            (length-1)/2
-        ),
+        Math.floor((length-1)/2),
         length-1
     ];
 
@@ -3438,263 +2269,106 @@ function getDateIndexes(length){
 
 
 /* =========================================================
-   THINGSPEAK DATA
+   GRAPH RATING
 ========================================================= */
 
-async function getThingSpeakData(){
+function getRating(
+    value,
+    label
+){
 
-    try{
+    let name =
+        "LOW";
 
-        const url =
-            "https://api.thingspeak.com/channels/" +
-            CHANNEL_ID +
-            "/feeds.json?api_key=" +
-            encodeURIComponent(
-                READ_API_KEY
-            ) +
-            "&results=20";
+    let className =
+        "low";
 
 
-        const response =
-            await fetch(
-                url,
-                {
-                    cache:"no-store"
-                }
-            );
+    if(label==="Soil"){
 
+        if(value>=800){
 
-        if(!response.ok){
+            name="CRITICAL";
+            className="critical";
 
-            throw new Error(
-                "ThingSpeak HTTP " +
-                response.status
-            );
+        }
+        else if(value>=600){
+
+            name="HIGH";
+            className="high";
+
+        }
+        else if(value>=400){
+
+            name="MODERATE";
+            className="moderate";
 
         }
 
+    }
 
-        const data =
-            await response.json();
 
+    else if(label==="Rain"){
+
+        if(value>=800){
+
+            name="CRITICAL";
+            className="critical";
+
+        }
+        else if(value>=500){
+
+            name="HIGH";
+            className="high";
+
+        }
+        else if(value>=250){
+
+            name="MODERATE";
+            className="moderate";
+
+        }
+
+    }
+
+
+    else if(label==="Distance"){
 
         if(
-            !data.feeds ||
-            data.feeds.length === 0
+            value>0 &&
+            value<=10
         ){
 
-            throw new Error(
-                "No ThingSpeak data"
-            );
+            name="CRITICAL";
+            className="critical";
+
+        }
+        else if(
+            value>0 &&
+            value<=20
+        ){
+
+            name="HIGH";
+            className="high";
+
+        }
+        else if(
+            value>0 &&
+            value<=40
+        ){
+
+            name="MODERATE";
+            className="moderate";
 
         }
 
-
-        const feeds =
-            data.feeds;
-
-
-        /* latest */
-
-        const latest =
-            feeds[feeds.length-1];
-
-
-        const distance =
-            Number(
-                latest[FIELD_DISTANCE]
-            ) || 0;
-
-
-        const soil =
-            Number(
-                latest[FIELD_SOIL]
-            ) || 0;
-
-
-        const vibration =
-            Number(
-                latest[FIELD_VIBRATION]
-            ) || 0;
-
-
-        const rain =
-            Number(
-                latest[FIELD_RAIN]
-            ) || 0;
-
-
-        /* sensor cards */
-
-        document.getElementById(
-            "distance"
-        ).innerHTML =
-            distance.toFixed(1);
-
-
-        document.getElementById(
-            "soil"
-        ).innerHTML =
-            soil.toFixed(0);
-
-
-        document.getElementById(
-            "vibration"
-        ).innerHTML =
-            vibration.toFixed(0);
-
-
-        document.getElementById(
-            "rainfall"
-        ).innerHTML =
-            rain.toFixed(1);
-
-
-        /* risk */
-
-        updateRisk(
-            rain,
-            vibration,
-            distance,
-            soil
-        );
-
-
-        /* history arrays */
-
-        const dates =
-            feeds.map(
-                feed =>
-                    formatDate(
-                        feed.created_at
-                    )
-            );
-
-
-        const rainValues =
-            feeds.map(
-                feed =>
-                    Number(
-                        feed[FIELD_RAIN]
-                    ) || 0
-            );
-
-
-        const soilValues =
-            feeds.map(
-                feed =>
-                    Number(
-                        feed[FIELD_SOIL]
-                    ) || 0
-            );
-
-
-        const distanceValues =
-            feeds.map(
-                feed =>
-                    Number(
-                        feed[FIELD_DISTANCE]
-                    ) || 0
-            );
-
-
-        const vibrationValues =
-            feeds.map(
-                feed =>
-                    Number(
-                        feed[FIELD_VIBRATION]
-                    ) || 0
-            );
-
-
-        /* graphs */
-
-        createGraph(
-            "rainGraph",
-            rainValues,
-            dates,
-            "Rain"
-        );
-
-
-        createGraph(
-            "soilGraph",
-            soilValues,
-            dates,
-            "Soil"
-        );
-
-
-        createGraph(
-            "distanceGraph",
-            distanceValues,
-            dates,
-            "Distance"
-        );
-
-
-        createGraph(
-            "vibrationGraph",
-            vibrationValues,
-            dates,
-            "Ultrasonic"
-        );
-
-
-    }
-    catch(error){
-
-        console.error(
-            "ThingSpeak error:",
-            error
-        );
-
     }
 
-}
 
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-function addHistory(message){
-
-    const history =
-        document.getElementById(
-            "history"
-        );
-
-
-    const item =
-        document.createElement(
-            "div"
-        );
-
-
-    item.className =
-        "history-item";
-
-
-    item.innerHTML =
-        "• " +
-        message;
-
-
-    history.prepend(
-        item
-    );
-
-
-    while(
-        history.children.length > 6
-    ){
-
-        history.removeChild(
-            history.lastChild
-        );
-
-    }
+    return {
+        name,
+        className
+    };
 
 }
 
@@ -3703,16 +2377,15 @@ function addHistory(message){
    START
 ========================================================= */
 
-getThingSpeakData();
+loadData();
 
 
 /*
    Refresh every 15 seconds.
-   Graphs use the latest 20 ThingSpeak readings.
 */
 
 setInterval(
-    getThingSpeakData,
+    loadData,
     15000
 );
 

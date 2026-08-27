@@ -4,515 +4,607 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sanjivani College - Landslide Safety System</title>
+<title>Sanjivani College | Landslide Safety System</title>
 
 <style>
 *{
+    box-sizing:border-box;
     margin:0;
     padding:0;
-    box-sizing:border-box;
 }
 
 html,body{
-    width:100%;
     min-height:100%;
 }
 
 body{
     font-family:"Segoe UI",Arial,sans-serif;
-    color:white;
-    background:#02070b;
+    color:#fff;
+    background:#02080b;
     overflow-x:hidden;
 }
 
-/* =========================================================
+
+/* =====================================================
    RAINY FOREST BACKGROUND
-========================================================= */
+===================================================== */
 
 .background{
     position:fixed;
     inset:0;
-    z-index:-10;
+    z-index:-20;
     overflow:hidden;
 
     background:
         linear-gradient(
-            rgba(1,8,12,.48),
-            rgba(1,7,10,.82)
+            rgba(1,9,13,.40),
+            rgba(1,8,11,.82)
         ),
         linear-gradient(
-            120deg,
-            #102d34 0%,
-            #0a222a 35%,
-            #07151c 70%,
-            #02080c 100%
+            135deg,
+            #173f45,
+            #0a252c 45%,
+            #031014 100%
         );
 }
 
-/* distant mountains */
 
-.mountain{
+/* Distant hills */
+
+.hill{
     position:absolute;
-    bottom:17%;
-    width:0;
-    height:0;
-    border-left:280px solid transparent;
-    border-right:280px solid transparent;
-    border-bottom:360px solid rgba(12,37,42,.75);
+    bottom:13%;
+    width:65%;
+    height:38%;
+    border-radius:50% 50% 0 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #12383a,
+            #061c20
+        );
+
+    opacity:.75;
     filter:blur(1px);
 }
 
-.mountain.one{
-    left:-100px;
+.hill1{
+    left:-18%;
+    transform:rotate(4deg);
 }
 
-.mountain.two{
-    left:28%;
-    transform:scale(1.3);
-    opacity:.65;
+.hill2{
+    right:-20%;
+    bottom:17%;
+    transform:rotate(-4deg);
+    opacity:.6;
 }
 
-.mountain.three{
-    right:-120px;
-    transform:scale(.9);
-    opacity:.75;
-}
 
-/* ground */
-
-.ground{
-    position:absolute;
-    left:-5%;
-    right:-5%;
-    bottom:0;
-    height:28%;
-    background:
-        radial-gradient(
-            ellipse at center,
-            #102b25 0%,
-            #071611 50%,
-            #020706 100%
-        );
-    border-radius:50% 50% 0 0;
-}
-
-/* tree silhouettes */
+/* =====================================================
+   TREES
+===================================================== */
 
 .tree{
     position:absolute;
-    bottom:12%;
+    bottom:8%;
+    width:70px;
+    height:260px;
+    z-index:2;
+}
+
+
+/* trunk */
+
+.tree::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:31px;
+
+    width:11px;
+    height:125px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #020b08,
+            #07130e,
+            #010806
+        );
+
+    border-radius:5px;
+}
+
+
+/* tree leaves */
+
+.tree .leaf{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+
     width:0;
     height:0;
-    border-left:42px solid transparent;
-    border-right:42px solid transparent;
-    border-bottom:145px solid rgba(1,12,9,.90);
+
+    border-left:48px solid transparent;
+    border-right:48px solid transparent;
+    border-bottom:105px solid #03110d;
+
+    filter:
+        drop-shadow(
+            0 7px 8px rgba(0,0,0,.55)
+        );
 }
 
-.tree:before{
-    content:"";
-    position:absolute;
-    left:-32px;
-    top:48px;
-    width:64px;
-    height:15px;
-    background:#020c08;
-    box-shadow:
-        -15px 28px 0 #020c08,
-        12px 52px 0 #020c08;
+.tree .leaf:nth-child(1){
+    top:0;
 }
 
-.tree:after{
-    content:"";
-    position:absolute;
-    left:-7px;
-    top:135px;
-    width:14px;
-    height:70px;
-    background:#020906;
+.tree .leaf:nth-child(2){
+    top:45px;
+    transform:translateX(-50%) scale(.84);
 }
 
-.tree.t1{
-    left:3%;
-    transform:scale(1.25);
+.tree .leaf:nth-child(3){
+    top:88px;
+    transform:translateX(-50%) scale(.67);
 }
 
-.tree.t2{
-    left:12%;
-    transform:scale(.8);
+
+/* trees positions */
+
+.tree1{
+    left:1%;
+    transform:scale(1.15);
 }
 
-.tree.t3{
-    left:22%;
-    transform:scale(1.05);
+.tree2{
+    left:10%;
+    bottom:5%;
+    transform:scale(.75);
+    opacity:.8;
 }
 
-.tree.t4{
-    right:20%;
-    transform:scale(.9);
-}
-
-.tree.t5{
-    right:10%;
+.tree3{
+    left:20%;
     transform:scale(1.35);
 }
 
-.tree.t6{
-    right:2%;
-    transform:scale(.85);
+.tree4{
+    right:20%;
+    bottom:7%;
+    transform:scale(.82);
 }
 
-/* =========================================================
-   ANIMATED RAIN
-========================================================= */
+.tree5{
+    right:9%;
+    transform:scale(1.25);
+}
+
+.tree6{
+    right:-1%;
+    bottom:5%;
+    transform:scale(.95);
+}
+
+
+/* extra small trees */
+
+.small-tree{
+    position:absolute;
+    bottom:8%;
+    width:35px;
+    height:145px;
+
+    background:#020b08;
+
+    clip-path:
+        polygon(
+            50% 0,
+            90% 35%,
+            67% 35%,
+            100% 60%,
+            65% 58%,
+            85% 100%,
+            15% 100%,
+            35% 58%,
+            0 60%,
+            33% 35%,
+            10% 35%
+        );
+
+    z-index:1;
+}
+
+.small1{
+    left:27%;
+}
+
+.small2{
+    left:34%;
+    transform:scale(.7);
+}
+
+.small3{
+    right:31%;
+    transform:scale(.75);
+}
+
+
+/* =====================================================
+   RAIN
+===================================================== */
 
 .rain{
     position:absolute;
-    inset:-100px;
-    pointer-events:none;
-    opacity:.65;
+    inset:-150px;
 
     background-image:
         repeating-linear-gradient(
             105deg,
-            transparent 0px,
-            transparent 14px,
-            rgba(180,225,245,.42) 15px,
+            transparent 0,
             transparent 16px,
-            transparent 28px
+            rgba(210,240,250,.38) 17px,
+            transparent 19px,
+            transparent 34px
         );
 
-    background-size:45px 65px;
+    background-size:48px 72px;
 
-    animation:rainFall .55s linear infinite;
+    opacity:.62;
+
+    animation:
+        rainMove .55s linear infinite;
 }
 
-.rain.two{
-    opacity:.30;
-    background-size:75px 90px;
+.rain2{
+    background-size:75px 95px;
+    opacity:.28;
     animation-duration:.8s;
 }
 
-@keyframes rainFall{
+.rain3{
+    background-size:105px 120px;
+    opacity:.18;
+    animation-duration:1s;
+}
+
+@keyframes rainMove{
     from{
-        transform:translateY(-80px);
+        transform:translateY(-100px);
     }
 
     to{
-        transform:translateY(80px);
+        transform:translateY(100px);
     }
 }
 
-/* =========================================================
-   DARK OVERLAY
-========================================================= */
 
-.background-overlay{
+/* dark atmosphere */
+
+.backgroundShade{
     position:absolute;
     inset:0;
 
     background:
         radial-gradient(
-            circle at 50% 25%,
-            rgba(40,150,170,.13),
-            transparent 32%
+            circle at 50% 20%,
+            rgba(60,180,200,.13),
+            transparent 35%
         ),
         linear-gradient(
             to bottom,
-            transparent 0%,
-            rgba(0,0,0,.20) 45%,
-            rgba(0,0,0,.78) 100%
+            rgba(0,0,0,.05),
+            rgba(0,0,0,.25) 45%,
+            rgba(0,0,0,.86) 100%
         );
 }
 
-/* =========================================================
+
+/* =====================================================
    HEADER
-========================================================= */
+===================================================== */
 
 header{
-    position:relative;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    text-align:center;
 
-    padding:18px 3%;
+    padding:28px 15px 22px;
 
-    background:rgba(1,8,13,.58);
-    backdrop-filter:blur(9px);
+    background:
+        linear-gradient(
+            rgba(2,11,15,.48),
+            rgba(2,10,14,.20)
+        );
 
-    border-bottom:1px solid rgba(120,210,235,.18);
+    border-bottom:
+        1px solid
+        rgba(150,220,240,.16);
+
+    backdrop-filter:blur(7px);
 }
 
-.brand{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
 
-/* COLLEGE LOGO */
+/* LOGO IN CENTER */
 
 .logo{
-    width:76px;
-    height:76px;
+    display:block;
+
+    width:105px;
+    height:105px;
+
+    margin:0 auto 14px;
 
     object-fit:contain;
 
     border-radius:50%;
 
-    background:white;
+    background:#fff;
 
-    border:2px solid rgba(255,255,255,.75);
+    padding:4px;
+
+    border:
+        2px solid
+        rgba(255,255,255,.8);
 
     box-shadow:
-        0 0 18px rgba(0,210,255,.25);
+        0 0 30px
+        rgba(70,210,255,.28),
+        0 10px 35px
+        rgba(0,0,0,.45);
 }
 
-/* NEW COLLEGE NAME */
+
+/* COLLEGE NAME */
 
 .college-name{
-    font-size:32px;
-    font-weight:950;
-    letter-spacing:1.5px;
-
     font-family:
-        "Trebuchet MS",
-        "Segoe UI",
-        Arial,
-        sans-serif;
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(30px,5vw,48px);
+
+    font-weight:900;
+
+    letter-spacing:1.5px;
 
     background:
         linear-gradient(
             90deg,
             #ffffff,
-            #9feaff,
+            #a8edff,
             #ffffff
         );
 
     -webkit-background-clip:text;
     background-clip:text;
+
     color:transparent;
 
     text-shadow:
-        0 0 22px rgba(100,220,255,.20);
+        0 0 24px
+        rgba(100,220,255,.18);
 }
 
-.college-sub{
-    margin-top:3px;
+.college-subtitle{
+    margin-top:6px;
 
-    font-size:13px;
+    font-size:12px;
+
+    letter-spacing:2px;
+
+    color:#b8d3dc;
 
     font-weight:600;
-
-    color:#b8d5df;
-
-    letter-spacing:.7px;
 }
 
-.top-right{
-    display:flex;
+
+/* live status */
+
+.live-status{
+    display:inline-flex;
+
     align-items:center;
-    gap:12px;
-}
 
-.clock{
-    min-width:155px;
+    margin-top:16px;
 
-    padding:10px 17px;
+    padding:8px 15px;
 
-    text-align:center;
-
-    border-radius:14px;
+    border-radius:30px;
 
     background:
-        rgba(38,21,67,.72);
+        rgba(0,80,65,.45);
 
-    border:1px solid
-        rgba(180,100,255,.45);
+    border:
+        1px solid
+        rgba(50,240,180,.28);
 
-    box-shadow:
-        0 0 20px rgba(120,50,220,.12);
-}
+    color:#5dffc0;
 
-#date{
-    font-size:13px;
-}
-
-#time{
-    margin-top:3px;
-    font-size:14px;
-    font-weight:700;
-}
-
-.live{
-    padding:13px 18px;
-
-    border-radius:14px;
-
-    background:
-        rgba(0,80,67,.55);
-
-    border:1px solid
-        rgba(40,220,170,.35);
-
-    color:#5dffc1;
+    font-size:12px;
 
     font-weight:800;
-
-    white-space:nowrap;
 }
 
 .live-dot{
-    display:inline-block;
-
-    width:10px;
-    height:10px;
+    width:9px;
+    height:9px;
 
     margin-right:7px;
 
     border-radius:50%;
 
-    background:#25ef91;
+    background:#27ed91;
 
     box-shadow:
-        0 0 14px #25ef91;
+        0 0 13px #27ed91;
 
-    animation:liveBlink 1s infinite;
+    animation:blink 1s infinite;
 }
 
-@keyframes liveBlink{
+@keyframes blink{
     50%{
         opacity:.35;
     }
 }
 
-/* =========================================================
+
+/* =====================================================
    HERO
-========================================================= */
+===================================================== */
 
 .hero{
     position:relative;
 
-    margin:18px 3% 0;
+    margin:20px 3%;
 
-    min-height:455px;
+    min-height:410px;
 
     overflow:hidden;
 
-    border-radius:27px;
+    border-radius:28px;
+
+    border:
+        1px solid
+        rgba(120,210,235,.20);
 
     background:
         linear-gradient(
             90deg,
-            rgba(0,5,9,.94) 0%,
-            rgba(0,8,12,.80) 32%,
-            rgba(0,8,12,.42) 66%,
-            rgba(0,5,8,.70) 100%
+            rgba(1,7,10,.92),
+            rgba(2,13,18,.65),
+            rgba(2,8,12,.48)
         );
 
-    border:1px solid
-        rgba(100,190,220,.22);
-
     box-shadow:
-        0 22px 55px rgba(0,0,0,.58);
+        0 25px 60px
+        rgba(0,0,0,.58);
 }
 
-/*
-   Rain inside hero to make the main panel
-   look like the rainy picture.
-*/
 
-.hero-rain{
+.hero::before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:
+        radial-gradient(
+            circle at 80% 35%,
+            rgba(50,180,210,.13),
+            transparent 30%
+        );
+}
+
+
+.heroRain{
     position:absolute;
     inset:-100px;
 
     background-image:
         repeating-linear-gradient(
             108deg,
-            transparent 0px,
+            transparent 0,
             transparent 18px,
-            rgba(210,240,255,.30) 19px,
+            rgba(210,240,255,.27) 19px,
             transparent 21px,
-            transparent 37px
+            transparent 38px
         );
 
     background-size:55px 75px;
 
     animation:
-        rainFall .65s linear infinite;
+        rainMove .65s linear infinite;
 
     opacity:.5;
 }
 
-.hero-content{
+
+.heroContent{
     position:relative;
-    z-index:3;
+    z-index:4;
 
-    padding:70px 34px;
+    max-width:700px;
 
-    max-width:620px;
+    padding:
+        clamp(50px,8vw,90px)
+        clamp(24px,6vw,65px);
 }
 
 .hero h1{
-    font-size:54px;
+    font-size:
+        clamp(38px,7vw,65px);
 
-    line-height:1.02;
-
-    letter-spacing:1px;
+    line-height:1;
 
     font-weight:950;
 
+    letter-spacing:1px;
+
     text-shadow:
-        0 8px 35px rgba(0,0,0,.8);
+        0 8px 30px
+        rgba(0,0,0,.85);
 }
 
 .hero h1 span{
     display:block;
 
-    margin-top:5px;
+    margin-top:8px;
 
-    color:#ff669e;
+    color:#ff68a8;
 
     text-shadow:
-        0 0 24px rgba(255,60,140,.45);
+        0 0 25px
+        rgba(255,50,140,.4);
 }
 
 .hero p{
     margin-top:22px;
 
-    max-width:540px;
+    max-width:580px;
 
-    font-size:17px;
+    line-height:1.65;
 
-    line-height:1.6;
+    font-size:16px;
 
-    color:#d4e8ef;
+    color:#d5e6ec;
 }
 
-.alert-control{
-    margin-top:28px;
-}
+
+/* =====================================================
+   ALARM BUTTON
+===================================================== */
 
 .alarm-button{
-    border:none;
+    margin-top:27px;
 
-    padding:14px 22px;
+    padding:14px 21px;
+
+    border:0;
 
     border-radius:13px;
 
-    color:white;
+    cursor:pointer;
+
+    color:#fff;
+
+    font-size:13px;
 
     font-weight:900;
-
-    cursor:pointer;
 
     background:
         linear-gradient(
             135deg,
-            #69206e,
-            #d02e83
+            #68216d,
+            #d32f86
         );
 
     box-shadow:
-        0 0 24px rgba(220,40,150,.24);
+        0 0 25px
+        rgba(220,40,150,.24);
 
     transition:.2s;
 }
@@ -526,43 +618,46 @@ header{
         linear-gradient(
             135deg,
             #08734f,
-            #12c983
+            #13c987
         );
 
     box-shadow:
-        0 0 25px rgba(20,220,130,.30);
+        0 0 25px
+        rgba(20,220,130,.30);
 }
 
-/* =========================================================
+
+/* =====================================================
    EMERGENCY ALERT
-========================================================= */
+===================================================== */
 
 .alert-banner{
     display:none;
 
     margin:20px 3%;
 
-    padding:21px;
+    padding:22px;
 
     text-align:center;
 
-    border-radius:18px;
+    border-radius:19px;
 
-    border:2px solid #ff344a;
+    border:2px solid #ff3046;
 
     background:
         linear-gradient(
             90deg,
-            #510812,
-            #cf0b25,
-            #510812
+            #4c0610,
+            #c90b25,
+            #4c0610
         );
 
     box-shadow:
-        0 0 40px rgba(255,0,35,.5);
+        0 0 45px
+        rgba(255,0,35,.48);
 
     animation:
-        alertFlash .8s infinite;
+        alertPulse .75s infinite;
 }
 
 .alert-banner.show{
@@ -570,23 +665,28 @@ header{
 }
 
 .alert-banner h2{
-    font-size:27px;
+    font-size:
+        clamp(21px,4vw,29px);
 }
 
 .alert-banner p{
     margin-top:7px;
-    color:#ffe1e6;
+
+    color:#ffe0e5;
+
+    font-size:13px;
 }
 
-@keyframes alertFlash{
+@keyframes alertPulse{
     50%{
-        opacity:.55;
+        opacity:.52;
     }
 }
 
-/* =========================================================
+
+/* =====================================================
    DASHBOARD
-========================================================= */
+===================================================== */
 
 .dashboard{
     margin:20px 3%;
@@ -597,87 +697,87 @@ header{
         1.4fr
         repeat(4,1fr);
 
-    gap:17px;
+    gap:16px;
 }
 
 .card{
-    padding:21px;
+    padding:20px;
 
     border-radius:20px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(10,29,43,.94),
-            rgba(4,15,25,.94)
+            rgba(10,30,43,.92),
+            rgba(3,15,23,.94)
         );
 
-    border:1px solid
-        rgba(110,180,215,.22);
+    border:
+        1px solid
+        rgba(110,185,215,.20);
 
     box-shadow:
-        0 15px 35px rgba(0,0,0,.35);
+        0 14px 34px
+        rgba(0,0,0,.34);
 
     backdrop-filter:blur(8px);
 }
 
-/* =========================================================
-   RISK CARD
-========================================================= */
 
-.risk-card{
-    overflow:hidden;
-}
+/* =====================================================
+   RISK CARD
+===================================================== */
 
 .risk-card.high{
-    border-color:#ff3434;
+    border-color:#ff3838;
 
     animation:
-        riskPulse 1.1s infinite;
+        riskGlow 1s infinite;
 }
 
 .risk-card.critical{
     border-color:#ff0055;
 
     animation:
-        criticalPulse .6s infinite;
+        criticalGlow .55s infinite;
 }
 
-@keyframes riskPulse{
+@keyframes riskGlow{
     50%{
         box-shadow:
-            0 0 43px
-            rgba(255,30,30,.58);
+            0 0 45px
+            rgba(255,30,30,.5);
     }
 }
 
-@keyframes criticalPulse{
+@keyframes criticalGlow{
     50%{
         box-shadow:
             0 0 65px
-            rgba(255,0,70,.75);
+            rgba(255,0,70,.7);
     }
 }
 
 .risk-title{
-    font-size:14px;
-    color:#d9e3ed;
+    color:#d5e1e9;
+
+    font-size:13px;
 }
 
 .risk-value{
-    margin-top:7px;
+    margin-top:8px;
 
-    font-size:31px;
+    font-size:30px;
 
     font-weight:950;
 
-    color:#45e89a;
+    color:#45e99a;
 }
 
 .risk-message{
     margin-top:9px;
 
-    font-size:14px;
+    font-size:13px;
 }
 
 .risk-bar{
@@ -685,13 +785,13 @@ header{
 
     gap:4px;
 
-    margin-top:25px;
+    margin-top:23px;
 }
 
 .risk-bar span{
-    height:14px;
-
     flex:1;
+
+    height:13px;
 
     border-radius:4px;
 
@@ -699,80 +799,81 @@ header{
 }
 
 .risk-bar span.active{
-    background:#ff3434;
+    background:#ff3030;
 
     box-shadow:
-        0 0 10px #ff3434;
+        0 0 9px
+        #ff3030;
 }
 
-/* =========================================================
+
+/* =====================================================
    SENSOR CARDS
-========================================================= */
+===================================================== */
 
 .sensor{
     text-align:center;
 }
 
 .sensor-icon{
-    width:64px;
-    height:64px;
+    width:62px;
+    height:62px;
 
     margin:auto;
 
     display:flex;
 
-    align-items:center;
     justify-content:center;
+    align-items:center;
 
     border-radius:50%;
 
-    font-size:29px;
+    font-size:28px;
 
     background:
-        rgba(20,100,180,.25);
+        rgba(20,100,180,.24);
 
-    border:1px solid #3295e7;
-
-    box-shadow:
-        0 0 18px
-        rgba(30,150,255,.12);
+    border:
+        1px solid
+        #3299e7;
 }
 
 .sensor-name{
-    margin-top:14px;
+    margin-top:13px;
 
-    color:#8dd8ff;
+    color:#8cdbff;
 
-    font-size:13px;
+    font-size:12px;
 
-    font-weight:600;
+    font-weight:700;
 }
 
 .sensor-value{
-    margin-top:7px;
+    margin-top:6px;
 
-    font-size:31px;
+    font-size:29px;
 
     font-weight:950;
 }
 
 .sensor-unit{
-    font-size:12px;
+    font-size:11px;
 
-    color:#9aacbb;
+    color:#9aafbd;
 }
 
 .sensor-live{
-    margin-top:10px;
+    margin-top:9px;
 
-    font-size:12px;
+    color:#3de79d;
 
-    color:#39e8a0;
+    font-size:11px;
 }
 
-/* =========================================================
+
+/* =====================================================
    CHARTS
-========================================================= */
+===================================================== */
 
 .charts{
     margin:20px 3%;
@@ -782,25 +883,25 @@ header{
     grid-template-columns:
         1fr 1fr 1fr;
 
-    gap:17px;
+    gap:16px;
 }
 
 .chart-card{
-    min-height:235px;
+    min-height:230px;
 }
 
 .chart-title{
-    margin-bottom:15px;
+    margin-bottom:13px;
 
-    color:#62d8ff;
+    color:#61dbff;
 
-    font-size:16px;
+    font-weight:800;
 
-    font-weight:700;
+    font-size:15px;
 }
 
 .chart-title small{
-    color:#c8d4de;
+    color:#bacbd5;
 
     font-weight:400;
 }
@@ -824,7 +925,7 @@ header{
 .chart-line{
     fill:none;
 
-    stroke:#27bcff;
+    stroke:#25baff;
 
     stroke-width:3;
 
@@ -838,26 +939,21 @@ header{
 .chart-line-purple{
     fill:none;
 
-    stroke:#c052ff;
+    stroke:#bf50ff;
 
     stroke-width:3;
-
-    filter:
-        drop-shadow(
-            0 0 5px
-            rgba(190,60,255,.5)
-        );
 }
 
-/* =========================================================
+
+/* =====================================================
    RISK CIRCLE
-========================================================= */
+===================================================== */
 
 .risk-circle{
     width:145px;
     height:145px;
 
-    margin:10px auto 0;
+    margin:10px auto;
 
     border-radius:50%;
 
@@ -865,14 +961,14 @@ header{
 
     flex-direction:column;
 
-    align-items:center;
-
     justify-content:center;
+
+    align-items:center;
 
     background:
         radial-gradient(
             circle,
-            #122034 50%,
+            #102034 50%,
             transparent 51%
         ),
         conic-gradient(
@@ -885,28 +981,26 @@ header{
             #d71f9c 315deg,
             #d71f9c 360deg
         );
-
-    box-shadow:
-        0 0 20px
-        rgba(255,50,50,.15);
 }
 
 .risk-circle-title{
+    font-size:13px;
+
     color:#ffb277;
-    font-size:14px;
 }
 
 .risk-circle-value{
     margin-top:2px;
 
-    font-size:26px;
+    font-size:25px;
 
     font-weight:950;
 }
 
-/* =========================================================
+
+/* =====================================================
    EVACUATION
-========================================================= */
+===================================================== */
 
 .evacuation{
     margin:20px 3%;
@@ -916,7 +1010,7 @@ header{
     grid-template-columns:
         1fr 1.7fr;
 
-    gap:17px;
+    gap:16px;
 }
 
 .safe-direction{
@@ -928,15 +1022,15 @@ header{
 }
 
 .direction-icon{
-    font-size:62px;
+    font-size:60px;
 }
 
 .safe-label{
     color:#4dffb1;
 
-    font-size:14px;
+    font-size:13px;
 
-    font-weight:700;
+    font-weight:800;
 }
 
 .direction{
@@ -944,41 +1038,41 @@ header{
 
     color:#5feaff;
 
-    font-size:25px;
+    font-size:24px;
 
     font-weight:950;
 }
 
 .safe-distance{
-    margin-top:10px;
+    margin-top:9px;
 
-    color:#c7d8e4;
+    color:#c5d7e1;
 
-    font-size:13px;
+    font-size:12px;
 }
 
 .route{
-    min-height:150px;
-
     position:relative;
 
     overflow:hidden;
+
+    min-height:150px;
 }
 
 .route-title{
     color:#54eaff;
 
-    font-size:18px;
+    font-size:17px;
 
-    font-weight:bold;
+    font-weight:900;
 }
 
 .route-sub{
     margin-top:5px;
 
-    color:#c9d7e2;
+    color:#c7d7e0;
 
-    font-size:13px;
+    font-size:12px;
 }
 
 .route-line{
@@ -986,17 +1080,18 @@ header{
 
     left:9%;
     right:9%;
-
-    top:68%;
+    top:69%;
 
     border-top:
-        4px dashed #2bffd1;
+        4px dashed
+        #2bffd1;
 
     transform:rotate(-5deg);
 
     filter:
         drop-shadow(
-            0 0 7px #2bffd1
+            0 0 7px
+            #2bffd1
         );
 }
 
@@ -1005,7 +1100,7 @@ header{
 
     top:50%;
 
-    font-size:34px;
+    font-size:32px;
 }
 
 .route-start{
@@ -1016,22 +1111,23 @@ header{
     right:5%;
 }
 
-/* =========================================================
-   SAFETY PROTOCOLS
-========================================================= */
+
+/* =====================================================
+   PROTOCOLS
+===================================================== */
 
 .protocol-section{
     margin:20px 3%;
 }
 
 .section-title{
-    margin-bottom:14px;
+    margin-bottom:13px;
 
     color:#ff6db3;
 
-    font-size:18px;
+    font-size:17px;
 
-    font-weight:800;
+    font-weight:900;
 }
 
 .protocols{
@@ -1044,36 +1140,38 @@ header{
 }
 
 .protocol{
-    padding:17px;
-
-    border-radius:15px;
+    padding:16px;
 
     text-align:center;
+
+    border-radius:15px;
 
     background:
         rgba(7,25,39,.90);
 
-    border:1px solid
-        rgba(120,170,210,.20);
+    border:
+        1px solid
+        rgba(120,170,210,.18);
 }
 
 .protocol-icon{
-    margin-bottom:9px;
+    margin-bottom:8px;
 
-    font-size:31px;
+    font-size:29px;
 }
 
 .protocol p{
     color:#d4e2ec;
 
-    font-size:12.5px;
+    font-size:12px;
 
     line-height:1.45;
 }
 
-/* =========================================================
+
+/* =====================================================
    BOTTOM
-========================================================= */
+===================================================== */
 
 .bottom{
     margin:20px 3%;
@@ -1083,15 +1181,15 @@ header{
     grid-template-columns:
         1fr 1fr 1fr;
 
-    gap:17px;
+    gap:16px;
 }
 
 .status-item{
-    margin-top:11px;
+    margin-top:10px;
 
     color:#50e9a5;
 
-    font-size:14px;
+    font-size:13px;
 }
 
 .history-item{
@@ -1101,56 +1199,60 @@ header{
         1px solid
         rgba(255,255,255,.08);
 
-    font-size:13px;
+    font-size:12px;
 }
 
 .weather-icon{
-    margin-top:8px;
+    margin-top:6px;
 
-    font-size:43px;
+    font-size:40px;
 }
 
 .weather-temp{
     margin-top:4px;
 
-    font-size:32px;
+    font-size:28px;
 
     font-weight:950;
 }
 
 .weather-text{
-    margin-top:5px;
+    margin-top:4px;
 
-    color:#d4e1eb;
+    color:#d0dfe7;
+
+    font-size:13px;
 }
 
-/* =========================================================
+
+/* =====================================================
    FOOTER
-========================================================= */
+===================================================== */
 
 footer{
-    margin-top:30px;
+    margin-top:28px;
 
     padding:20px;
 
     text-align:center;
 
-    color:#8799aa;
+    color:#8497a4;
 
     border-top:
         1px solid
-        rgba(255,255,255,.08);
+        rgba(255,255,255,.07);
 }
 
 footer span{
     color:#ff62ae;
 }
 
-/* =========================================================
-   TABLET
-========================================================= */
 
-@media(max-width:1000px){
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:1050px){
 
     .dashboard{
         grid-template-columns:1fr 1fr;
@@ -1164,45 +1266,18 @@ footer span{
         grid-template-columns:
             repeat(3,1fr);
     }
-
-    .charts{
-        grid-template-columns:1fr;
-    }
 }
 
-/* =========================================================
-   MOBILE
-========================================================= */
 
 @media(max-width:700px){
 
     header{
-        flex-direction:column;
-
-        align-items:flex-start;
+        padding-top:22px;
     }
 
-    .top-right{
-        width:100%;
-
-        justify-content:
-            space-between;
-    }
-
-    .college-name{
-        font-size:25px;
-    }
-
-    .college-sub{
-        font-size:10px;
-    }
-
-    .hero{
-        min-height:400px;
-    }
-
-    .hero h1{
-        font-size:40px;
+    .logo{
+        width:88px;
+        height:88px;
     }
 
     .dashboard{
@@ -1213,53 +1288,45 @@ footer span{
         grid-column:auto;
     }
 
-    .evacuation,
+    .charts{
+        grid-template-columns:1fr;
+    }
+
+    .evacuation{
+        grid-template-columns:1fr;
+    }
+
     .bottom{
         grid-template-columns:1fr;
     }
 
     .protocols{
-        grid-template-columns:
-            1fr 1fr;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .tree3{
+        left:16%;
+        transform:scale(.9);
+    }
+
+    .tree4{
+        right:15%;
     }
 }
 
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
 
-@media(max-width:480px){
-
-    .logo{
-        width:62px;
-        height:62px;
-    }
+@media(max-width:470px){
 
     .college-name{
-        font-size:22px;
+        font-size:29px;
     }
 
-    .top-right{
-        flex-direction:column;
-
-        align-items:stretch;
-    }
-
-    .clock,
-    .live{
-        text-align:center;
+    .college-subtitle{
+        font-size:9px;
     }
 
     .hero{
-        margin:15px;
-    }
-
-    .hero-content{
-        padding:48px 22px;
-    }
-
-    .hero h1{
-        font-size:34px;
+        margin:14px;
     }
 
     .dashboard,
@@ -1267,13 +1334,21 @@ footer span{
     .evacuation,
     .protocol-section,
     .bottom{
-        margin:15px;
+        margin-left:14px;
+        margin-right:14px;
     }
 
     .protocols{
         grid-template-columns:1fr;
     }
+
+    .tree2,
+    .tree4,
+    .small2{
+        display:none;
+    }
 }
+
 </style>
 </head>
 
@@ -1281,148 +1356,154 @@ footer span{
 <body>
 
 
-<!-- =========================================================
+<!-- =====================================================
      BACKGROUND
-========================================================= -->
+===================================================== -->
 
 <div class="background">
 
-    <div class="mountain one"></div>
-    <div class="mountain two"></div>
-    <div class="mountain three"></div>
+    <div class="hill hill1"></div>
+    <div class="hill hill2"></div>
 
-    <div class="tree t1"></div>
-    <div class="tree t2"></div>
-    <div class="tree t3"></div>
-    <div class="tree t4"></div>
-    <div class="tree t5"></div>
-    <div class="tree t6"></div>
 
-    <div class="ground"></div>
+    <!-- LARGE TREES -->
+
+    <div class="tree tree1">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+
+    <div class="tree tree2">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+
+    <div class="tree tree3">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+
+    <div class="tree tree4">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+
+    <div class="tree tree5">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+
+    <div class="tree tree6">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+
+
+    <!-- SMALL TREES -->
+
+    <div class="small-tree small1"></div>
+    <div class="small-tree small2"></div>
+    <div class="small-tree small3"></div>
+
+
+    <!-- RAIN -->
 
     <div class="rain"></div>
-    <div class="rain two"></div>
+    <div class="rain rain2"></div>
+    <div class="rain rain3"></div>
 
-    <div class="background-overlay"></div>
+
+    <div class="backgroundShade"></div>
 
 </div>
 
 
-<!-- =========================================================
-     HEADER
-========================================================= -->
+<!-- =====================================================
+     CENTERED COLLEGE HEADER
+===================================================== -->
 
 <header>
 
-    <div class="brand">
 
-        <!-- EXACT IMAGE SOURCE REQUESTED -->
+    <!-- SANJIVANI LOGO -->
 
-        <img
-            class="logo"
-            src="Screenshot_20260826_204053_WhatsApp.jpg"
-            alt="Sanjivani College Logo"
-        >
+    <img
+        class="logo"
+        src="Screenshot_20260826_204053_WhatsApp.jpg"
+        alt="Sanjivani College Logo"
+    >
 
-        <div>
 
-            <!-- CHANGED NAME -->
+    <!-- COLLEGE NAME BELOW LOGO -->
 
-            <div class="college-name">
-                Sanjivani College
-            </div>
-
-            <div class="college-sub">
-                COLLEGE OF ENGINEERING, KOPARGAON
-            </div>
-
-        </div>
-
+    <div class="college-name">
+        Sanjivani College
     </div>
 
 
-    <div class="top-right">
-
-        <div class="clock">
-
-            <div id="date">
-                --
-            </div>
-
-            <div id="time">
-                --
-            </div>
-
-        </div>
+    <div class="college-subtitle">
+        COLLEGE OF ENGINEERING, KOPARGAON
+    </div>
 
 
-        <div class="live">
+    <div class="live-status">
 
-            <span class="live-dot"></span>
+        <span class="live-dot"></span>
 
-            LIVE MONITORING
-
-        </div>
+        LIVE LANDSLIDE MONITORING
 
     </div>
 
 </header>
 
 
-<!-- =========================================================
+<!-- =====================================================
      HERO
-========================================================= -->
+===================================================== -->
 
 <section class="hero">
 
-    <div class="hero-rain"></div>
+    <div class="heroRain"></div>
 
 
-    <div class="hero-content">
+    <div class="heroContent">
 
         <h1>
-
             LANDSLIDE
-
-            <span>
-                SAFETY SYSTEM
-            </span>
-
+            <span>SAFETY SYSTEM</span>
         </h1>
 
 
         <p>
-
             Real-time monitoring and early warning
             system for landslide detection,
-            environmental monitoring and
-            emergency risk prevention.
-
+            environmental monitoring and emergency
+            risk prevention.
         </p>
 
 
-        <div class="alert-control">
-
-            <button
-                id="alarmButton"
-                class="alarm-button"
-                onclick="enableMobileAlarm()"
-            >
-
-                🔊 ENABLE MOBILE ALARM
-
-            </button>
-
-        </div>
+        <button
+            id="alarmButton"
+            class="alarm-button"
+            onclick="enableMobileAlarm()"
+        >
+            🔊 ENABLE MOBILE ALARM
+        </button>
 
     </div>
 
 </section>
 
 
-<!-- =========================================================
-     EMERGENCY ALERT
-========================================================= -->
+<!-- =====================================================
+     ALERT
+===================================================== -->
 
 <div
     id="alertBanner"
@@ -1441,14 +1522,12 @@ footer span{
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      SENSOR DASHBOARD
-========================================================= -->
+===================================================== -->
 
 <section class="dashboard">
 
-
-    <!-- RISK -->
 
     <div
         id="riskCard"
@@ -1459,7 +1538,6 @@ footer span{
             CURRENT RISK LEVEL
         </div>
 
-
         <div
             id="riskValue"
             class="risk-value"
@@ -1467,14 +1545,12 @@ footer span{
             LOW RISK
         </div>
 
-
         <div
             id="riskMessage"
             class="risk-message"
         >
             System operating normally.
         </div>
-
 
         <div class="risk-bar">
 
@@ -1510,7 +1586,7 @@ footer span{
         </div>
 
         <div class="sensor-unit">
-            sensor value
+            SENSOR VALUE
         </div>
 
         <div class="sensor-live">
@@ -1600,7 +1676,7 @@ footer span{
         </div>
 
         <div class="sensor-unit">
-            sensor value
+            SENSOR VALUE
         </div>
 
         <div class="sensor-live">
@@ -1612,9 +1688,9 @@ footer span{
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      CHARTS
-========================================================= -->
+===================================================== -->
 
 <section class="charts">
 
@@ -1622,12 +1698,9 @@ footer span{
     <div class="card chart-card">
 
         <div class="chart-title">
-
             RAINFALL INTENSITY
             <small>(Live)</small>
-
         </div>
-
 
         <div class="chart">
 
@@ -1658,7 +1731,6 @@ footer span{
                 />
 
                 <polyline
-                    id="rainLine"
                     class="chart-line"
                     points="0,120 50,110 100,115 150,82 200,95 250,60 300,82 350,65 400,88 450,55 500,70"
                 />
@@ -1673,12 +1745,9 @@ footer span{
     <div class="card chart-card">
 
         <div class="chart-title">
-
             GROUND MOVEMENT
             <small>(Live)</small>
-
         </div>
-
 
         <div class="chart">
 
@@ -1709,7 +1778,6 @@ footer span{
                 />
 
                 <polyline
-                    id="movementLine"
                     class="chart-line-purple"
                     points="0,115 50,105 100,110 150,95 200,101 250,68 300,90 350,70 400,85 450,55 500,70"
                 />
@@ -1724,12 +1792,9 @@ footer span{
     <div class="card chart-card">
 
         <div class="chart-title">
-
             RISK LEVEL TREND
             <small>(Live)</small>
-
         </div>
-
 
         <div class="risk-circle">
 
@@ -1751,9 +1816,9 @@ footer span{
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      EVACUATION
-========================================================= -->
+===================================================== -->
 
 <section class="evacuation">
 
@@ -1797,14 +1862,11 @@ footer span{
             Follow the safest path to higher ground.
         </div>
 
-
         <div class="route-line"></div>
-
 
         <div class="route-point route-start">
             📍
         </div>
-
 
         <div class="route-point route-end">
             🛡️
@@ -1815,9 +1877,9 @@ footer span{
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      SAFETY PROTOCOLS
-========================================================= -->
+===================================================== -->
 
 <section class="protocol-section">
 
@@ -1836,8 +1898,8 @@ footer span{
             </div>
 
             <p>
-                Move immediately to higher ground
-                or a safe location.
+                Move immediately to higher
+                ground or a safe location.
             </p>
 
         </div>
@@ -1850,8 +1912,8 @@ footer span{
             </div>
 
             <p>
-                Follow evacuation routes and
-                official instructions.
+                Follow evacuation routes
+                and official instructions.
             </p>
 
         </div>
@@ -1864,8 +1926,8 @@ footer span{
             </div>
 
             <p>
-                Do not return home until
-                officials declare it safe.
+                Do not return until officials
+                declare the area safe.
             </p>
 
         </div>
@@ -1879,7 +1941,7 @@ footer span{
 
             <p>
                 Keep emergency supplies,
-                water and first aid with you.
+                water and first aid ready.
             </p>
 
         </div>
@@ -1893,7 +1955,7 @@ footer span{
 
             <p>
                 Stay updated through
-                official alerts only.
+                official alerts.
             </p>
 
         </div>
@@ -1903,9 +1965,9 @@ footer span{
 </section>
 
 
-<!-- =========================================================
-     BOTTOM
-========================================================= -->
+<!-- =====================================================
+     SYSTEM INFORMATION
+===================================================== -->
 
 <section class="bottom">
 
@@ -1916,16 +1978,13 @@ footer span{
             SYSTEM STATUS
         </div>
 
-
         <div class="status-item">
             🟢 Sensors: 04 Active
         </div>
 
-
         <div class="status-item">
             🟢 ThingSpeak: Connected
         </div>
-
 
         <div
             id="alarmStatus"
@@ -1942,7 +2001,6 @@ footer span{
         <div class="section-title">
             ALERT HISTORY
         </div>
-
 
         <div id="history">
 
@@ -1961,16 +2019,13 @@ footer span{
             WEATHER CONDITIONS
         </div>
 
-
         <div class="weather-icon">
             🌧️
         </div>
 
-
         <div class="weather-temp">
             Rain Monitoring
         </div>
-
 
         <div class="weather-text">
             Environmental sensors active
@@ -1991,25 +2046,18 @@ footer span{
 
 <script>
 
-/* =========================================================
-   THINGSPEAK
-========================================================= */
+/* =====================================================
+   YOUR THINGSPEAK DETAILS
+===================================================== */
 
 const CHANNEL_ID = "3456662";
 
-/*
-   Paste your private ThingSpeak READ API key here
-   if your channel is private.
-
-   For a public channel, keep it empty.
-*/
-
-const READ_API_KEY = "";
+const READ_API_KEY = "DB7UMVLEJ8Y6I7E5";
 
 
-/* =========================================================
-   FIELD MAPPING
-========================================================= */
+/* =====================================================
+   THINGSPEAK FIELD MAPPING
+===================================================== */
 
 const FIELD_DISTANCE  = "field1";
 const FIELD_SOIL      = "field2";
@@ -2017,9 +2065,9 @@ const FIELD_VIBRATION = "field3";
 const FIELD_RAIN      = "field4";
 
 
-/* =========================================================
-   ALARM
-========================================================= */
+/* =====================================================
+   MOBILE ALARM
+===================================================== */
 
 let alarmEnabled = false;
 let alarmPlaying = false;
@@ -2034,9 +2082,9 @@ let alarmGain = null;
 let alarmInterval = null;
 
 
-/* =========================================================
-   ENABLE MOBILE AUDIO
-========================================================= */
+/* =====================================================
+   ENABLE ALARM
+===================================================== */
 
 function enableMobileAlarm(){
 
@@ -2048,7 +2096,6 @@ function enableMobileAlarm(){
                 window.webkitAudioContext
             )();
 
-
         if(
             audioContext.state === "suspended"
         ){
@@ -2056,7 +2103,6 @@ function enableMobileAlarm(){
             audioContext.resume();
 
         }
-
 
         alarmEnabled = true;
 
@@ -2080,44 +2126,6 @@ function enableMobileAlarm(){
             "🟢 Mobile Alarm: Ready";
 
 
-        const testOsc =
-            audioContext.createOscillator();
-
-
-        const testGain =
-            audioContext.createGain();
-
-
-        testGain.gain.value =
-            0.0001;
-
-
-        testOsc.connect(
-            testGain
-        );
-
-
-        testGain.connect(
-            audioContext.destination
-        );
-
-
-        testOsc.start();
-
-
-        setTimeout(
-            function(){
-
-                try{
-                    testOsc.stop();
-                }
-                catch(e){}
-
-            },
-            100
-        );
-
-
         addHistory(
             "🟢 Mobile alarm enabled"
         );
@@ -2128,7 +2136,7 @@ function enableMobileAlarm(){
         console.error(error);
 
         alert(
-            "Tap the ENABLE MOBILE ALARM button again."
+            "Please tap the alarm button again."
         );
 
     }
@@ -2136,9 +2144,9 @@ function enableMobileAlarm(){
 }
 
 
-/* =========================================================
-   START HORN
-========================================================= */
+/* =====================================================
+   START MOBILE HORN
+===================================================== */
 
 function startHorn(){
 
@@ -2146,11 +2154,9 @@ function startHorn(){
         return;
     }
 
-
     if(alarmPlaying){
         return;
     }
-
 
     if(!audioContext){
         return;
@@ -2205,11 +2211,9 @@ function startHorn(){
         alarmGain
     );
 
-
     oscillator2.connect(
         alarmGain
     );
-
 
     alarmGain.connect(
         audioContext.destination
@@ -2275,9 +2279,9 @@ function startHorn(){
 }
 
 
-/* =========================================================
+/* =====================================================
    STOP HORN
-========================================================= */
+===================================================== */
 
 function stopHorn(){
 
@@ -2350,9 +2354,9 @@ function stopHorn(){
 }
 
 
-/* =========================================================
+/* =====================================================
    RISK CALCULATION
-========================================================= */
+===================================================== */
 
 function calculateRisk(
     rain,
@@ -2364,7 +2368,7 @@ function calculateRisk(
     let score = 0;
 
 
-    /* RAIN */
+    /* Rain */
 
     if(rain >= 800){
 
@@ -2383,7 +2387,7 @@ function calculateRisk(
     }
 
 
-    /* VIBRATION */
+    /* Vibration */
 
     if(vibration >= 1){
 
@@ -2392,7 +2396,7 @@ function calculateRisk(
     }
 
 
-    /* SOIL */
+    /* Soil */
 
     if(soil >= 800){
 
@@ -2411,7 +2415,7 @@ function calculateRisk(
     }
 
 
-    /* DISTANCE */
+    /* Distance */
 
     if(
         distance > 0 &&
@@ -2468,9 +2472,9 @@ function calculateRisk(
 }
 
 
-/* =========================================================
+/* =====================================================
    UPDATE RISK
-========================================================= */
+===================================================== */
 
 let previousRisk = "";
 
@@ -2554,22 +2558,17 @@ function updateRisk(
         riskValue.innerHTML =
             "LOW RISK";
 
-
         riskValue.style.color =
             "#45e89a";
-
 
         riskMessage.innerHTML =
             "System operating normally.";
 
-
         bars = 1;
-
 
         alertBanner.classList.remove(
             "show"
         );
-
 
         stopHorn();
 
@@ -2585,22 +2584,17 @@ function updateRisk(
         riskValue.innerHTML =
             "MODERATE RISK";
 
-
         riskValue.style.color =
             "#ffd32a";
-
 
         riskMessage.innerHTML =
             "Monitor conditions carefully.";
 
-
         bars = 3;
-
 
         alertBanner.classList.remove(
             "show"
         );
-
 
         stopHorn();
 
@@ -2617,30 +2611,23 @@ function updateRisk(
             "high"
         );
 
-
         riskValue.innerHTML =
             "HIGH RISK";
-
 
         riskValue.style.color =
             "#ff3d3d";
 
-
         riskMessage.innerHTML =
             "⚠️ IMMEDIATE ATTENTION REQUIRED!";
 
-
         bars = 5;
-
 
         alertBanner.classList.add(
             "show"
         );
 
 
-        /*
-           AUTOMATIC MOBILE HORN
-        */
+        /* AUTOMATIC HORN */
 
         startHorn();
 
@@ -2655,30 +2642,23 @@ function updateRisk(
             "critical"
         );
 
-
         riskValue.innerHTML =
             "CRITICAL DANGER";
-
 
         riskValue.style.color =
             "#ff0055";
 
-
         riskMessage.innerHTML =
             "🚨 EVACUATE IMMEDIATELY!";
 
-
         bars = 6;
-
 
         alertBanner.classList.add(
             "show"
         );
 
 
-        /*
-           AUTOMATIC MOBILE HORN
-        */
+        /* AUTOMATIC HORN */
 
         startHorn();
 
@@ -2745,32 +2725,22 @@ function updateRisk(
 }
 
 
-/* =========================================================
-   THINGSPEAK DATA
-========================================================= */
+/* =====================================================
+   THINGSPEAK
+===================================================== */
 
 async function getThingSpeakData(){
 
     try{
 
-        let url =
+        const url =
             "https://api.thingspeak.com/channels/" +
             CHANNEL_ID +
-            "/feeds.json?results=1";
-
-
-        if(
-            READ_API_KEY &&
-            READ_API_KEY.trim() !== ""
-        ){
-
-            url +=
-                "&api_key=" +
-                encodeURIComponent(
-                    READ_API_KEY
-                );
-
-        }
+            "/feeds.json?api_key=" +
+            encodeURIComponent(
+                READ_API_KEY
+            ) +
+            "&results=1";
 
 
         const response =
@@ -2870,22 +2840,14 @@ async function getThingSpeakData(){
             error
         );
 
-
-        document.getElementById(
-            "alarmStatus"
-        ).innerHTML =
-            alarmPlaying
-            ? "🔴 MOBILE HORN: ACTIVE"
-            : "🟠 ThingSpeak: Connection issue";
-
     }
 
 }
 
 
-/* =========================================================
+/* =====================================================
    HISTORY
-========================================================= */
+===================================================== */
 
 function addHistory(message){
 
@@ -2929,49 +2891,9 @@ function addHistory(message){
 }
 
 
-/* =========================================================
-   CLOCK
-========================================================= */
-
-function updateClock(){
-
-    const now =
-        new Date();
-
-
-    document.getElementById(
-        "date"
-    ).innerHTML =
-        now.toLocaleDateString(
-            undefined,
-            {
-                day:"2-digit",
-                month:"short",
-                year:"numeric"
-            }
-        );
-
-
-    document.getElementById(
-        "time"
-    ).innerHTML =
-        now.toLocaleTimeString();
-
-}
-
-
-updateClock();
-
-
-setInterval(
-    updateClock,
-    1000
-);
-
-
-/* =========================================================
-   START MONITORING
-========================================================= */
+/* =====================================================
+   START
+===================================================== */
 
 getThingSpeakData();
 

@@ -798,7 +798,7 @@ Developed by <strong>Om Baraskar</strong>
 const CHANNEL_ID = "3456662";
 
 /*
-   CORRECT FIELD ARRANGEMENT FROM YOUR ESP32 CODE:
+   FIELD ARRANGEMENT
 
    Field 1 = Distance
    Field 2 = Soil Moisture
@@ -816,20 +816,49 @@ const FIELD_RAIN = 4;
    DANGER LIMITS
    ========================================================= */
 
+/*
+   SOIL MOISTURE CALIBRATION
+
+   Higher value = drier soil
+   Lower value = wetter soil
+
+   4095 = dry / safe
+   1501-2500 = moderate moisture
+   701-1500 = wet / warning
+   0-700 = very wet / danger
+*/
+
 const SOIL_DANGER = 700;
+const SOIL_WARNING = 1500;
+const SOIL_NORMAL = 2500;
+
 
 /*
-   YOUR RAIN SENSOR CALIBRATION:
+   RAIN SENSOR CALIBRATION
 
-   4095 approximately = DRY / SAFE
-   1500 approximately = WET / WARNING
-   1000 or below = VERY WET / DANGER
+   Higher value = dry
+   Lower value = more rain/water
+
+   4095 = dry / safe
+   1001-1500 = wet / warning
+   0-1000 = heavy rain / danger
 */
 
 const RAIN_DANGER = 1000;
 const RAIN_WARNING = 1500;
 
+
+/* Vibration */
+
 const VIBRATION_DANGER = 1;
+
+
+/*
+   Distance sensor danger limit.
+
+   This sensor is used to monitor possible
+   rock or slope movement.
+*/
 
 const DISTANCE_DANGER = 20;
 
@@ -858,11 +887,11 @@ let audioContext = null;
    ENABLE MOBILE SIREN
    ========================================================= */
 
-function enableSiren(){
+function enableSiren() {
 
-    try{
+    try {
 
-        audioContext = new(
+        audioContext = new (
             window.AudioContext ||
             window.webkitAudioContext
         )();
@@ -878,10 +907,9 @@ function enableSiren(){
             .classList.add("on");
 
         document.getElementById("sirenStatus").textContent =
-            "Siren armed. ANY sensor reaching its danger limit can trigger the mobile speaker.";
+            "Siren armed. Any sensor reaching its danger limit can trigger the mobile speaker.";
 
-    }
-    catch(error){
+    } catch (error) {
 
         console.error(error);
 
@@ -897,13 +925,13 @@ function enableSiren(){
    MOBILE SIREN
    ========================================================= */
 
-function playSiren(){
+function playSiren() {
 
-    if(!sirenEnabled || !audioContext){
+    if (!sirenEnabled || !audioContext) {
         return;
     }
 
-    if(audioContext.state === "suspended"){
+    if (audioContext.state === "suspended") {
         audioContext.resume();
     }
 
@@ -912,7 +940,7 @@ function playSiren(){
     document.getElementById("sirenBox")
         .classList.add("alarm");
 
-    for(let i = 0; i < 8; i++){
+    for (let i = 0; i < 8; i++) {
 
         const oscillator =
             audioContext.createOscillator();
@@ -955,10 +983,12 @@ function playSiren(){
 
     }
 
-    setTimeout(function(){
+    setTimeout(function() {
+
         document.getElementById("sirenBox")
             .classList.remove("alarm");
-    },4000);
+
+    }, 4000);
 
 }
 
@@ -967,9 +997,9 @@ function playSiren(){
    EMERGENCY VOICE
    ========================================================= */
 
-function emergencyVoice(){
+function emergencyVoice() {
 
-    if(!("speechSynthesis" in window)){
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
@@ -977,7 +1007,7 @@ function emergencyVoice(){
 
     const speech =
         new SpeechSynthesisUtterance(
-            "Attention. High danger detected. Do not panic. Follow the direction and go to your safety centre. Stay away from unstable slopes and follow official instructions."
+            "Attention. High danger detected. Do not panic. Follow the direction and move to safety. Stay away from unstable slopes and follow official instructions."
         );
 
     speech.rate = 0.9;
@@ -990,29 +1020,37 @@ function emergencyVoice(){
 
 
 /* =========================================================
-   LOAD THINGSPEAK
+   LOAD THINGSPEAK DATA
    ========================================================= */
 
-async function loadData(){
+async function loadData() {
 
-    try{
+    try {
 
         const url =
             `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
 
         const response =
-            await fetch(url);
+            await fetch(url, {
+                cache: "no-store"
+            });
 
-        if(!response.ok){
-            throw new Error("ThingSpeak connection failed");
+        if (!response.ok) {
+            throw new Error(
+                "ThingSpeak connection failed: " +
+                response.status
+            );
         }
 
         const data =
             await response.json();
 
-        if(!data.feeds || !data.feeds.length){
-            throw new Error("No ThingSpeak data available");
+        if (!data.feeds || data.feeds.length === 0) {
+            throw new Error(
+                "No ThingSpeak data available"
+            );
         }
+
 
         soilData = [];
         distanceData = [];
@@ -1020,59 +1058,116 @@ async function loadData(){
         rainData = [];
         dateData = [];
 
-        data.feeds.forEach(function(feed){
+
+        data.feeds.forEach(function(feed) {
+
+            const distance =
+                parseFloat(
+                    feed[`field${FIELD_DISTANCE}`]
+                );
+
+            const soil =
+                parseFloat(
+                    feed[`field${FIELD_SOIL}`]
+                );
+
+            const vibration =
+                parseFloat(
+                    feed[`field${FIELD_VIBRATION}`]
+                );
+
+            const rain =
+                parseFloat(
+                    feed[`field${FIELD_RAIN}`]
+                );
+
 
             distanceData.push(
-                Number(feed[`field${FIELD_DISTANCE}`]) || 0
+                Number.isFinite(distance)
+                    ? distance
+                    : 0
             );
 
             soilData.push(
-                Number(feed[`field${FIELD_SOIL}`]) || 0
+                Number.isFinite(soil)
+                    ? soil
+                    : 0
             );
 
             vibrationData.push(
-                Number(feed[`field${FIELD_VIBRATION}`]) || 0
+                Number.isFinite(vibration)
+                    ? vibration
+                    : 0
             );
 
             rainData.push(
-                Number(feed[`field${FIELD_RAIN}`]) || 0
+                Number.isFinite(rain)
+                    ? rain
+                    : 0
             );
 
+
             dateData.push(
-                new Date(feed.created_at).toLocaleString(
-                    "en-IN",
-                    {
-                        day:"2-digit",
-                        month:"short",
-                        hour:"2-digit",
-                        minute:"2-digit"
-                    }
-                )
+                new Date(feed.created_at)
+                    .toLocaleString(
+                        "en-IN",
+                        {
+                            day: "2-digit",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        }
+                    )
             );
 
         });
 
+
         const latest =
-            data.feeds[data.feeds.length - 1];
+            data.feeds[
+                data.feeds.length - 1
+            ];
 
-        const distance =
-            Number(latest[`field${FIELD_DISTANCE}`]) || 0;
 
-        const soil =
-            Number(latest[`field${FIELD_SOIL}`]) || 0;
+        const latestDistance =
+            parseFloat(
+                latest[`field${FIELD_DISTANCE}`]
+            );
 
-        const vibration =
-            Number(latest[`field${FIELD_VIBRATION}`]) || 0;
+        const latestSoil =
+            parseFloat(
+                latest[`field${FIELD_SOIL}`]
+            );
 
-        const rain =
-            Number(latest[`field${FIELD_RAIN}`]) || 0;
+        const latestVibration =
+            parseFloat(
+                latest[`field${FIELD_VIBRATION}`]
+            );
+
+        const latestRain =
+            parseFloat(
+                latest[`field${FIELD_RAIN}`]
+            );
+
 
         updateSensors(
-            soil,
-            distance,
-            rain,
-            vibration
+            Number.isFinite(latestSoil)
+                ? latestSoil
+                : 0,
+
+            Number.isFinite(latestDistance)
+                ? latestDistance
+                : 0,
+
+            Number.isFinite(latestRain)
+                ? latestRain
+                : 0,
+
+            Number.isFinite(latestVibration)
+                ? latestVibration
+                : 0
         );
+
 
         drawGraph(
             "soilGraph",
@@ -1103,6 +1198,7 @@ async function loadData(){
             "Vibration"
         );
 
+
         updateHistory(
             soilData,
             distanceData,
@@ -1111,30 +1207,35 @@ async function loadData(){
             dateData
         );
 
-        document.getElementById("healthThing").textContent =
-            "✓ ONLINE";
 
-        document.getElementById("healthThing").className =
-            "ok";
+        document.getElementById("healthThing")
+            .textContent = "✓ ONLINE";
 
-        document.getElementById("latestData").textContent =
+        document.getElementById("healthThing")
+            .className = "ok";
+
+        document.getElementById("latestData")
+            .textContent =
             dateData[dateData.length - 1] || "--";
 
-    }
-    catch(error){
+    } catch (error) {
 
-        console.error(error);
+        console.error(
+            "ThingSpeak error:",
+            error
+        );
 
-        document.getElementById("healthThing").textContent =
-            "✕ OFFLINE";
+        document.getElementById("healthThing")
+            .textContent = "✕ OFFLINE";
 
-        document.getElementById("healthThing").className =
-            "bad";
+        document.getElementById("healthThing")
+            .className = "bad";
 
-        document.getElementById("status").textContent =
-            "OFFLINE";
+        document.getElementById("status")
+            .textContent = "OFFLINE";
 
-        document.getElementById("message").textContent =
+        document.getElementById("message")
+            .textContent =
             "Unable to read live ThingSpeak data.";
 
     }
@@ -1143,7 +1244,7 @@ async function loadData(){
 
 
 /* =========================================================
-   SENSOR DISPLAY
+   UPDATE SENSOR DISPLAY
    ========================================================= */
 
 function updateSensors(
@@ -1151,31 +1252,71 @@ function updateSensors(
     distance,
     rain,
     vibration
-){
+) {
 
-    document.getElementById("soil").textContent =
+    document.getElementById("soil")
+        .textContent =
         soil.toFixed(0);
 
-    document.getElementById("distance").textContent =
+    document.getElementById("distance")
+        .textContent =
         distance.toFixed(1);
 
-    document.getElementById("rainValue").textContent =
+    document.getElementById("rainValue")
+        .textContent =
         rain.toFixed(0);
 
-    document.getElementById("vibration").textContent =
+    document.getElementById("vibration")
+        .textContent =
         vibration.toFixed(0);
 
-    document.getElementById("soilBar").style.width =
-        Math.min(100, soil / 10) + "%";
-
-    document.getElementById("distanceBar").style.width =
-        Math.min(100, distance / 15) + "%";
 
     /*
-       IMPORTANT:
-       Rain value is reversed.
-       High ADC value = dry.
-       Low ADC value = more rain.
+       SOIL BAR
+
+       Lower soil value = more moisture.
+    */
+
+    const soilRiskPercent =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                ((4095 - soil) / 4095) * 100
+            )
+        );
+
+    document.getElementById("soilBar")
+        .style.width =
+        Math.max(5, soilRiskPercent) + "%";
+
+
+    /*
+       DISTANCE BAR
+
+       Smaller distance = object/rock closer.
+    */
+
+    const distanceRiskPercent =
+        distance > 0
+            ? Math.max(
+                5,
+                Math.min(
+                    100,
+                    ((100 - Math.min(distance, 100)) / 100) * 100
+                )
+            )
+            : 5;
+
+    document.getElementById("distanceBar")
+        .style.width =
+        distanceRiskPercent + "%";
+
+
+    /*
+       RAIN BAR
+
+       Lower rain value = more water.
     */
 
     const rainRiskPercent =
@@ -1187,20 +1328,19 @@ function updateSensors(
             )
         );
 
-    document.getElementById("rainBar").style.width =
+    document.getElementById("rainBar")
+        .style.width =
         Math.max(5, rainRiskPercent) + "%";
 
-    document.getElementById("vibrationBar").style.width =
-        vibration >= VIBRATION_DANGER
-        ? "100%"
-        : "5%";
 
-    updateHealth(
-        soil,
-        distance,
-        rain,
-        vibration
-    );
+    document.getElementById("vibrationBar")
+        .style.width =
+        vibration >= VIBRATION_DANGER
+            ? "100%"
+            : "5%";
+
+
+    updateHealth();
 
     checkIndividualDanger(
         soil,
@@ -1216,19 +1356,26 @@ function updateSensors(
    SYSTEM HEALTH
    ========================================================= */
 
-function updateHealth(){
+function updateHealth() {
 
-    document.getElementById("healthSoil").textContent =
-        "✓ RECEIVING";
+    const healthIds = [
+        "healthSoil",
+        "healthDistance",
+        "healthRain",
+        "healthVibration"
+    ];
 
-    document.getElementById("healthDistance").textContent =
-        "✓ RECEIVING";
+    healthIds.forEach(function(id) {
 
-    document.getElementById("healthRain").textContent =
-        "✓ RECEIVING";
+        document.getElementById(id)
+            .textContent =
+            "✓ RECEIVING";
 
-    document.getElementById("healthVibration").textContent =
-        "✓ RECEIVING";
+        document.getElementById(id)
+            .className =
+            "ok";
+
+    });
 
 }
 
@@ -1242,31 +1389,42 @@ function checkIndividualDanger(
     distance,
     rain,
     vibration
-){
-
-    const soilDanger =
-        soil >= SOIL_DANGER;
+) {
 
     /*
-       IMPORTANT FIX:
+       SOIL:
+       4095 = dry / SAFE
+       700 or below = very wet / DANGER
+    */
 
-       LOW rain sensor reading = MORE WATER.
+    const soilDanger =
+        soil > 0 &&
+        soil <= SOIL_DANGER;
 
-       Therefore 4095 does NOT cause danger.
 
-       Only readings from 1000 downward cause danger.
+    /*
+       RAIN:
+       Low value = more rain/water.
     */
 
     const rainDanger =
         rain > 0 &&
         rain <= RAIN_DANGER;
 
+
     const vibrationDanger =
         vibration >= VIBRATION_DANGER;
+
+
+    /*
+       DISTANCE:
+       Object/rock comes within danger range.
+    */
 
     const distanceDanger =
         distance > 0 &&
         distance <= DISTANCE_DANGER;
+
 
     const danger =
         soilDanger ||
@@ -1274,47 +1432,73 @@ function checkIndividualDanger(
         vibrationDanger ||
         distanceDanger;
 
-    let reasons = [];
 
-    if(soilDanger){
+    const reasons = [];
+
+
+    if (soilDanger) {
+
         reasons.push(
-            "Soil moisture reached " +
+            "Dangerous soil moisture detected: " +
             soil +
-            " (limit " +
+            " (danger at " +
             SOIL_DANGER +
-            ")"
+            " or below)"
         );
+
     }
 
-    if(rainDanger){
+
+    if (rainDanger) {
+
         reasons.push(
-            "Heavy rain detected. Rain sensor reached " +
+            "Heavy rain detected: " +
             rain +
-            " (danger limit " +
+            " (danger at " +
             RAIN_DANGER +
             " or below)"
         );
+
     }
 
-    if(vibrationDanger){
+
+    if (vibrationDanger) {
+
         reasons.push(
-            "Vibration detected (" +
+            "Ground vibration detected (" +
             vibration +
             ")"
         );
+
     }
 
-    if(distanceDanger){
+
+    if (distanceDanger) {
+
         reasons.push(
-            "Distance reached " +
-            distance +
-            " cm (limit " +
+            "Possible rock or slope movement: distance is " +
+            distance.toFixed(1) +
+            " cm (danger limit " +
             DISTANCE_DANGER +
             " cm)"
         );
+
     }
 
-    if(danger){
+
+    updateReasonBoxes(
+        soil,
+        distance,
+        rain,
+        vibration,
+        soilDanger,
+        distanceDanger,
+        rainDanger,
+        vibrationDanger
+    );
+
+
+    if (danger) {
 
         setStatus(
             "HIGH DANGER",
@@ -1326,12 +1510,11 @@ function checkIndividualDanger(
             reasons.join(" • ")
         );
 
-    }
-    else{
+    } else {
 
         setStatus(
             "SAFE",
-            "All individual sensor readings are below their danger limits.",
+            "All sensor readings are currently below their danger limits.",
             "safe"
         );
 
@@ -1346,6 +1529,63 @@ function checkIndividualDanger(
 
 
 /* =========================================================
+   UPDATE REASON BOXES
+   ========================================================= */
+
+function updateReasonBoxes(
+    soil,
+    distance,
+    rain,
+    vibration,
+    soilDanger,
+    distanceDanger,
+    rainDanger,
+    vibrationDanger
+) {
+
+    document.getElementById("reasonSoil")
+        .innerHTML =
+        `<b>🌱 Soil Moisture</b><br>` +
+        (
+            soilDanger
+                ? `DANGER: Value ${soil}. Soil is at or below the danger limit of ${SOIL_DANGER}.`
+                : `SAFE: Value ${soil}. 4095 represents dry soil and does not cause a danger alert.`
+        );
+
+
+    document.getElementById("reasonRain")
+        .innerHTML =
+        `<b>🌧️ Rain</b><br>` +
+        (
+            rainDanger
+                ? `DANGER: Heavy water/rain detected. Value ${rain} is at or below ${RAIN_DANGER}.`
+                : `SAFE: Value ${rain}. Lower values indicate more water; the danger limit is ${RAIN_DANGER}.`
+        );
+
+
+    document.getElementById("reasonVibration")
+        .innerHTML =
+        `<b>📳 Vibration</b><br>` +
+        (
+            vibrationDanger
+                ? `DANGER: Ground vibration detected with value ${vibration}.`
+                : `SAFE: No dangerous vibration detected.`
+        );
+
+
+    document.getElementById("reasonDistance")
+        .innerHTML =
+        `<b>📏 Distance</b><br>` +
+        (
+            distanceDanger
+                ? `DANGER: Possible rock/slope movement. Distance ${distance.toFixed(1)} cm is within the ${DISTANCE_DANGER} cm danger range.`
+                : `SAFE: Distance is ${distance.toFixed(1)} cm, outside the ${DISTANCE_DANGER} cm danger range.`
+        );
+
+}
+
+
+/* =========================================================
    STATUS
    ========================================================= */
 
@@ -1353,7 +1593,7 @@ function setStatus(
     text,
     message,
     type
-){
+) {
 
     const status =
         document.getElementById("status");
@@ -1364,21 +1604,26 @@ function setStatus(
     const light =
         document.getElementById("light");
 
+
     status.textContent = text;
     msg.textContent = message;
 
-    if(type === "danger"){
+
+    if (type === "danger") {
 
         status.style.color = "#d82d52";
+
         light.style.background = "#ed3f61";
+
         light.style.boxShadow =
             "0 0 35px #ed3f6188";
 
-    }
-    else{
+    } else {
 
         status.style.color = "#15945a";
+
         light.style.background = "#39d98a";
+
         light.style.boxShadow =
             "0 0 30px #39d98a88";
 
@@ -1391,19 +1636,21 @@ function setStatus(
    EMERGENCY ACTIVATION
    ========================================================= */
 
-function activateEmergency(reason){
+function activateEmergency(reason) {
 
     const emergency =
         document.getElementById("emergency");
 
     emergency.classList.add("active");
 
-    document.getElementById("dangerText").textContent =
+    document.getElementById("dangerText")
+        .textContent =
         "HIGH DANGER: " +
         reason +
         ". Do not panic. Follow the direction and move to safety.";
 
-    if(!alarmCurrentlyActive){
+
+    if (!alarmCurrentlyActive) {
 
         alarmCurrentlyActive = true;
 
@@ -1424,38 +1671,43 @@ function activateEmergency(reason){
 
 let alertList = [];
 
-function addAlert(reason){
+
+function addAlert(reason) {
 
     const now =
         new Date().toLocaleString(
             "en-IN",
             {
-                day:"2-digit",
-                month:"short",
-                hour:"2-digit",
-                minute:"2-digit"
+                day: "2-digit",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit"
             }
         );
 
+
     alertList.unshift({
-        time:now,
-        reason:reason
+        time: now,
+        reason: reason
     });
 
+
     alertList =
-        alertList.slice(0,8);
+        alertList.slice(0, 8);
+
 
     renderAlerts();
 
 }
 
 
-function renderAlerts(){
+function renderAlerts() {
 
     const box =
         document.getElementById("alerts");
 
-    if(!alertList.length){
+
+    if (!alertList.length) {
 
         box.innerHTML =
             '<div class="alert">No alerts recorded yet.</div>';
@@ -1464,17 +1716,18 @@ function renderAlerts(){
 
     }
 
+
     box.innerHTML =
-        alertList.map(function(alert){
+        alertList.map(function(alert) {
 
             return `
-            <div class="alert">
-                <strong>⚠ HIGH DANGER</strong>
-                <br>
-                ${alert.reason}
-                <br>
-                ${alert.time}
-            </div>
+                <div class="alert">
+                    <strong>⚠ HIGH DANGER</strong>
+                    <br>
+                    ${alert.reason}
+                    <br>
+                    ${alert.time}
+                </div>
             `;
 
         }).join("");
@@ -1492,12 +1745,31 @@ function updateHistory(
     rain,
     vibration,
     dates
-){
+) {
 
-    renderHistory("soilHistory",soil,dates);
-    renderHistory("distanceHistory",distance,dates);
-    renderHistory("rainHistory",rain,dates);
-    renderHistory("vibrationHistory",vibration,dates);
+    renderHistory(
+        "soilHistory",
+        soil,
+        dates
+    );
+
+    renderHistory(
+        "distanceHistory",
+        distance,
+        dates
+    );
+
+    renderHistory(
+        "rainHistory",
+        rain,
+        dates
+    );
+
+    renderHistory(
+        "vibrationHistory",
+        vibration,
+        dates
+    );
 
 }
 
@@ -1506,22 +1778,31 @@ function renderHistory(
     id,
     values,
     dates
-){
+) {
 
     const box =
         document.getElementById(id);
 
     const start =
-        Math.max(0,values.length - 6);
+        Math.max(
+            0,
+            values.length - 6
+        );
 
     box.innerHTML = "";
 
-    for(let i=start;i<values.length;i++){
+
+    for (
+        let i = start;
+        i < values.length;
+        i++
+    ) {
 
         const row =
             document.createElement("div");
 
-        row.className = "historyitem";
+        row.className =
+            "historyitem";
 
         row.innerHTML =
             `
@@ -1548,12 +1829,12 @@ function drawGraph(
     dates,
     label,
     unit = ""
-){
+) {
 
     const svg =
         document.getElementById(id);
 
-    if(!svg || !values.length){
+    if (!svg || !values.length) {
         return;
     }
 
@@ -1566,27 +1847,38 @@ function drawGraph(
     const T = 12;
     const B = 30;
 
-    const gw = W-L-R;
-    const gh = H-T-B;
+    const gw = W - L - R;
+    const gh = H - T - B;
 
-    let min = Math.min(...values);
-    let max = Math.max(...values);
+    let min =
+        Math.min(...values);
 
-    if(min === max){
+    let max =
+        Math.max(...values);
+
+    if (min === max) {
         min -= 1;
         max += 1;
     }
 
     const pad =
-        Math.max((max-min)*.12,1);
+        Math.max(
+            (max - min) * 0.12,
+            1
+        );
 
     min -= pad;
     max += pad;
 
-    for(let i=0;i<=4;i++){
+
+    for (
+        let i = 0;
+        i <= 4;
+        i++
+    ) {
 
         const y =
-            T + gh*i/4;
+            T + gh * i / 4;
 
         const grid =
             document.createElementNS(
@@ -1594,27 +1886,45 @@ function drawGraph(
                 "line"
             );
 
-        grid.setAttribute("x1",L);
-        grid.setAttribute("x2",W-R);
-        grid.setAttribute("y1",y);
-        grid.setAttribute("y2",y);
-        grid.setAttribute("class","grid");
+        grid.setAttribute("x1", L);
+        grid.setAttribute("x2", W - R);
+        grid.setAttribute("y1", y);
+        grid.setAttribute("y2", y);
+        grid.setAttribute("class", "grid");
 
         svg.appendChild(grid);
 
     }
 
-    const points =
-        values.map(function(value,index){
 
-            return{
-                x:L+index/Math.max(values.length-1,1)*gw,
-                y:T+gh-(value-min)/(max-min)*gh,
-                v:value,
-                date:dates[index] || "--"
+    const points =
+        values.map(function(value, index) {
+
+            return {
+                x:
+                    L +
+                    index /
+                    Math.max(
+                        values.length - 1,
+                        1
+                    ) *
+                    gw,
+
+                y:
+                    T +
+                    gh -
+                    (value - min) /
+                    (max - min) *
+                    gh,
+
+                v: value,
+
+                date:
+                    dates[index] || "--"
             };
 
         });
+
 
     const area =
         document.createElementNS(
@@ -1626,29 +1936,37 @@ function drawGraph(
         "points",
         [
             `${points[0].x},${H-B}`,
-            ...points.map(p=>`${p.x},${p.y}`),
+            ...points.map(
+                p => `${p.x},${p.y}`
+            ),
             `${points[points.length-1].x},${H-B}`
         ].join(" ")
     );
 
-    area.setAttribute("class","area");
+    area.setAttribute(
+        "class",
+        "area"
+    );
 
     svg.appendChild(area);
 
+
     let path = "";
 
-    points.forEach(function(p,index){
+    points.forEach(function(p, index) {
 
-        if(index===0){
-            path=`M ${p.x} ${p.y}`;
-        }
-        else{
+        if (index === 0) {
+
+            path =
+                `M ${p.x} ${p.y}`;
+
+        } else {
 
             const previous =
-                points[index-1];
+                points[index - 1];
 
             const middle =
-                (previous.x+p.x)/2;
+                (previous.x + p.x) / 2;
 
             path +=
                 ` C ${middle} ${previous.y},
@@ -1659,16 +1977,25 @@ function drawGraph(
 
     });
 
+
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "path"
         );
 
-    line.setAttribute("d",path);
-    line.setAttribute("class","line");
+    line.setAttribute(
+        "d",
+        path
+    );
+
+    line.setAttribute(
+        "class",
+        "line"
+    );
 
     svg.appendChild(line);
+
 
     const holder =
         svg.parentElement;
@@ -1676,11 +2003,13 @@ function drawGraph(
     const tip =
         document.createElement("div");
 
-    tip.className = "tip";
+    tip.className =
+        "tip";
 
     holder.appendChild(tip);
 
-    points.forEach(function(p,index){
+
+    points.forEach(function(p, index) {
 
         const dot =
             document.createElementNS(
@@ -1688,35 +2017,53 @@ function drawGraph(
                 "circle"
             );
 
-        dot.setAttribute("cx",p.x);
-        dot.setAttribute("cy",p.y);
+        dot.setAttribute("cx", p.x);
+        dot.setAttribute("cy", p.y);
+
         dot.setAttribute(
             "r",
-            index===points.length-1 ? 6 : 4.5
+            index === points.length - 1
+                ? 6
+                : 4.5
         );
-        dot.setAttribute("class","dot");
+
+        dot.setAttribute(
+            "class",
+            "dot"
+        );
+
 
         dot.addEventListener(
             "click",
-            function(){
+            function() {
 
                 tip.innerHTML =
                     `
                     <div>${p.date}</div>
                     <b>${Number(p.v).toFixed(2)}${unit}</b>
-                    <div>${rating(p.v,label)}</div>
+                    <div>${rating(p.v, label)}</div>
                     `;
 
                 const rect =
                     svg.getBoundingClientRect();
 
                 tip.style.left =
-                    (p.x/W*rect.width)+"px";
+                    (
+                        p.x /
+                        W *
+                        rect.width
+                    ) + "px";
 
                 tip.style.top =
-                    (p.y/H*rect.height)+"px";
+                    (
+                        p.y /
+                        H *
+                        rect.height
+                    ) + "px";
 
-                tip.classList.add("show");
+                tip.classList.add(
+                    "show"
+                );
 
             }
         );
@@ -1725,16 +2072,20 @@ function drawGraph(
 
     });
 
-    const indexes =
-        values.length<=3
-        ? [...Array(values.length).keys()]
-        : [
-            0,
-            Math.floor((values.length-1)/2),
-            values.length-1
-        ];
 
-    indexes.forEach(function(index){
+    const indexes =
+        values.length <= 3
+            ? [...Array(values.length).keys()]
+            : [
+                0,
+                Math.floor(
+                    (values.length - 1) / 2
+                ),
+                values.length - 1
+            ];
+
+
+    indexes.forEach(function(index) {
 
         const text =
             document.createElementNS(
@@ -1742,11 +2093,30 @@ function drawGraph(
                 "text"
             );
 
-        text.setAttribute("x",points[index].x);
-        text.setAttribute("y",H-7);
-        text.setAttribute("text-anchor","middle");
-        text.setAttribute("font-size","10");
-        text.setAttribute("fill","#75867d");
+        text.setAttribute(
+            "x",
+            points[index].x
+        );
+
+        text.setAttribute(
+            "y",
+            H - 7
+        );
+
+        text.setAttribute(
+            "text-anchor",
+            "middle"
+        );
+
+        text.setAttribute(
+            "font-size",
+            "10"
+        );
+
+        text.setAttribute(
+            "fill",
+            "#75867d"
+        );
 
         text.textContent =
             dates[index] || "--";
@@ -1765,46 +2135,44 @@ function drawGraph(
 function rating(
     value,
     label
-){
+) {
 
-    if(label === "Distance"){
+    if (label === "Distance") {
 
-        if(
+        if (
             value > 0 &&
             value <= DISTANCE_DANGER
-        ){
-            return "🔴 DANGER";
+        ) {
+            return "🔴 POSSIBLE MOVEMENT / DANGER";
         }
 
         return "🟢 SAFE";
 
     }
 
-    if(label === "Vibration"){
+
+    if (label === "Vibration") {
 
         return value >= VIBRATION_DANGER
-            ? "🔴 DANGER"
+            ? "🔴 VIBRATION DETECTED"
             : "🟢 SAFE";
 
     }
 
-    /*
-       IMPORTANT RAIN LOGIC FIX
 
-       LOW VALUE = WET
-       HIGH VALUE = DRY
-    */
+    if (label === "Rain") {
 
-    if(label === "Rain"){
-
-        if(
+        if (
             value > 0 &&
             value <= RAIN_DANGER
-        ){
-            return "🔴 DANGER";
+        ) {
+            return "🔴 HEAVY RAIN / DANGER";
         }
 
-        if(value <= RAIN_WARNING){
+        if (
+            value > RAIN_DANGER &&
+            value <= RAIN_WARNING
+        ) {
             return "🟠 WET / WARNING";
         }
 
@@ -1812,28 +2180,34 @@ function rating(
 
     }
 
-    if(label === "Soil"){
 
-        if(label === "Soil"){
+    if (label === "Soil") {
 
-    if(value > 0 && value <= SOIL_DANGER){
-        return "🔴 DANGER";
-    }
-
-    if(value <= 1000){
-        return "🟠 VERY WET";
-    }
-
-    if(value <= 1500){
-        return "🟡 WET";
-    }
-
-    if(value <= 2500){
-        return "🟢 NORMAL";
-    }
-
-    return "🟢 DRY / SAFE";
+        if (
+            value > 0 &&
+            value <= SOIL_DANGER
+        ) {
+            return "🔴 VERY WET / DANGER";
         }
+
+        if (
+            value > SOIL_DANGER &&
+            value <= SOIL_WARNING
+        ) {
+            return "🟠 WET / WARNING";
+        }
+
+        if (
+            value > SOIL_WARNING &&
+            value <= SOIL_NORMAL
+        ) {
+            return "🟡 MODERATE MOISTURE";
+        }
+
+        return "🟢 DRY / SAFE";
+
+    }
+
 
     return "🟢 SAFE";
 
@@ -1844,29 +2218,32 @@ function rating(
    MOBILE ORIENTATION
    ========================================================= */
 
-function orientation(event){
+function orientation(event) {
 
     let heading;
 
-    if(
+    if (
         typeof event.webkitCompassHeading ===
         "number"
-    ){
+    ) {
 
         heading =
             event.webkitCompassHeading;
 
-    }
-    else if(
-        typeof event.alpha === "number"
-    ){
+    } else if (
+        typeof event.alpha ===
+        "number"
+    ) {
 
         heading =
-            360-event.alpha;
+            360 - event.alpha;
 
     }
 
-    if(typeof heading === "number"){
+
+    if (
+        typeof heading === "number"
+    ) {
 
         document.getElementById("arrow")
             .style.transform =

@@ -834,48 +834,67 @@ const RAIN_MM_AT_HEAVY = 20;
 
 
 /* =========================================================
-   VIBRATION ACTIVITY SETTINGS
+   VIBRATION SETTINGS
    ========================================================= */
 
 /*
-   IMPORTANT:
+   SW420 is a DIGITAL sensor.
 
-   The ESP32 sends the SW420 as DIGITAL data:
+   ESP32 sends:
 
    0 = no trigger
-   1 = trigger detected
+   1 = trigger
 
-   The SW420 itself does NOT provide a real
-   0-5 vibration intensity.
-
-   Therefore this website creates a PROJECT
+   The website therefore creates a PROJECT
    vibration activity level.
 
-   NEW LOGIC:
+   IMPORTANT NEW BEHAVIOUR:
 
-   0 triggers       = Level 0
-   1 trigger        = Level 3
-   2-3 triggers     = Level 4
-   4+ triggers      = Level 5
+   The website detects a NEW vibration event
+   when the data changes:
 
-   This means one successfully received SW420
-   trigger is enough to reach the Level 3
-   danger threshold.
+       0 -> 1
 
-   The website checks the latest 10 ThingSpeak
-   readings.
+   A new event immediately becomes:
+
+       LEVEL 3
+
+   This prevents a continuous "1" from being
+   counted as many separate vibration events.
+
+   The event remains visible through the latest
+   10 ThingSpeak readings.
+
+   ESP32 uploads approximately every 15 seconds.
+
+   10 readings x 15 seconds
+   = approximately 150 seconds
+   = 2.5 minutes.
+
+   Therefore an old vibration event automatically
+   disappears from the active window and the
+   website returns to:
+
+       LEVEL 0
+       SAFE
+
+   This is a PROJECT activity scale, not a
+   physical vibration intensity measurement.
 */
 
 const VIBRATION_WINDOW = 10;
 
 
 /* =========================================================
-   VIBRATION LEVEL CALCULATOR
+   NEW VIBRATION EVENT DETECTOR
    ========================================================= */
 
-function calculateVibrationLevel(readings) {
+function calculateVibrationEvents(readings) {
 
-    if (!Array.isArray(readings) || readings.length === 0) {
+    if (
+        !Array.isArray(readings) ||
+        readings.length === 0
+    ) {
         return 0;
     }
 
@@ -889,52 +908,121 @@ function calculateVibrationLevel(readings) {
         );
 
 
-    let activeCount = 0;
-
-
-    recent.forEach(function(value) {
-
-        if (
-            Number.isFinite(value) &&
-            value >= 1
-        ) {
-            activeCount++;
-        }
-
-    });
+    let eventCount = 0;
 
 
     /*
-       NO SW420 TRIGGER
+       Check for a NEW 0 -> 1 transition.
     */
 
-    if (activeCount === 0) {
+    for (
+        let i = 0;
+        i < recent.length;
+        i++
+    ) {
+
+        const current =
+            Number(recent[i]) === 1;
+
+
+        const previous =
+            i > 0
+                ? Number(recent[i - 1]) === 1
+                : false;
+
+
+        /*
+           A first reading of 1 is also treated
+           as a new event because we may not have
+           the previous ThingSpeak reading.
+        */
+
+        if (
+            current &&
+            !previous
+        ) {
+            eventCount++;
+        }
+    }
+
+
+    return eventCount;
+}
+
+
+/* =========================================================
+   VIBRATION LEVEL CALCULATOR
+   ========================================================= */
+
+function calculateVibrationLevel(readings) {
+
+    if (
+        !Array.isArray(readings) ||
+        readings.length === 0
+    ) {
         return 0;
     }
 
 
     /*
-       ONE SW420 TRIGGER
-
-       ONE recorded trigger = LEVEL 3.
+       Only the latest 10 ThingSpeak readings
+       participate in the active vibration window.
     */
 
-    if (activeCount === 1) {
+    const recent =
+        readings.slice(
+            Math.max(
+                0,
+                readings.length - VIBRATION_WINDOW
+            )
+        );
+
+
+    const eventCount =
+        calculateVibrationEvents(
+            recent
+        );
+
+
+    /*
+       No new vibration event.
+    */
+
+    if (
+        eventCount === 0
+    ) {
+        return 0;
+    }
+
+
+    /*
+       One new vibration event.
+
+       This is the important fix:
+
+       NEW SW420 EVENT = LEVEL 3
+    */
+
+    if (
+        eventCount === 1
+    ) {
         return 3;
     }
 
 
     /*
-       2-3 recorded triggers = LEVEL 4.
+       2-3 new vibration events.
     */
 
-    if (activeCount <= 3) {
+    if (
+        eventCount <= 3
+    ) {
         return 4;
     }
 
 
     /*
-       4 OR MORE recorded triggers = LEVEL 5.
+       4 or more new vibration events.
     */
 
     return 5;
@@ -1255,7 +1343,7 @@ async function loadData() {
 
 
         /* =====================================================
-           READ RAW VIBRATION DATA FIRST
+           READ RAW VIBRATION DATA
            ===================================================== */
 
         const rawVibrationReadings = [];
@@ -1276,7 +1364,7 @@ async function loadData() {
 
 
         /* =====================================================
-           CALCULATE VIBRATION LEVEL FOR EACH GRAPH POINT
+           CALCULATE VIBRATION GRAPH LEVELS
            ===================================================== */
 
         const calculatedVibrationLevels = [];
@@ -1298,6 +1386,7 @@ async function loadData() {
                     start,
                     i + 1
                 );
+
 
             calculatedVibrationLevels.push(
                 calculateVibrationLevel(
@@ -1425,8 +1514,10 @@ async function loadData() {
         /* =====================================================
            LATEST VIBRATION
 
-           One recorded SW420 trigger inside the
-           latest 10 readings produces Level 3.
+           NEW EVENT = LEVEL 3
+
+           Old events automatically disappear after
+           they leave the latest 10-reading window.
         ===================================================== */
 
         const latestVibration =
@@ -1773,11 +1864,11 @@ function checkIndividualDanger(
 
 
     /*
-       LEVEL 3 IS THE EXACT DANGER START.
+       Vibration danger begins at Level 3.
     */
 
     const vibrationDanger =
-        vibrationValue >= 3;
+        vibrationValue >= VIBRATION_DANGER;
 
 
     const distanceDanger =
@@ -1866,6 +1957,17 @@ function checkIndividualDanger(
 
     } else {
 
+        /*
+           IMPORTANT RESET:
+
+           When vibration falls back to Level 0,
+           vibrationDanger becomes false.
+
+           If no other sensor is dangerous,
+           the entire dashboard immediately returns
+           to SAFE and Emergency Mode disappears.
+        */
+
         setStatus(
             "SAFE",
             "All sensor readings are currently below their danger limits.",
@@ -1876,6 +1978,9 @@ function checkIndividualDanger(
 
         document.getElementById("emergency")
             .classList.remove("active");
+
+        document.getElementById("sirenBox")
+            .classList.remove("alarm");
     }
 }
 
@@ -2785,7 +2890,7 @@ function rating(
 
 
         if (
-            level >= 3
+            level >= VIBRATION_DANGER
         ) {
 
             return (
@@ -2954,6 +3059,13 @@ function orientation(event) {
 
 loadData();
 
+
+/*
+   ESP32 uploads approximately every 15 seconds.
+   Refreshing the dashboard at the same interval
+   keeps the vibration event window synchronized
+   with ThingSpeak.
+*/
 
 setInterval(
     loadData,

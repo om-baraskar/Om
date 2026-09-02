@@ -1,794 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Sanjivani College | Landslide Safety System</title>
-
-<style>
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Segoe UI,Arial,sans-serif}
-body{background:#03100c;color:#183328;overflow-x:hidden}
-
-/* ================= BACKGROUND ================= */
-.bg{
-position:fixed;inset:0;z-index:-10;overflow:hidden;
-background:
-radial-gradient(circle at 70% 12%,rgba(180,240,220,.18),transparent 20%),
-linear-gradient(#020908,#061713 48%,#10281e);
-}
-.moon{
-position:absolute;right:-70px;top:-70px;width:260px;height:260px;
-border-radius:50%;
-background:radial-gradient(circle,rgba(230,255,245,.2),transparent 68%);
-}
-.mountains{
-position:absolute;left:-5%;bottom:5%;width:110%;height:58%;
-background:linear-gradient(145deg,#19372b,#071611);
-clip-path:polygon(
-0 75%,10% 57%,18% 68%,29% 40%,39% 63%,
-50% 18%,62% 48%,72% 30%,82% 58%,91% 37%,
-100% 58%,100% 100%,0 100%
-);
-}
-.slide{
-position:absolute;left:45%;bottom:7%;width:30%;height:44%;
-background:linear-gradient(145deg,#706452,#302d26,#101510);
-clip-path:polygon(
-45% 0,68% 17%,55% 36%,90% 67%,70% 100%,
-8% 100%,27% 70%,8% 52%,32% 27%
-);
-}
-.tree{
-position:absolute;bottom:7%;width:0;height:0;
-border-left:25px solid transparent;
-border-right:25px solid transparent;
-border-bottom:95px solid #02110c;
-filter:drop-shadow(7px 8px 5px #000);
-}
-.tree:before{
-content:"";position:absolute;left:-20px;top:42px;
-border-left:20px solid transparent;
-border-right:20px solid transparent;
-border-bottom:70px solid #03150f;
-}
-.tree:after{
-content:"";position:absolute;left:-5px;top:78px;
-width:10px;height:58px;background:#11130f;
-}
-.t1{left:3%;transform:scale(1.5)}
-.t2{left:17%;transform:scale(.9)}
-.t3{left:27%;transform:scale(1.25)}
-.t4{right:3%;transform:scale(1.6)}
-.t5{right:17%;transform:scale(1)}
-.t6{right:29%;transform:scale(.75)}
-
-.rain{
-position:absolute;inset:-30%;opacity:.42;
-background:repeating-linear-gradient(
-105deg,transparent 0 35px,
-rgba(220,255,247,.34) 36px,
-transparent 39px 75px
-);
-background-size:80px 90px;
-animation:rain .55s linear infinite;
-}
-.rain2{
-opacity:.18;
-background-size:45px 65px;
-animation-duration:.25s;
-}
-@keyframes rain{
-to{transform:translateY(120px)}
-}
-
-.lightning{
-position:absolute;right:18%;top:0;width:75px;height:85%;
-background:#efffff;opacity:0;
-clip-path:polygon(
-48% 0,82% 0,62% 35%,91% 35%,
-24% 75%,42% 46%,15% 46%
-);
-filter:drop-shadow(0 0 25px white);
-animation:flash 8s infinite;
-}
-@keyframes flash{
-0%,86%,100%{opacity:0}
-87%,89%{opacity:1}
-88%,90%,93%{opacity:0}
-92%{opacity:.5}
-}
-
-.drop{
-position:absolute;border-radius:55%;
-background:
-radial-gradient(
-circle at 30% 25%,
-rgba(255,255,255,.75),
-rgba(180,235,225,.2) 40%,
-transparent 72%
-);
-border:1px solid rgba(225,255,247,.18);
-box-shadow:0 2px 8px #0008;
-}
-.d1{width:20px;height:28px;left:7%;top:16%}
-.d2{width:11px;height:16px;left:21%;top:38%}
-.d3{width:27px;height:36px;right:8%;top:20%}
-.d4{width:13px;height:20px;right:18%;top:50%}
-.d5{width:29px;height:39px;left:53%;top:8%}
-.d6{width:10px;height:14px;left:39%;top:57%}
-.d7{width:19px;height:28px;right:30%;top:67%}
-
-.dashboard{
-width:min(1120px,94%);
-margin:16px auto 45px;
-}
-
-/* ================= HEADER ================= */
-.header{
-background:#fffffff7;
-border:3px solid #2e9d68;
-border-radius:30px;
-padding:22px;
-text-align:center;
-box-shadow:0 20px 55px #0008;
-}
-.logo{
-width:96px;height:96px;
-object-fit:contain;
-border-radius:50%;
-background:white;
-padding:6px;
-border:3px solid #2d9c68;
-}
-.college{
-margin-top:10px;
-font-size:clamp(29px,6vw,45px);
-font-weight:1000;
-color:#176b47;
-}
-.subtitle{
-font-size:10px;
-letter-spacing:2px;
-font-weight:900;
-color:#667b71;
-}
-
-/* ================= SIREN ================= */
-.siren{
-margin-top:14px;
-background:#fff;
-border:3px solid #e69a28;
-border-radius:25px;
-padding:17px;
-box-shadow:0 15px 40px #0006;
-}
-.sirenrow{
-display:flex;
-align-items:center;
-gap:14px;
-}
-.sicon{
-width:52px;height:52px;
-border-radius:15px;
-background:#fff4dc;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:25px;
-}
-.sinfo{flex:1}
-.stitle{
-font-weight:1000;
-color:#654313;
-}
-.sdesc{
-font-size:10px;
-color:#827666;
-margin-top:3px;
-}
-.sbutton{
-border:0;
-border-radius:14px;
-padding:14px 18px;
-background:linear-gradient(135deg,#ee9b22,#dc681b);
-color:white;
-font-weight:1000;
-cursor:pointer;
-}
-.sbutton.on{
-background:linear-gradient(135deg,#25ae68,#13834d);
-}
-.sstatus{
-margin-top:10px;
-padding:8px;
-border-radius:10px;
-background:#fff8e9;
-color:#806c48;
-font-size:9px;
-text-align:center;
-}
-.siren.alarm{
-animation:alarm .35s infinite alternate;
-}
-@keyframes alarm{
-to{
-border-color:#e12e52;
-box-shadow:0 0 35px #e12e5266;
-}
-}
-
-/* ================= CARDS ================= */
-.card{
-margin-top:14px;
-background:#fffffff7;
-border:3px solid #2d9c68;
-border-radius:25px;
-padding:19px;
-box-shadow:0 17px 42px #0006;
-}
-.statusrow{
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-.label{
-font-size:10px;
-font-weight:900;
-letter-spacing:2px;
-color:#71847a;
-text-transform:uppercase;
-}
-.status{
-font-size:clamp(31px,7vw,48px);
-font-weight:1000;
-color:#15945a;
-margin-top:3px;
-}
-.message{
-font-size:11px;
-color:#687c72;
-}
-.light{
-width:52px;height:52px;
-border-radius:50%;
-background:#39d98a;
-box-shadow:0 0 30px #39d98a88;
-}
-
-/* ================= SENSOR CARDS ================= */
-.sensor{
-display:grid;
-grid-template-columns:50px 1fr 125px;
-align-items:center;
-gap:12px;
-margin-top:12px;
-padding:14px;
-border:2px solid #3aa66f;
-border-radius:20px;
-background:#fffffff7;
-box-shadow:0 10px 28px #0004;
-}
-.icon{
-width:45px;height:45px;
-border-radius:14px;
-background:#e8f7ef;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:22px;
-}
-.name{
-font-weight:950;
-font-size:13px;
-}
-.desc{
-font-size:9px;
-color:#788980;
-margin-top:3px;
-}
-.value{
-font-size:24px;
-font-weight:1000;
-color:#178c57;
-}
-.bar{
-grid-column:1/4;
-height:8px;
-background:#e5eee9;
-border-radius:20px;
-overflow:hidden;
-}
-.fill{
-height:100%;
-width:5%;
-border-radius:20px;
-background:
-linear-gradient(
-90deg,#23a961,#f1c332,#ed8429,#dc3154
-);
-transition:.5s;
-}
-
-/* ================= GRAPHS ================= */
-.section-title{
-margin:25px 4px 10px;
-color:white;
-font-size:19px;
-font-weight:1000;
-text-shadow:0 2px 8px #000;
-}
-.graphcard{
-background:#fffffff8;
-border:2px solid #3aa66f;
-border-radius:23px;
-padding:14px;
-margin-bottom:13px;
-box-shadow:0 15px 35px #0005;
-}
-.gtitle{
-display:flex;
-justify-content:space-between;
-font-weight:1000;
-font-size:13px;
-}
-.live{
-font-size:9px;
-color:#168b55;
-}
-.graph{
-height:230px;
-position:relative;
-}
-svg{
-width:100%;
-height:100%;
-}
-.grid{
-stroke:#246a451c;
-stroke-width:1;
-}
-.line{
-fill:none;
-stroke:#f18a25;
-stroke-width:4;
-stroke-linecap:round;
-stroke-linejoin:round;
-filter:drop-shadow(0 0 5px #f18a2577);
-}
-.area{
-fill:#f18a2514;
-}
-.dot{
-fill:white;
-stroke:#f18a25;
-stroke-width:3;
-cursor:pointer;
-}
-.dot:hover{
-stroke:#db3154;
-stroke-width:5;
-}
-.tip{
-position:absolute;
-opacity:0;
-pointer-events:none;
-background:#fff;
-border:2px solid #e69a28;
-border-radius:12px;
-padding:8px;
-min-width:140px;
-transform:translate(-50%,-110%);
-box-shadow:0 12px 30px #0004;
-font-size:10px;
-}
-.tip.show{
-opacity:1;
-}
-.tip b{
-font-size:17px;
-color:#df761c;
-}
-
-/* ================= HISTORY ================= */
-.historygrid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-.historybox{
-border:2px solid #9bcaaf;
-border-radius:18px;
-padding:13px;
-background:#f5fbf7;
-}
-.historytitle{
-font-size:12px;
-font-weight:1000;
-color:#176b47;
-}
-.historyitem{
-display:flex;
-justify-content:space-between;
-padding:8px 0;
-border-bottom:1px solid #dbe9e0;
-font-size:9px;
-}
-.historyitem:last-child{
-border:0;
-}
-.histvalue{
-font-weight:900;
-color:#dc7620;
-}
-
-/* ================= HEALTH ================= */
-.healthitem{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:10px 0;
-border-bottom:1px solid #e0ebe5;
-font-size:11px;
-}
-.healthitem:last-child{
-border:0;
-}
-.ok{
-color:#15945a;
-font-weight:1000;
-}
-.bad{
-color:#d83255;
-font-weight:1000;
-}
-
-/* ================= REASONS ================= */
-.reason{
-padding:11px;
-border-radius:14px;
-background:#f5faf7;
-margin-top:8px;
-border-left:5px solid #e9a126;
-font-size:10px;
-}
-.reason b{
-font-size:12px;
-}
-
-/* ================= EMERGENCY ================= */
-.emergency{
-display:none;
-margin-top:16px;
-background:linear-gradient(145deg,#fff,#fff5f6);
-border:4px solid #df3154;
-border-radius:30px;
-padding:20px;
-box-shadow:0 0 50px #df315466;
-}
-.emergency.active{
-display:block;
-animation:dangerAppear .6s ease;
-}
-@keyframes dangerAppear{
-from{
-opacity:0;
-transform:scale(.96);
-}
-to{
-opacity:1;
-transform:scale(1);
-}
-}
-.dangerhead{
-text-align:center;
-}
-.dangerhead h1{
-margin:3px 0;
-color:#d82d52;
-font-size:clamp(35px,9vw,65px);
-font-weight:1000;
-}
-.dangerhead p{
-font-weight:900;
-color:#73414c;
-}
-.direction{
-width:190px;
-height:190px;
-margin:20px auto;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-border:6px solid #df3154;
-background:#fff;
-box-shadow:0 0 35px #df315455;
-}
-.arrow{
-width:0;
-height:0;
-border-left:22px solid transparent;
-border-right:22px solid transparent;
-border-bottom:90px solid #d82d52;
-filter:drop-shadow(0 6px 5px #0003);
-transition:transform .3s;
-}
-.route{
-text-align:center;
-font-size:13px;
-font-weight:1000;
-color:#b32947;
-}
-.empoints{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-top:15px;
-}
-.epoint{
-padding:13px;
-border-radius:16px;
-background:#fff1f3;
-border:1px solid #efb3bf;
-font-size:10px;
-line-height:1.5;
-}
-.epoint b{
-display:block;
-font-size:12px;
-color:#9d2942;
-margin-bottom:4px;
-}
-
-/* ================= ALERT HISTORY ================= */
-.alert{
-padding:11px;
-border-radius:13px;
-background:#fff7ea;
-border-left:4px solid #e89b24;
-margin-top:8px;
-font-size:10px;
-}
-.alert strong{
-color:#d86d1b;
-}
-
-/* ================= FOOTER ================= */
-.footer{
-text-align:center;
-color:white;
-font-size:10px;
-margin-top:22px;
-text-shadow:0 2px 5px #000;
-letter-spacing:1px;
-}
-
-@media(max-width:700px){
-.sirenrow{
-flex-wrap:wrap;
-}
-.sbutton{
-width:100%;
-}
-.historygrid{
-grid-template-columns:1fr;
-}
-.empoints{
-grid-template-columns:1fr;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div class="bg">
-<div class="moon"></div>
-<div class="mountains"></div>
-<div class="slide"></div>
-<div class="tree t1"></div>
-<div class="tree t2"></div>
-<div class="tree t3"></div>
-<div class="tree t4"></div>
-<div class="tree t5"></div>
-<div class="tree t6"></div>
-<div class="rain"></div>
-<div class="rain rain2"></div>
-<div class="lightning"></div>
-<div class="drop d1"></div>
-<div class="drop d2"></div>
-<div class="drop d3"></div>
-<div class="drop d4"></div>
-<div class="drop d5"></div>
-<div class="drop d6"></div>
-<div class="drop d7"></div>
-</div>
-
-<main class="dashboard">
-
-<header class="header">
-<img class="logo" src="Screenshot_20260826_204053_WhatsApp.jpg" alt="Sanjivani College Logo">
-<div class="college">Sanjivani College</div>
-<div class="subtitle">Smart Landslide Monitoring System</div>
-</header>
-
-<section id="sirenBox" class="siren">
-<div class="sirenrow">
-<div class="sicon">📢</div>
-<div class="sinfo">
-<div class="stitle">Emergency Mobile Siren</div>
-<div class="sdesc">The mobile speaker sounds automatically when ANY ONE sensor reaches its danger limit.</div>
-</div>
-<button id="sirenBtn" class="sbutton" onclick="enableSiren()">🔊 ENABLE SIREN</button>
-</div>
-<div id="sirenStatus" class="sstatus">
-Tap ENABLE SIREN once to allow the browser to play emergency audio.
-</div>
-</section>
-
-<section class="card">
-<div class="statusrow">
-<div>
-<div class="label">Current Safety Status</div>
-<div id="status" class="status">CONNECTING...</div>
-<div id="message" class="message">Reading live sensor data...</div>
-</div>
-<div id="light" class="light"></div>
-</div>
-</section>
-
-<div class="sensor">
-<div class="icon">🌱</div>
-<div>
-<div class="name">Soil Moisture Sensor</div>
-<div class="desc">Ground moisture monitoring</div>
-</div>
-<div>
-<div id="soil" class="value">--</div>
-<div class="desc">sensor value</div>
-</div>
-<div class="bar"><div id="soilBar" class="fill"></div></div>
-</div>
-
-<div class="sensor">
-<div class="icon">📏</div>
-<div>
-<div class="name">Distance Sensor</div>
-<div class="desc">Slope movement / distance</div>
-</div>
-<div>
-<div id="distance" class="value">--</div>
-<div class="desc">cm</div>
-</div>
-<div class="bar"><div id="distanceBar" class="fill"></div></div>
-</div>
-
-<div class="sensor">
-<div class="icon">🌧️</div>
-<div>
-<div class="name">Rain Sensor</div>
-<div class="desc">Rainfall condition</div>
-</div>
-<div>
-<div id="rainValue" class="value">--</div>
-<div class="desc">sensor value</div>
-</div>
-<div class="bar"><div id="rainBar" class="fill"></div></div>
-</div>
-
-<div class="sensor">
-<div class="icon">📳</div>
-<div>
-<div class="name">Vibration Sensor</div>
-<div class="desc">Ground vibration detection</div>
-</div>
-<div>
-<div id="vibration" class="value">--</div>
-<div class="desc">sensor value</div>
-</div>
-<div class="bar"><div id="vibrationBar" class="fill"></div></div>
-</div>
-
-<div class="section-title">📊 Live Sensor Trends</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Soil Moisture</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="soilGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Distance</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="distanceGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Rain</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="rainGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Vibration</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="vibrationGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">📚 Sensor History</div>
-
-<div class="historygrid">
-<div class="historybox"><div class="historytitle">🌱 Soil Moisture</div><div id="soilHistory"></div></div>
-<div class="historybox"><div class="historytitle">📏 Distance</div><div id="distanceHistory"></div></div>
-<div class="historybox"><div class="historytitle">🌧️ Rain</div><div id="rainHistory"></div></div>
-<div class="historybox"><div class="historytitle">📳 Vibration</div><div id="vibrationHistory"></div></div>
-</div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🟢 System Health</div>
-
-<div class="healthitem"><span>ThingSpeak connection</span><span id="healthThing" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Soil Moisture Sensor</span><span id="healthSoil" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Distance Sensor</span><span id="healthDistance" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Rain Sensor</span><span id="healthRain" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Vibration Sensor</span><span id="healthVibration" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Latest Data Received</span><strong id="latestData">--</strong></div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🔎 Why Is The System Showing High Risk?</div>
-
-<div id="reasonSoil" class="reason"><b>🌱 Soil Moisture</b><br>Waiting for sensor data.</div>
-<div id="reasonRain" class="reason"><b>🌧️ Rain</b><br>Waiting for sensor data.</div>
-<div id="reasonVibration" class="reason"><b>📳 Vibration</b><br>Waiting for sensor data.</div>
-<div id="reasonDistance" class="reason"><b>📏 Distance</b><br>Waiting for sensor data.</div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🚨 Alert History</div>
-<div id="alerts"><div class="alert">No alerts recorded yet.</div></div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🛡️ Landslide Safety Precautions</div>
-
-<div class="historygrid">
-<div class="historybox"><b>01 • Move to Safety</b><br><span class="desc">Move away from unstable slopes and follow official evacuation instructions.</span></div>
-<div class="historybox"><b>02 • Avoid Steep Slopes</b><br><span class="desc">Stay away from cliffs and visibly unstable ground.</span></div>
-<div class="historybox"><b>03 • Avoid Heavy-Rain Travel</b><br><span class="desc">Avoid unnecessary travel through landslide-prone areas during intense rainfall.</span></div>
-<div class="historybox"><b>04 • Keep Communication Ready</b><br><span class="desc">Keep your phone charged and monitor official emergency warnings.</span></div>
-<div class="historybox"><b>05 • Never Cross Debris</b><br><span class="desc">Never walk or drive across an active landslide or debris flow.</span></div>
-</div>
-</section>
-
-<section id="emergency" class="emergency">
-<div class="dangerhead">
-<div class="label">EMERGENCY MODE</div>
-<h1>⚠️ HIGH DANGER</h1>
-<p id="dangerText">Dangerous conditions detected.</p>
-</div>
-
-<div class="direction"><div id="arrow" class="arrow"></div></div>
-
-<div class="route">FOLLOW THE ARROW TOWARD YOUR PRE-CONFIGURED SAFE AREA</div>
-
-<div class="empoints">
-<div class="epoint"><b>🧭 FOLLOW DIRECTION</b>Follow the displayed evacuation direction and local authority instructions.</div>
-<div class="epoint"><b>📱 STAY CONNECTED</b>Keep your phone with you and monitor official emergency announcements.</div>
-<div class="epoint"><b>🚫 DO NOT RETURN</b>Do not return to the danger area until officials say it is safe.</div>
-<div class="epoint"><b>👨‍👩‍👧 STAY TOGETHER</b>Stay with your family/group and help others reach a safe area when possible.</div>
-<div class="epoint"><b>🌧️ WATCH THE WEATHER</b>Heavy rain can increase landslide danger. Stay away from unstable slopes.</div>
-<div class="epoint"><b>🛑 FOLLOW AUTHORITIES</b>Official evacuation instructions always take priority over this dashboard.</div>
-</div>
-</section>
-
-<div class="footer">
-LIVE THINGSPEAK DATA • SANJIVANI COLLEGE
-<br><br>
-Developed by <strong>Om Baraskar</strong>
-</div>
-
-</main>
-
 <script>
 
 /* =========================================================
@@ -818,12 +27,12 @@ const FIELD_RAIN = 4;
 
 /*
    SOIL CALIBRATION
-   =================
 
-   Your actual testing showed approximately:
+   Your testing:
 
-   Fully wet / water = 1850
-   Dry = 3382 to 4000
+   Around 1850 = very wet / water
+   Around 3382 = dry
+   Around 4000+ = very dry
 
    Therefore:
 
@@ -840,30 +49,49 @@ const SOIL_NORMAL = 3000;
 
 /*
    RAIN SENSOR
-   ============
 
-   IMPORTANT:
-   You said the rain sensor is NOT connected.
+   Field 4 is ACTIVE.
 
-   Therefore it is completely disabled for
-   danger detection.
+   Based on your previous readings:
 
-   A random value such as 38 will NOT cause
-   HIGH DANGER.
+   Around 4095 = dry
+   Around 1500 = wet
+   Around 800 = very wet / heavy rain
+
+   Therefore:
+
+   <= 1000       HEAVY RAIN / DANGER
+   1001-1500     WET / WARNING
+   > 1500        DRYER / SAFE
 */
 
-const RAIN_SENSOR_CONNECTED = false;
+const RAIN_SENSOR_CONNECTED = true;
 
 const RAIN_DANGER = 1000;
 const RAIN_WARNING = 1500;
 
 
-/* Vibration */
+/*
+   VIBRATION
+
+   SW420:
+
+   0 = no vibration
+   1 = vibration detected
+*/
 
 const VIBRATION_DANGER = 1;
 
 
-/* Distance */
+/*
+   DISTANCE
+
+   Distance at or below this value
+   is treated as dangerous.
+
+   Change this later if your physical
+   sensor mounting requires another limit.
+*/
 
 const DISTANCE_DANGER = 20;
 
@@ -1041,19 +269,23 @@ async function loadData() {
             });
 
         if (!response.ok) {
+
             throw new Error(
                 "ThingSpeak connection failed: " +
                 response.status
             );
+
         }
 
         const data =
             await response.json();
 
         if (!data.feeds || data.feeds.length === 0) {
+
             throw new Error(
                 "No ThingSpeak data available"
             );
+
         }
 
 
@@ -1087,28 +319,38 @@ async function loadData() {
                 );
 
 
+            /*
+               IMPORTANT:
+
+               Invalid/missing values remain NaN
+               instead of becoming 0.
+
+               This prevents a missing sensor value
+               from accidentally becoming DANGER.
+            */
+
             distanceData.push(
                 Number.isFinite(distance)
                     ? distance
-                    : 0
+                    : NaN
             );
 
             soilData.push(
                 Number.isFinite(soil)
                     ? soil
-                    : 0
+                    : NaN
             );
 
             vibrationData.push(
                 Number.isFinite(vibration)
                     ? vibration
-                    : 0
+                    : NaN
             );
 
             rainData.push(
                 Number.isFinite(rain)
                     ? rain
-                    : 0
+                    : NaN
             );
 
 
@@ -1156,34 +398,23 @@ async function loadData() {
 
 
         updateSensors(
-            Number.isFinite(latestSoil)
-                ? latestSoil
-                : 0,
-
-            Number.isFinite(latestDistance)
-                ? latestDistance
-                : 0,
-
-            Number.isFinite(latestRain)
-                ? latestRain
-                : 0,
-
-            Number.isFinite(latestVibration)
-                ? latestVibration
-                : 0
+            latestSoil,
+            latestDistance,
+            latestRain,
+            latestVibration
         );
 
 
         drawGraph(
             "soilGraph",
-            soilData,
+            soilData.filter(Number.isFinite),
             dateData,
             "Soil"
         );
 
         drawGraph(
             "distanceGraph",
-            distanceData,
+            distanceData.filter(Number.isFinite),
             dateData,
             "Distance",
             " cm"
@@ -1191,14 +422,14 @@ async function loadData() {
 
         drawGraph(
             "rainGraph",
-            rainData,
+            rainData.filter(Number.isFinite),
             dateData,
             "Rain"
         );
 
         drawGraph(
             "vibrationGraph",
-            vibrationData,
+            vibrationData.filter(Number.isFinite),
             dateData,
             "Vibration"
         );
@@ -1221,36 +452,59 @@ async function loadData() {
 
 
         document.getElementById("healthSoil")
-            .textContent = "✓ RECEIVING";
+            .textContent =
+            Number.isFinite(latestSoil)
+                ? "✓ RECEIVING"
+                : "✕ NO DATA";
 
         document.getElementById("healthSoil")
-            .className = "ok";
+            .className =
+            Number.isFinite(latestSoil)
+                ? "ok"
+                : "bad";
 
 
         document.getElementById("healthDistance")
-            .textContent = "✓ RECEIVING";
+            .textContent =
+            Number.isFinite(latestDistance)
+                ? "✓ RECEIVING"
+                : "✕ NO DATA";
 
         document.getElementById("healthDistance")
-            .className = "ok";
+            .className =
+            Number.isFinite(latestDistance)
+                ? "ok"
+                : "bad";
 
 
         /*
-           Rain sensor is physically disconnected.
-           Show it as disconnected rather than healthy.
+           RAIN SENSOR IS NOW ACTIVE.
         */
 
         document.getElementById("healthRain")
-            .textContent = "NOT CONNECTED";
+            .textContent =
+            Number.isFinite(latestRain)
+                ? "✓ RECEIVING"
+                : "✕ NO DATA";
 
         document.getElementById("healthRain")
-            .className = "ok";
+            .className =
+            Number.isFinite(latestRain)
+                ? "ok"
+                : "bad";
 
 
         document.getElementById("healthVibration")
-            .textContent = "✓ RECEIVING";
+            .textContent =
+            Number.isFinite(latestVibration)
+                ? "✓ RECEIVING"
+                : "✕ NO DATA";
 
         document.getElementById("healthVibration")
-            .className = "ok";
+            .className =
+            Number.isFinite(latestVibration)
+                ? "ok"
+                : "bad";
 
 
         document.getElementById("latestData")
@@ -1295,87 +549,121 @@ function updateSensors(
 
     document.getElementById("soil")
         .textContent =
-        soil.toFixed(0);
+        Number.isFinite(soil)
+            ? soil.toFixed(0)
+            : "--";
 
     document.getElementById("distance")
         .textContent =
-        distance.toFixed(1);
-
-    /*
-       Keep the ThingSpeak rain value visible,
-       but it is NOT used for danger because the
-       physical rain sensor is disconnected.
-    */
+        Number.isFinite(distance)
+            ? distance.toFixed(1)
+            : "--";
 
     document.getElementById("rainValue")
         .textContent =
-        rain.toFixed(0);
+        Number.isFinite(rain)
+            ? rain.toFixed(0)
+            : "--";
 
     document.getElementById("vibration")
         .textContent =
-        vibration.toFixed(0);
+        Number.isFinite(vibration)
+            ? vibration.toFixed(0)
+            : "--";
 
 
     /*
        SOIL BAR
 
-       Lower soil value = more moisture.
+       Lower value = wetter.
     */
 
-    const soilRiskPercent =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                ((4095 - soil) / 4095) * 100
-            )
-        );
+    if (Number.isFinite(soil)) {
 
-    document.getElementById("soilBar")
-        .style.width =
-        Math.max(5, soilRiskPercent) + "%";
+        const soilRiskPercent =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    ((4095 - soil) / 4095) * 100
+                )
+            );
+
+        document.getElementById("soilBar")
+            .style.width =
+            Math.max(5, soilRiskPercent) + "%";
+
+    } else {
+
+        document.getElementById("soilBar")
+            .style.width = "5%";
+
+    }
 
 
     /*
        DISTANCE BAR
     */
 
-    const distanceRiskPercent =
-        distance > 0
-            ? Math.max(
-                5,
-                Math.min(
-                    100,
-                    ((100 - Math.min(distance, 100)) / 100) * 100
-                )
-            )
-            : 5;
+    if (Number.isFinite(distance)) {
 
-    document.getElementById("distanceBar")
-        .style.width =
-        distanceRiskPercent + "%";
+        const distanceRiskPercent =
+            distance > 0
+                ? Math.max(
+                    5,
+                    Math.min(
+                        100,
+                        ((100 - Math.min(distance, 100)) / 100) * 100
+                    )
+                )
+                : 5;
+
+        document.getElementById("distanceBar")
+            .style.width =
+            distanceRiskPercent + "%";
+
+    } else {
+
+        document.getElementById("distanceBar")
+            .style.width = "5%";
+
+    }
 
 
     /*
        RAIN BAR
     */
 
-    const rainRiskPercent =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                ((4095 - rain) / 4095) * 100
-            )
-        );
+    if (Number.isFinite(rain)) {
 
-    document.getElementById("rainBar")
-        .style.width =
-        Math.max(5, rainRiskPercent) + "%";
+        const rainRiskPercent =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    ((4095 - rain) / 4095) * 100
+                )
+            );
 
+        document.getElementById("rainBar")
+            .style.width =
+            Math.max(5, rainRiskPercent) + "%";
+
+    } else {
+
+        document.getElementById("rainBar")
+            .style.width = "5%";
+
+    }
+
+
+    /*
+       VIBRATION BAR
+    */
 
     document.getElementById("vibrationBar")
         .style.width =
+        Number.isFinite(vibration) &&
         vibration >= VIBRATION_DANGER
             ? "100%"
             : "5%";
@@ -1405,12 +693,8 @@ function checkIndividualDanger(
     /*
        SOIL
 
-       YOUR ACTUAL CALIBRATION:
-
-       3382 = DRY = SAFE
-       1850 = VERY WET = DANGER
-
-       Therefore the danger limit is 2000.
+       1850 = VERY WET / DANGER
+       3382 = DRY / SAFE
     */
 
     const soilDanger =
@@ -1420,13 +704,15 @@ function checkIndividualDanger(
 
 
     /*
-       IMPORTANT:
-       RAIN SENSOR IS NOT CONNECTED.
+       RAIN
 
-       Therefore rainDanger is ALWAYS false.
+       FIELD 4 IS NOW ACTIVE.
 
-       Even if ThingSpeak reports 38, 100,
-       500, etc., it cannot trigger danger.
+       Around 4095 = dry
+       Around 1500 = wet
+       Around 800 = heavy rain
+
+       Therefore <=1000 = danger.
     */
 
     const rainDanger =
@@ -1456,7 +742,7 @@ function checkIndividualDanger(
 
 
     /*
-       ONLY THESE ACTIVE SENSORS CAN TRIGGER DANGER.
+       ANY ONE SENSOR CAN TRIGGER DANGER.
     */
 
     const danger =
@@ -1547,7 +833,7 @@ function checkIndividualDanger(
 
         setStatus(
             "SAFE",
-            "All active sensor readings are currently within safe limits.",
+            "All sensor readings are currently within safe limits.",
             "safe"
         );
 
@@ -1580,30 +866,30 @@ function updateReasonBoxes(
         .innerHTML =
         `<b>🌱 Soil Moisture</b><br>` +
         (
-            soilDanger
-                ? `DANGER: Value ${soil}. Soil is VERY WET and has reached the danger limit of ${SOIL_DANGER}.`
-                : `SAFE: Value ${soil}. Values above ${SOIL_NORMAL} are treated as DRY/SAFE.`
+            !Number.isFinite(soil)
+                ? `NO DATA: Soil moisture value is unavailable.`
+                : soilDanger
+                    ? `DANGER: Value ${soil}. Soil is VERY WET and has reached the danger limit of ${SOIL_DANGER}.`
+                    : `SAFE: Value ${soil}. Values above ${SOIL_NORMAL} are treated as DRY/SAFE.`
         );
 
 
     /*
-       RAIN REASON
-
-       The dashboard still shows the ThingSpeak
-       value, but it cannot affect the danger status.
+       RAIN IS ACTIVE.
     */
 
     document.getElementById("reasonRain")
         .innerHTML =
         `<b>🌧️ Rain</b><br>` +
         (
-            RAIN_SENSOR_CONNECTED
-                ? (
-                    rainDanger
-                        ? `DANGER: Heavy rain detected. Value ${rain} is at or below ${RAIN_DANGER}.`
-                        : `SAFE: Rain value is ${rain}.`
-                  )
-                : `NOT CONNECTED: Rain sensor is not attached, so its ThingSpeak value (${rain}) is completely ignored for danger detection.`
+            !Number.isFinite(rain)
+                ? `NO DATA: Rain sensor value is unavailable.`
+                : rainDanger
+                    ? `DANGER: Heavy rain detected. Value ${rain} is at or below ${RAIN_DANGER}.`
+                    : rain > RAIN_DANGER &&
+                      rain <= RAIN_WARNING
+                        ? `WARNING: Wet/rain condition detected. Value ${rain} is between ${RAIN_DANGER + 1} and ${RAIN_WARNING}.`
+                        : `SAFE: Rain sensor value is ${rain}.`
         );
 
 
@@ -1611,9 +897,11 @@ function updateReasonBoxes(
         .innerHTML =
         `<b>📳 Vibration</b><br>` +
         (
-            vibrationDanger
-                ? `DANGER: Ground vibration detected with value ${vibration}.`
-                : `SAFE: No dangerous vibration detected.`
+            !Number.isFinite(vibration)
+                ? `NO DATA: Vibration sensor value is unavailable.`
+                : vibrationDanger
+                    ? `DANGER: Ground vibration detected with value ${vibration}.`
+                    : `SAFE: No dangerous vibration detected.`
         );
 
 
@@ -1621,9 +909,11 @@ function updateReasonBoxes(
         .innerHTML =
         `<b>📏 Distance</b><br>` +
         (
-            distanceDanger
-                ? `DANGER: Possible rock/slope movement. Distance ${distance.toFixed(1)} cm is within the ${DISTANCE_DANGER} cm danger range.`
-                : `SAFE: Distance is ${distance.toFixed(1)} cm, outside the ${DISTANCE_DANGER} cm danger range.`
+            !Number.isFinite(distance)
+                ? `NO DATA: Distance sensor value is unavailable.`
+                : distanceDanger
+                    ? `DANGER: Possible rock/slope movement. Distance ${distance.toFixed(1)} cm is within the ${DISTANCE_DANGER} cm danger range.`
+                    : `SAFE: Distance is ${distance.toFixed(1)} cm, outside the ${DISTANCE_DANGER} cm danger range.`
         );
 
 }
@@ -1848,11 +1138,16 @@ function renderHistory(
         row.className =
             "historyitem";
 
+        const value =
+            Number.isFinite(values[i])
+                ? Number(values[i]).toFixed(1)
+                : "--";
+
         row.innerHTML =
             `
             <span>${dates[i] || "--"}</span>
             <span class="histvalue">
-                ${Number(values[i]).toFixed(1)}
+                ${value}
             </span>
             `;
 
@@ -1894,16 +1189,26 @@ function drawGraph(
     const gw = W - L - R;
     const gh = H - T - B;
 
+
+    const cleanValues =
+        values.filter(Number.isFinite);
+
+    if (!cleanValues.length) {
+        return;
+    }
+
+
     let min =
-        Math.min(...values);
+        Math.min(...cleanValues);
 
     let max =
-        Math.max(...values);
+        Math.max(...cleanValues);
 
     if (min === max) {
         min -= 1;
         max += 1;
     }
+
 
     const pad =
         Math.max(
@@ -1942,14 +1247,14 @@ function drawGraph(
 
 
     const points =
-        values.map(function(value, index) {
+        cleanValues.map(function(value, index) {
 
             return {
                 x:
                     L +
                     index /
                     Math.max(
-                        values.length - 1,
+                        cleanValues.length - 1,
                         1
                     ) *
                     gw,
@@ -2118,14 +1423,14 @@ function drawGraph(
 
 
     const indexes =
-        values.length <= 3
-            ? [...Array(values.length).keys()]
+        cleanValues.length <= 3
+            ? [...Array(cleanValues.length).keys()]
             : [
                 0,
                 Math.floor(
-                    (values.length - 1) / 2
+                    (cleanValues.length - 1) / 2
                 ),
-                values.length - 1
+                cleanValues.length - 1
             ];
 
 
@@ -2187,7 +1492,9 @@ function rating(
             value > 0 &&
             value <= DISTANCE_DANGER
         ) {
+
             return "🔴 POSSIBLE MOVEMENT / DANGER";
+
         }
 
         return "🟢 SAFE";
@@ -2206,25 +1513,22 @@ function rating(
 
     if (label === "Rain") {
 
-        /*
-           Rain sensor is disconnected.
-           Its graph can still show ThingSpeak
-           history, but this rating is not used
-           by the main danger system.
-        */
-
         if (
             value > 0 &&
             value <= RAIN_DANGER
         ) {
+
             return "🔴 HEAVY RAIN / DANGER";
+
         }
 
         if (
             value > RAIN_DANGER &&
             value <= RAIN_WARNING
         ) {
+
             return "🟠 WET / WARNING";
+
         }
 
         return "🟢 DRY / SAFE";
@@ -2234,32 +1538,31 @@ function rating(
 
     if (label === "Soil") {
 
-        /*
-           NEW SOIL CALIBRATION
-
-           3382 = DRY / SAFE
-           1850 = VERY WET / DANGER
-        */
-
         if (
             value > 0 &&
             value <= SOIL_DANGER
         ) {
+
             return "🔴 VERY WET / DANGER";
+
         }
 
         if (
             value > SOIL_DANGER &&
             value <= SOIL_WARNING
         ) {
+
             return "🟠 WET / WARNING";
+
         }
 
         if (
             value > SOIL_WARNING &&
             value <= SOIL_NORMAL
         ) {
+
             return "🟡 MODERATE MOISTURE";
+
         }
 
         return "🟢 DRY / SAFE";
@@ -2330,6 +1633,3 @@ window.addEventListener(
 );
 
 </script>
-
-</body>
-</html>

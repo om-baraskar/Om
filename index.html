@@ -838,38 +838,47 @@ const RAIN_MM_AT_HEAVY = 20;
    ========================================================= */
 
 /*
-   The ESP32 currently sends:
+   IMPORTANT:
 
-   0 = no SW-420 trigger
-   1 = SW-420 triggered
+   The ESP32 sends the SW420 as DIGITAL data:
 
-   The website looks at the latest readings
-   and converts recent activity into a 0-5
-   PROJECT vibration level.
+   0 = no trigger
+   1 = trigger detected
 
-   This is an activity scale, NOT Richter magnitude.
+   The SW420 itself does NOT provide a real
+   0-5 vibration intensity.
+
+   Therefore this website creates a PROJECT
+   vibration activity level.
+
+   NEW LOGIC:
+
+   0 triggers       = Level 0
+   1 trigger        = Level 3
+   2-3 triggers     = Level 4
+   4+ triggers      = Level 5
+
+   This means one successfully received SW420
+   trigger is enough to reach the Level 3
+   danger threshold.
+
+   The website checks the latest 10 ThingSpeak
+   readings.
 */
 
 const VIBRATION_WINDOW = 10;
 
 
-/*
-   Number of "1" readings in the latest
-   10 ThingSpeak readings:
-
-   0       = Level 0
-   1       = Level 1
-   2-3     = Level 2
-   4-5     = Level 3
-   6-8     = Level 4
-   9-10    = Level 5
-*/
+/* =========================================================
+   VIBRATION LEVEL CALCULATOR
+   ========================================================= */
 
 function calculateVibrationLevel(readings) {
 
     if (!Array.isArray(readings) || readings.length === 0) {
         return 0;
     }
+
 
     const recent =
         readings.slice(
@@ -879,7 +888,9 @@ function calculateVibrationLevel(readings) {
             )
         );
 
+
     let activeCount = 0;
+
 
     recent.forEach(function(value) {
 
@@ -892,25 +903,39 @@ function calculateVibrationLevel(readings) {
 
     });
 
+
+    /*
+       NO SW420 TRIGGER
+    */
+
     if (activeCount === 0) {
         return 0;
     }
 
+
+    /*
+       ONE SW420 TRIGGER
+
+       ONE recorded trigger = LEVEL 3.
+    */
+
     if (activeCount === 1) {
-        return 1;
-    }
-
-    if (activeCount <= 3) {
-        return 2;
-    }
-
-    if (activeCount <= 5) {
         return 3;
     }
 
-    if (activeCount <= 8) {
+
+    /*
+       2-3 recorded triggers = LEVEL 4.
+    */
+
+    if (activeCount <= 3) {
         return 4;
     }
+
+
+    /*
+       4 OR MORE recorded triggers = LEVEL 5.
+    */
 
     return 5;
 }
@@ -1251,7 +1276,7 @@ async function loadData() {
 
 
         /* =====================================================
-           CONVERT EVERY VIBRATION POINT TO ACTIVITY LEVEL
+           CALCULATE VIBRATION LEVEL FOR EACH GRAPH POINT
            ===================================================== */
 
         const calculatedVibrationLevels = [];
@@ -1398,11 +1423,11 @@ async function loadData() {
 
 
         /* =====================================================
-           IMPORTANT:
+           LATEST VIBRATION
 
-           Calculate vibration from the most recent
-           10 raw SW-420 readings.
-           ===================================================== */
+           One recorded SW420 trigger inside the
+           latest 10 readings produces Level 3.
+        ===================================================== */
 
         const latestVibration =
             calculateVibrationLevel(

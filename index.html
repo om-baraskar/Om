@@ -2,809 +2,698 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sanjivani College | Landslide Safety System</title>
 
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Segoe UI,Arial,sans-serif}
-body{background:#03100c;color:#183328;overflow-x:hidden}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-/* ================= BACKGROUND ================= */
-.bg{
-position:fixed;inset:0;z-index:-10;overflow:hidden;
-background:
-radial-gradient(circle at 70% 12%,rgba(180,240,220,.18),transparent 20%),
-linear-gradient(#020908,#061713 48%,#10281e);
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#050914;
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
 }
-.moon{
-position:absolute;right:-70px;top:-70px;width:260px;height:260px;
-border-radius:50%;
-background:radial-gradient(circle,rgba(230,255,245,.2),transparent 68%);
-}
-.mountains{
-position:absolute;left:-5%;bottom:5%;width:110%;height:58%;
-background:linear-gradient(145deg,#19372b,#071611);
-clip-path:polygon(
-0 75%,10% 57%,18% 68%,29% 40%,39% 63%,
-50% 18%,62% 48%,72% 30%,82% 58%,91% 37%,
-100% 58%,100% 100%,0 100%
-);
-}
-.slide{
-position:absolute;left:45%;bottom:7%;width:30%;height:44%;
-background:linear-gradient(145deg,#706452,#302d26,#101510);
-clip-path:polygon(
-45% 0,68% 17%,55% 36%,90% 67%,70% 100%,
-8% 100%,27% 70%,8% 52%,32% 27%
-);
-}
-.tree{
-position:absolute;bottom:7%;width:0;height:0;
-border-left:25px solid transparent;
-border-right:25px solid transparent;
-border-bottom:95px solid #02110c;
-filter:drop-shadow(7px 8px 5px #000);
-}
-.tree:before{
-content:"";position:absolute;left:-20px;top:42px;
-border-left:20px solid transparent;
-border-right:20px solid transparent;
-border-bottom:70px solid #03150f;
-}
-.tree:after{
-content:"";position:absolute;left:-5px;top:78px;
-width:10px;height:58px;background:#11130f;
-}
-.t1{left:3%;transform:scale(1.5)}
-.t2{left:17%;transform:scale(.9)}
-.t3{left:27%;transform:scale(1.25)}
-.t4{right:3%;transform:scale(1.6)}
-.t5{right:17%;transform:scale(1)}
-.t6{right:29%;transform:scale(.75)}
 
+/* Animated background */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    background:
+        linear-gradient(rgba(3,8,20,.72),rgba(3,8,20,.88)),
+        url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2000&q=80")
+        center/cover no-repeat;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(0,220,255,.12),transparent 30%),
+        radial-gradient(circle at 80% 70%,rgba(255,0,80,.10),transparent 30%);
+    pointer-events:none;
+}
+
+/* Rain effect */
 .rain{
-position:absolute;inset:-30%;opacity:.42;
-background:repeating-linear-gradient(
-105deg,transparent 0 35px,
-rgba(220,255,247,.34) 36px,
-transparent 39px 75px
-);
-background-size:80px 90px;
-animation:rain .55s linear infinite;
-}
-.rain2{
-opacity:.18;
-background-size:45px 65px;
-animation-duration:.25s;
-}
-@keyframes rain{
-to{transform:translateY(120px)}
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    overflow:hidden;
 }
 
-.lightning{
-position:absolute;right:18%;top:0;width:75px;height:85%;
-background:#efffff;opacity:0;
-clip-path:polygon(
-48% 0,82% 0,62% 35%,91% 35%,
-24% 75%,42% 46%,15% 46%
-);
-filter:drop-shadow(0 0 25px white);
-animation:flash 8s infinite;
-}
-@keyframes flash{
-0%,86%,100%{opacity:0}
-87%,89%{opacity:1}
-88%,90%,93%{opacity:0}
-92%{opacity:.5}
+.rain span{
+    position:absolute;
+    top:-100px;
+    width:1px;
+    height:80px;
+    background:linear-gradient(transparent,rgba(120,200,255,.35));
+    animation:rainfall linear infinite;
 }
 
-.drop{
-position:absolute;border-radius:55%;
-background:
-radial-gradient(
-circle at 30% 25%,
-rgba(255,255,255,.75),
-rgba(180,235,225,.2) 40%,
-transparent 72%
-);
-border:1px solid rgba(225,255,247,.18);
-box-shadow:0 2px 8px #0008;
-}
-.d1{width:20px;height:28px;left:7%;top:16%}
-.d2{width:11px;height:16px;left:21%;top:38%}
-.d3{width:27px;height:36px;right:8%;top:20%}
-.d4{width:13px;height:20px;right:18%;top:50%}
-.d5{width:29px;height:39px;left:53%;top:8%}
-.d6{width:10px;height:14px;left:39%;top:57%}
-.d7{width:19px;height:28px;right:30%;top:67%}
-
-.dashboard{
-width:min(1120px,94%);
-margin:16px auto 45px;
+@keyframes rainfall{
+    to{
+        transform:translateY(110vh);
+    }
 }
 
-/* ================= HEADER ================= */
-.header{
-background:#fffffff7;
-border:3px solid #2e9d68;
-border-radius:30px;
-padding:22px;
-text-align:center;
-box-shadow:0 20px 55px #0008;
+.container{
+    width:min(1450px,94%);
+    margin:auto;
 }
+
+/* Header */
+header{
+    padding:22px 0;
+    border-bottom:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+}
+
+.header-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
 .logo{
-width:96px;height:96px;
-object-fit:contain;
-border-radius:50%;
-background:white;
-padding:6px;
-border:3px solid #2d9c68;
-}
-.college{
-margin-top:10px;
-font-size:clamp(29px,6vw,45px);
-font-weight:1000;
-color:#176b47;
-}
-.subtitle{
-font-size:10px;
-letter-spacing:2px;
-font-weight:900;
-color:#667b71;
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #00d9ff;
+    box-shadow:0 0 25px rgba(0,217,255,.35);
 }
 
-/* ================= SIREN ================= */
-.siren{
-margin-top:14px;
-background:#fff;
-border:3px solid #e69a28;
-border-radius:25px;
-padding:17px;
-box-shadow:0 15px 40px #0006;
-}
-.sirenrow{
-display:flex;
-align-items:center;
-gap:14px;
-}
-.sicon{
-width:52px;height:52px;
-border-radius:15px;
-background:#fff4dc;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:25px;
-}
-.sinfo{flex:1}
-.stitle{
-font-weight:1000;
-color:#654313;
-}
-.sdesc{
-font-size:10px;
-color:#827666;
-margin-top:3px;
-}
-.sbutton{
-border:0;
-border-radius:14px;
-padding:14px 18px;
-background:linear-gradient(135deg,#ee9b22,#dc681b);
-color:white;
-font-weight:1000;
-cursor:pointer;
-}
-.sbutton.on{
-background:linear-gradient(135deg,#25ae68,#13834d);
-}
-.sstatus{
-margin-top:10px;
-padding:8px;
-border-radius:10px;
-background:#fff8e9;
-color:#806c48;
-font-size:9px;
-text-align:center;
-}
-.siren.alarm{
-animation:alarm .35s infinite alternate;
-}
-@keyframes alarm{
-to{
-border-color:#e12e52;
-box-shadow:0 0 35px #e12e5266;
-}
+.college-title h1{
+    font-size:clamp(20px,3vw,32px);
+    letter-spacing:1px;
 }
 
-/* ================= CARDS ================= */
+.college-title p{
+    color:#8da5bd;
+    margin-top:5px;
+    font-size:13px;
+}
+
+/* Siren */
+.siren-btn{
+    border:1px solid #ff3158;
+    background:rgba(255,30,70,.1);
+    color:#ff5474;
+    border-radius:12px;
+    padding:12px 17px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.25s;
+}
+
+.siren-btn:hover{
+    background:#ff3158;
+    color:white;
+    box-shadow:0 0 25px rgba(255,49,88,.45);
+}
+
+/* Main */
+main{
+    padding:30px 0 60px;
+}
+
+.hero{
+    display:grid;
+    grid-template-columns:1.5fr .8fr;
+    gap:20px;
+    margin-bottom:25px;
+}
+
 .card{
-margin-top:14px;
-background:#fffffff7;
-border:3px solid #2d9c68;
-border-radius:25px;
-padding:19px;
-box-shadow:0 17px 42px #0006;
+    background:rgba(8,16,32,.76);
+    border:1px solid rgba(130,180,220,.16);
+    border-radius:20px;
+    padding:22px;
+    backdrop-filter:blur(15px);
+    box-shadow:0 15px 45px rgba(0,0,0,.25);
 }
-.statusrow{
-display:flex;
-justify-content:space-between;
-align-items:center;
+
+.status-card{
+    min-height:210px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
-.label{
-font-size:10px;
-font-weight:900;
-letter-spacing:2px;
-color:#71847a;
-text-transform:uppercase;
+
+.status-label{
+    color:#8ca4bd;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:2px;
 }
+
 .status{
-font-size:clamp(31px,7vw,48px);
-font-weight:1000;
-color:#15945a;
-margin-top:3px;
-}
-.message{
-font-size:11px;
-color:#687c72;
-}
-.light{
-width:52px;height:52px;
-border-radius:50%;
-background:#39d98a;
-box-shadow:0 0 30px #39d98a88;
+    margin-top:12px;
+    font-size:clamp(35px,6vw,65px);
+    font-weight:900;
+    letter-spacing:2px;
 }
 
-/* ================= SENSOR CARDS ================= */
-.sensor{
-display:grid;
-grid-template-columns:50px 1fr 125px;
-align-items:center;
-gap:12px;
-margin-top:12px;
-padding:14px;
-border:2px solid #3aa66f;
-border-radius:20px;
-background:#fffffff7;
-box-shadow:0 10px 28px #0004;
-}
-.icon{
-width:45px;height:45px;
-border-radius:14px;
-background:#e8f7ef;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:22px;
-}
-.name{
-font-weight:950;
-font-size:13px;
-}
-.desc{
-font-size:9px;
-color:#788980;
-margin-top:3px;
-}
-.value{
-font-size:24px;
-font-weight:1000;
-color:#178c57;
-}
-.bar{
-grid-column:1/4;
-height:8px;
-background:#e5eee9;
-border-radius:20px;
-overflow:hidden;
-}
-.fill{
-height:100%;
-width:5%;
-border-radius:20px;
-background:
-linear-gradient(
-90deg,#23a961,#f1c332,#ed8429,#dc3154
-);
-transition:.5s;
+.status.safe{
+    color:#20e890;
+    text-shadow:0 0 25px rgba(32,232,144,.3);
 }
 
-/* ================= GRAPHS ================= */
+.status.warning{
+    color:#ffd34d;
+    text-shadow:0 0 25px rgba(255,211,77,.3);
+}
+
+.status.danger{
+    color:#ff3e60;
+    text-shadow:0 0 25px rgba(255,62,96,.4);
+    animation:dangerPulse 1.2s infinite;
+}
+
+@keyframes dangerPulse{
+    50%{opacity:.55;}
+}
+
+.status-message{
+    margin-top:10px;
+    color:#9fb2c8;
+}
+
+.system-time{
+    margin-top:18px;
+    color:#6e849b;
+    font-size:13px;
+}
+
+/* Sensor grid */
 .section-title{
-margin:25px 4px 10px;
-color:white;
-font-size:19px;
-font-weight:1000;
-text-shadow:0 2px 8px #000;
+    margin:30px 0 15px;
+    font-size:22px;
 }
-.graphcard{
-background:#fffffff8;
-border:2px solid #3aa66f;
-border-radius:23px;
-padding:14px;
-margin-bottom:13px;
-box-shadow:0 15px 35px #0005;
+
+.sensor-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
 }
-.gtitle{
-display:flex;
-justify-content:space-between;
-font-weight:1000;
-font-size:13px;
+
+.sensor-card{
+    position:relative;
+    overflow:hidden;
 }
-.live{
-font-size:9px;
-color:#168b55;
+
+.sensor-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:3px;
+    background:#00d9ff;
+    box-shadow:0 0 15px #00d9ff;
 }
+
+.sensor-name{
+    color:#91a8bf;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.sensor-value{
+    font-size:35px;
+    font-weight:800;
+    margin:13px 0 5px;
+}
+
+.sensor-unit{
+    color:#70869c;
+    font-size:12px;
+}
+
+.sensor-state{
+    display:inline-block;
+    margin-top:15px;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+    background:rgba(32,232,144,.1);
+    color:#20e890;
+}
+
+.sensor-state.warning{
+    background:rgba(255,211,77,.1);
+    color:#ffd34d;
+}
+
+.sensor-state.danger{
+    background:rgba(255,62,96,.1);
+    color:#ff3e60;
+}
+
+/* Graphs */
+.graph-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.graph-card{
+    min-height:250px;
+}
+
+.graph-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.graph-title span{
+    color:#8da5bd;
+    font-size:13px;
+}
+
 .graph{
-height:230px;
-position:relative;
-}
-svg{
-width:100%;
-height:100%;
-}
-.grid{
-stroke:#246a451c;
-stroke-width:1;
-}
-.line{
-fill:none;
-stroke:#f18a25;
-stroke-width:4;
-stroke-linecap:round;
-stroke-linejoin:round;
-filter:drop-shadow(0 0 5px #f18a2577);
-}
-.area{
-fill:#f18a2514;
-}
-.dot{
-fill:white;
-stroke:#f18a25;
-stroke-width:3;
-cursor:pointer;
-}
-.dot:hover{
-stroke:#db3154;
-stroke-width:5;
-}
-.tip{
-position:absolute;
-opacity:0;
-pointer-events:none;
-background:#fff;
-border:2px solid #e69a28;
-border-radius:12px;
-padding:8px;
-min-width:140px;
-transform:translate(-50%,-110%);
-box-shadow:0 12px 30px #0004;
-font-size:10px;
-}
-.tip.show{
-opacity:1;
-}
-.tip b{
-font-size:17px;
-color:#df761c;
+    width:100%;
+    height:170px;
 }
 
-/* ================= HISTORY ================= */
-.historygrid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-.historybox{
-border:2px solid #9bcaaf;
-border-radius:18px;
-padding:13px;
-background:#f5fbf7;
-}
-.historytitle{
-font-size:12px;
-font-weight:1000;
-color:#176b47;
-}
-.historyitem{
-display:flex;
-justify-content:space-between;
-padding:8px 0;
-border-bottom:1px solid #dbe9e0;
-font-size:9px;
-}
-.historyitem:last-child{
-border:0;
-}
-.histvalue{
-font-weight:900;
-color:#dc7620;
+.graph polyline{
+    fill:none;
+    stroke:#00d9ff;
+    stroke-width:3;
+    vector-effect:non-scaling-stroke;
 }
 
-/* ================= HEALTH ================= */
-.healthitem{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:10px 0;
-border-bottom:1px solid #e0ebe5;
-font-size:11px;
-}
-.healthitem:last-child{
-border:0;
-}
-.ok{
-color:#15945a;
-font-weight:1000;
-}
-.bad{
-color:#d83255;
-font-weight:1000;
+.graph .gridline{
+    stroke:rgba(255,255,255,.07);
+    stroke-width:1;
 }
 
-/* ================= REASONS ================= */
-.reason{
-padding:11px;
-border-radius:14px;
-background:#f5faf7;
-margin-top:8px;
-border-left:5px solid #e9a126;
-font-size:10px;
-}
-.reason b{
-font-size:12px;
+.graph circle{
+    fill:#00d9ff;
 }
 
-/* ================= EMERGENCY ================= */
+/* Info */
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+    margin-top:18px;
+}
+
+.info-card h3{
+    margin-bottom:12px;
+}
+
+.info-card p,
+.info-card li{
+    color:#91a8bf;
+    line-height:1.7;
+    font-size:14px;
+}
+
+.info-card ul{
+    padding-left:20px;
+}
+
+/* Alert history */
+.alert-item{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:13px 0;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    font-size:13px;
+}
+
+.alert-item:last-child{
+    border-bottom:none;
+}
+
+.alert-danger{
+    color:#ff506c;
+}
+
+.alert-safe{
+    color:#20e890;
+}
+
+/* Emergency */
 .emergency{
-display:none;
-margin-top:16px;
-background:linear-gradient(145deg,#fff,#fff5f6);
-border:4px solid #df3154;
-border-radius:30px;
-padding:20px;
-box-shadow:0 0 50px #df315466;
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:rgba(80,0,10,.94);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
 }
+
 .emergency.active{
-display:block;
-animation:dangerAppear .6s ease;
-}
-@keyframes dangerAppear{
-from{
-opacity:0;
-transform:scale(.96);
-}
-to{
-opacity:1;
-transform:scale(1);
-}
-}
-.dangerhead{
-text-align:center;
-}
-.dangerhead h1{
-margin:3px 0;
-color:#d82d52;
-font-size:clamp(35px,9vw,65px);
-font-weight:1000;
-}
-.dangerhead p{
-font-weight:900;
-color:#73414c;
-}
-.direction{
-width:190px;
-height:190px;
-margin:20px auto;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-border:6px solid #df3154;
-background:#fff;
-box-shadow:0 0 35px #df315455;
-}
-.arrow{
-width:0;
-height:0;
-border-left:22px solid transparent;
-border-right:22px solid transparent;
-border-bottom:90px solid #d82d52;
-filter:drop-shadow(0 6px 5px #0003);
-transition:transform .3s;
-}
-.route{
-text-align:center;
-font-size:13px;
-font-weight:1000;
-color:#b32947;
-}
-.empoints{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-top:15px;
-}
-.epoint{
-padding:13px;
-border-radius:16px;
-background:#fff1f3;
-border:1px solid #efb3bf;
-font-size:10px;
-line-height:1.5;
-}
-.epoint b{
-display:block;
-font-size:12px;
-color:#9d2942;
-margin-bottom:4px;
+    display:flex;
 }
 
-/* ================= ALERT HISTORY ================= */
-.alert{
-padding:11px;
-border-radius:13px;
-background:#fff7ea;
-border-left:4px solid #e89b24;
-margin-top:8px;
-font-size:10px;
-}
-.alert strong{
-color:#d86d1b;
+.emergency-box{
+    max-width:650px;
+    border:2px solid #ff3158;
+    border-radius:25px;
+    padding:40px;
+    background:#18050a;
+    box-shadow:0 0 80px rgba(255,0,50,.4);
+    animation:emergencyPulse 1s infinite;
 }
 
-/* ================= FOOTER ================= */
-.footer{
-text-align:center;
-color:white;
-font-size:10px;
-margin-top:22px;
-text-shadow:0 2px 5px #000;
-letter-spacing:1px;
+@keyframes emergencyPulse{
+    50%{box-shadow:0 0 30px rgba(255,0,50,.15);}
 }
 
-@media(max-width:700px){
-.sirenrow{
-flex-wrap:wrap;
+.emergency h2{
+    color:#ff4265;
+    font-size:45px;
+    margin-bottom:15px;
 }
-.sbutton{
-width:100%;
+
+.close-emergency{
+    margin-top:25px;
+    padding:12px 25px;
+    border:1px solid #ff4265;
+    background:transparent;
+    color:#fff;
+    border-radius:10px;
+    cursor:pointer;
 }
-.historygrid{
-grid-template-columns:1fr;
+
+/* Footer */
+footer{
+    border-top:1px solid rgba(255,255,255,.1);
+    padding:25px 0;
+    color:#637a90;
+    text-align:center;
+    font-size:12px;
 }
-.empoints{
-grid-template-columns:1fr;
+
+/* Responsive */
+@media(max-width:1000px){
+    .sensor-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .hero{
+        grid-template-columns:1fr;
+    }
 }
+
+@media(max-width:650px){
+    .header-inner{
+        align-items:flex-start;
+    }
+
+    .sensor-grid,
+    .graph-grid,
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .logo{
+        width:52px;
+        height:52px;
+    }
+
+    .college-title p{
+        display:none;
+    }
+
+    .status-card{
+        min-height:180px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg">
-<div class="moon"></div>
-<div class="mountains"></div>
-<div class="slide"></div>
-<div class="tree t1"></div>
-<div class="tree t2"></div>
-<div class="tree t3"></div>
-<div class="tree t4"></div>
-<div class="tree t5"></div>
-<div class="tree t6"></div>
-<div class="rain"></div>
-<div class="rain rain2"></div>
-<div class="lightning"></div>
-<div class="drop d1"></div>
-<div class="drop d2"></div>
-<div class="drop d3"></div>
-<div class="drop d4"></div>
-<div class="drop d5"></div>
-<div class="drop d6"></div>
-<div class="drop d7"></div>
+<div class="rain" id="rain"></div>
+
+<header>
+<div class="container header-inner">
+
+    <div class="logo-area">
+        <img
+            class="logo"
+            src="https://upload.wikimedia.org/wikipedia/en/7/7a/Sanjivani_College_of_Engineering_logo.png"
+            alt="Sanjivani College"
+        >
+
+        <div class="college-title">
+            <h1>Sanjivani College</h1>
+            <p>Landslide Safety &amp; Early Warning System</p>
+        </div>
+    </div>
+
+    <button class="siren-btn" id="sirenButton">
+        🚨 TEST SIREN
+    </button>
+
 </div>
-
-<main class="dashboard">
-
-<header class="header">
-<img class="logo" src="Screenshot_20260826_204053_WhatsApp.jpg" alt="Sanjivani College Logo">
-<div class="college">Sanjivani College</div>
-<div class="subtitle">Smart Landslide Monitoring System</div>
 </header>
 
-<section id="sirenBox" class="siren">
-<div class="sirenrow">
-<div class="sicon">📢</div>
-<div class="sinfo">
-<div class="stitle">Emergency Mobile Siren</div>
-<div class="sdesc">The mobile speaker sounds automatically when ANY ONE sensor reaches its danger limit.</div>
-</div>
-<button id="sirenBtn" class="sbutton" onclick="enableSiren()">🔊 ENABLE SIREN</button>
-</div>
-<div id="sirenStatus" class="sstatus">
-Tap ENABLE SIREN once to allow the browser to play emergency audio.
-</div>
-</section>
+<main>
+<div class="container">
 
-<section class="card">
-<div class="statusrow">
-<div>
-<div class="label">Current Safety Status</div>
-<div id="status" class="status">CONNECTING...</div>
-<div id="message" class="message">Reading live sensor data...</div>
+    <section class="hero">
+
+        <div class="card status-card">
+            <div class="status-label">Current Safety Status</div>
+
+            <div id="overallStatus" class="status safe">
+                SAFE
+            </div>
+
+            <div id="statusMessage" class="status-message">
+                All monitored sensors are within safe limits.
+            </div>
+
+            <div class="system-time" id="systemTime">
+                Waiting for sensor data...
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="status-label">System Health</div>
+
+            <div class="sensor-value" id="healthValue">
+                100%
+            </div>
+
+            <div class="sensor-unit">
+                Monitoring connection
+            </div>
+
+            <div class="sensor-state" id="connectionState">
+                CONNECTING
+            </div>
+
+            <div style="margin-top:18px;color:#8197ad;font-size:13px;line-height:1.6">
+                ThingSpeak live monitoring<br>
+                Automatic sensor analysis<br>
+                Emergency warning system
+            </div>
+        </div>
+
+    </section>
+
+    <h2 class="section-title">Live Sensor Readings</h2>
+
+    <section class="sensor-grid">
+
+        <div class="card sensor-card">
+            <div class="sensor-name">Soil Moisture Sensor</div>
+            <div class="sensor-value" id="soilValue">--</div>
+            <div class="sensor-unit">Analog value</div>
+            <div class="sensor-state" id="soilState">WAITING</div>
+        </div>
+
+        <div class="card sensor-card">
+            <div class="sensor-name">Distance Sensor</div>
+            <div class="sensor-value" id="distanceValue">--</div>
+            <div class="sensor-unit">cm</div>
+            <div class="sensor-state" id="distanceState">WAITING</div>
+        </div>
+
+        <div class="card sensor-card">
+            <div class="sensor-name">Rain Sensor</div>
+            <div class="sensor-value" id="rainValue">--</div>
+            <div class="sensor-unit">Sensor status</div>
+            <div class="sensor-state" id="rainState">NOT CONNECTED</div>
+        </div>
+
+        <div class="card sensor-card">
+            <div class="sensor-name">Vibration Sensor</div>
+            <div class="sensor-value" id="vibrationValue">--</div>
+            <div class="sensor-unit">Digital value</div>
+            <div class="sensor-state" id="vibrationState">WAITING</div>
+        </div>
+
+    </section>
+
+    <h2 class="section-title">Live Sensor Graphs</h2>
+
+    <section class="graph-grid">
+
+        <div class="card graph-card">
+            <div class="graph-title">
+                <strong>Soil Moisture</strong>
+                <span id="soilGraphValue">--</span>
+            </div>
+
+            <svg class="graph" id="soilGraph"
+                 viewBox="0 0 500 170"
+                 preserveAspectRatio="none">
+            </svg>
+        </div>
+
+        <div class="card graph-card">
+            <div class="graph-title">
+                <strong>Distance</strong>
+                <span id="distanceGraphValue">--</span>
+            </div>
+
+            <svg class="graph" id="distanceGraph"
+                 viewBox="0 0 500 170"
+                 preserveAspectRatio="none">
+            </svg>
+        </div>
+
+        <div class="card graph-card">
+            <div class="graph-title">
+                <strong>Rain</strong>
+                <span>DISABLED</span>
+            </div>
+
+            <svg class="graph" id="rainGraph"
+                 viewBox="0 0 500 170"
+                 preserveAspectRatio="none">
+            </svg>
+        </div>
+
+        <div class="card graph-card">
+            <div class="graph-title">
+                <strong>Vibration</strong>
+                <span id="vibrationGraphValue">--</span>
+            </div>
+
+            <svg class="graph" id="vibrationGraph"
+                 viewBox="0 0 500 170"
+                 preserveAspectRatio="none">
+            </svg>
+        </div>
+
+    </section>
+
+    <h2 class="section-title">Why Is The System Showing High Risk?</h2>
+
+    <section class="info-grid">
+
+        <div class="card info-card">
+            <h3>Sensor Analysis</h3>
+
+            <p id="soilReason">
+                Soil moisture: waiting for data.
+            </p>
+
+            <p id="distanceReason" style="margin-top:10px">
+                Distance: waiting for data.
+            </p>
+
+            <p id="rainReason" style="margin-top:10px">
+                Rain sensor: not connected — ignored.
+            </p>
+
+            <p id="vibrationReason" style="margin-top:10px">
+                Vibration: waiting for data.
+            </p>
+        </div>
+
+        <div class="card info-card">
+            <h3>Safety Precautions</h3>
+
+            <ul>
+                <li>Move away from unstable slopes during heavy rainfall.</li>
+                <li>Do not approach cracks or sudden ground movement.</li>
+                <li>Follow official evacuation instructions.</li>
+                <li>Keep emergency communication available.</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <h2 class="section-title">Alert History</h2>
+
+    <div class="card" id="alertHistory">
+        <div class="alert-item">
+            <span>No alerts recorded yet.</span>
+            <span class="alert-safe">SYSTEM READY</span>
+        </div>
+    </div>
+
 </div>
-<div id="light" class="light"></div>
-</div>
-</section>
-
-<div class="sensor">
-<div class="icon">🌱</div>
-<div>
-<div class="name">Soil Moisture Sensor</div>
-<div class="desc">Ground moisture monitoring</div>
-</div>
-<div>
-<div id="soil" class="value">--</div>
-<div class="desc">sensor value</div>
-</div>
-<div class="bar"><div id="soilBar" class="fill"></div></div>
-</div>
-
-<div class="sensor">
-<div class="icon">📏</div>
-<div>
-<div class="name">Distance Sensor</div>
-<div class="desc">Slope movement / distance</div>
-</div>
-<div>
-<div id="distance" class="value">--</div>
-<div class="desc">cm</div>
-</div>
-<div class="bar"><div id="distanceBar" class="fill"></div></div>
-</div>
-
-<div class="sensor">
-<div class="icon">🌧️</div>
-<div>
-<div class="name">Rain Sensor</div>
-<div class="desc">Rainfall condition</div>
-</div>
-<div>
-<div id="rainValue" class="value">--</div>
-<div class="desc">sensor value</div>
-</div>
-<div class="bar"><div id="rainBar" class="fill"></div></div>
-</div>
-
-<div class="sensor">
-<div class="icon">📳</div>
-<div>
-<div class="name">Vibration Sensor</div>
-<div class="desc">Ground vibration detection</div>
-</div>
-<div>
-<div id="vibration" class="value">--</div>
-<div class="desc">sensor value</div>
-</div>
-<div class="bar"><div id="vibrationBar" class="fill"></div></div>
-</div>
-
-<div class="section-title">📊 Live Sensor Trends</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Soil Moisture</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="soilGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Distance</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="distanceGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Rain</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="rainGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<div class="graphcard">
-<div class="gtitle"><span>Vibration</span><span class="live">● LIVE</span></div>
-<div class="graph"><svg id="vibrationGraph" viewBox="0 0 600 230"></svg></div>
-</div>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">📚 Sensor History</div>
-
-<div class="historygrid">
-<div class="historybox"><div class="historytitle">🌱 Soil Moisture</div><div id="soilHistory"></div></div>
-<div class="historybox"><div class="historytitle">📏 Distance</div><div id="distanceHistory"></div></div>
-<div class="historybox"><div class="historytitle">🌧️ Rain</div><div id="rainHistory"></div></div>
-<div class="historybox"><div class="historytitle">📳 Vibration</div><div id="vibrationHistory"></div></div>
-</div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🟢 System Health</div>
-
-<div class="healthitem"><span>ThingSpeak connection</span><span id="healthThing" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Soil Moisture Sensor</span><span id="healthSoil" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Distance Sensor</span><span id="healthDistance" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Rain Sensor</span><span id="healthRain" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Vibration Sensor</span><span id="healthVibration" class="ok">CHECKING...</span></div>
-<div class="healthitem"><span>Latest Data Received</span><strong id="latestData">--</strong></div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🔎 Why Is The System Showing High Risk?</div>
-
-<div id="reasonSoil" class="reason"><b>🌱 Soil Moisture</b><br>Waiting for sensor data.</div>
-<div id="reasonRain" class="reason"><b>🌧️ Rain</b><br>Waiting for sensor data.</div>
-<div id="reasonVibration" class="reason"><b>📳 Vibration</b><br>Waiting for sensor data.</div>
-<div id="reasonDistance" class="reason"><b>📏 Distance</b><br>Waiting for sensor data.</div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🚨 Alert History</div>
-<div id="alerts"><div class="alert">No alerts recorded yet.</div></div>
-</section>
-
-<section class="card">
-<div class="section-title" style="color:#176b47;text-shadow:none;margin-top:0">🛡️ Landslide Safety Precautions</div>
-
-<div class="historygrid">
-<div class="historybox"><b>01 • Move to Safety</b><br><span class="desc">Move away from unstable slopes and follow official evacuation instructions.</span></div>
-<div class="historybox"><b>02 • Avoid Steep Slopes</b><br><span class="desc">Stay away from cliffs and visibly unstable ground.</span></div>
-<div class="historybox"><b>03 • Avoid Heavy-Rain Travel</b><br><span class="desc">Avoid unnecessary travel through landslide-prone areas during intense rainfall.</span></div>
-<div class="historybox"><b>04 • Keep Communication Ready</b><br><span class="desc">Keep your phone charged and monitor official emergency warnings.</span></div>
-<div class="historybox"><b>05 • Never Cross Debris</b><br><span class="desc">Never walk or drive across an active landslide or debris flow.</span></div>
-</div>
-</section>
-
-<section id="emergency" class="emergency">
-<div class="dangerhead">
-<div class="label">EMERGENCY MODE</div>
-<h1>⚠️ HIGH DANGER</h1>
-<p id="dangerText">Dangerous conditions detected.</p>
-</div>
-
-<div class="direction"><div id="arrow" class="arrow"></div></div>
-
-<div class="route">FOLLOW THE ARROW TOWARD YOUR PRE-CONFIGURED SAFE AREA</div>
-
-<div class="empoints">
-<div class="epoint"><b>🧭 FOLLOW DIRECTION</b>Follow the displayed evacuation direction and local authority instructions.</div>
-<div class="epoint"><b>📱 STAY CONNECTED</b>Keep your phone with you and monitor official emergency announcements.</div>
-<div class="epoint"><b>🚫 DO NOT RETURN</b>Do not return to the danger area until officials say it is safe.</div>
-<div class="epoint"><b>👨‍👩‍👧 STAY TOGETHER</b>Stay with your family/group and help others reach a safe area when possible.</div>
-<div class="epoint"><b>🌧️ WATCH THE WEATHER</b>Heavy rain can increase landslide danger. Stay away from unstable slopes.</div>
-<div class="epoint"><b>🛑 FOLLOW AUTHORITIES</b>Official evacuation instructions always take priority over this dashboard.</div>
-</div>
-</section>
-
-<div class="footer">
-LIVE THINGSPEAK DATA • SANJIVANI COLLEGE
-<br><br>
-Developed by <strong>Om Baraskar</strong>
-</div>
-
 </main>
+
+<footer>
+    Sanjivani College &nbsp;|&nbsp; Landslide Safety System
+</footer>
+
+<!-- Emergency screen -->
+<div class="emergency" id="emergencyScreen">
+
+    <div class="emergency-box">
+
+        <h2>⚠ HIGH DANGER</h2>
+
+        <p id="emergencyMessage"
+           style="color:#d7aeb7;line-height:1.7">
+            Dangerous sensor conditions detected.
+            Move to a safe location and follow emergency procedures.
+        </p>
+
+        <button class="close-emergency" onclick="closeEmergency()">
+            CLOSE EMERGENCY SCREEN
+        </button>
+
+    </div>
+
+</div>
 
 <script>
 
 /* =========================================================
-   THINGSPEAK
+   THINGSPEAK CONFIGURATION
    ========================================================= */
 
 const CHANNEL_ID = "3456662";
-
-/*
-   FIELD ARRANGEMENT
-
-   Field 1 = Distance
-   Field 2 = Soil Moisture
-   Field 3 = Vibration
-   Field 4 = Rain
-*/
 
 const FIELD_DISTANCE = 1;
 const FIELD_SOIL = 2;
@@ -813,754 +702,286 @@ const FIELD_RAIN = 4;
 
 
 /* =========================================================
-   SOIL MOISTURE CALIBRATION
-   =========================================================
+   SENSOR CONFIGURATION
+   ========================================================= */
 
-   YOUR ACTUAL SENSOR TEST:
+/*
+   SOIL CALIBRATION BASED ON YOUR ACTUAL TEST:
 
-   Dry / removed from water  ≈ 4000
-   Fully wet / dipped in water ≈ 1850
+   Fully wet / water ≈ 1850
+   Dry ≈ 3382–4000
 
    Therefore:
 
-   > 3000       = DRY / SAFE
-   2801-3000    = MODERATE
-   2001-2800    = WET / WARNING
-   <= 2000      = VERY WET / DANGER
-
-   IMPORTANT:
-   Higher value = DRIER
-   Lower value = WETTER
+   <= 2000       VERY WET / DANGER
+   2001–2500     WET / WARNING
+   2501–3000     MODERATE
+   > 3000        DRY / SAFE
 */
 
 const SOIL_DANGER = 2000;
-const SOIL_WARNING = 2800;
+const SOIL_WARNING = 2500;
 const SOIL_NORMAL = 3000;
 
 
-/* =========================================================
-   RAIN SENSOR CALIBRATION
-   =========================================================
+/*
+   RAIN SENSOR IS CURRENTLY NOT CONNECTED.
 
-   Higher value = dry
-   Lower value = more water/rain
+   IMPORTANT:
+   We intentionally DO NOT use the rain value
+   for danger detection.
+
+   This prevents random floating values such as 38
+   from creating HIGH DANGER.
 */
 
-const RAIN_DANGER = 1000;
-const RAIN_WARNING = 1500;
+const RAIN_SENSOR_CONNECTED = false;
 
 
-/* =========================================================
-   VIBRATION
-   =========================================================
+/*
+   Distance threshold.
 
-   SW420 normally gives a digital 0/1.
-
-   We require TWO consecutive danger readings
-   before declaring vibration danger.
-
-   This prevents one accidental HIGH reading
-   from immediately triggering the entire system.
+   Only used if a valid distance value is received.
 */
-
-const VIBRATION_DANGER = 1;
-let vibrationDangerCount = 0;
-const VIBRATION_CONFIRMATIONS = 2;
-
-
-/* =========================================================
-   DISTANCE
-   ========================================================= */
 
 const DISTANCE_DANGER = 20;
 
 
-/* =========================================================
-   DATA ARRAYS
-   ========================================================= */
+/*
+   Vibration sensor.
 
-let soilData = [];
-let distanceData = [];
-let vibrationData = [];
-let rainData = [];
-let dateData = [];
+   The SW420 is a digital sensor.
 
+   We require repeated positive readings before
+   declaring vibration danger.
+*/
 
-/* =========================================================
-   SIREN VARIABLES
-   ========================================================= */
+const VIBRATION_DANGER = 1;
+const VIBRATION_REQUIRED_READINGS = 2;
 
-let sirenEnabled = false;
-let alarmCurrentlyActive = false;
-let audioContext = null;
+let vibrationDangerCount = 0;
 
 
 /* =========================================================
-   ENABLE MOBILE SIREN
+   DATA STORAGE
    ========================================================= */
 
-function enableSiren() {
+let soilHistory = [];
+let distanceHistory = [];
+let rainHistory = [];
+let vibrationHistory = [];
 
-    try {
+let alertHistory = [];
 
-        audioContext = new (
-            window.AudioContext ||
-            window.webkitAudioContext
-        )();
+let emergencyActive = false;
 
-        audioContext.resume();
 
-        sirenEnabled = true;
+/* =========================================================
+   CREATE RAIN BACKGROUND
+   ========================================================= */
 
-        document.getElementById("sirenBtn").textContent =
-            "✓ SIREN ENABLED";
+const rainContainer = document.getElementById("rain");
 
-        document.getElementById("sirenBtn")
-            .classList.add("on");
+for(let i=0;i<80;i++){
 
-        document.getElementById("sirenStatus").textContent =
-            "Siren armed. Any sensor reaching its danger limit can trigger the mobile speaker.";
+    const drop = document.createElement("span");
 
-    } catch (error) {
+    drop.style.left = Math.random()*100 + "%";
+    drop.style.animationDuration = (0.5 + Math.random()*1.2) + "s";
+    drop.style.animationDelay = Math.random()*2 + "s";
 
-        console.error(error);
-
-        document.getElementById("sirenStatus").textContent =
-            "Audio could not be enabled on this browser.";
-
-    }
-
+    rainContainer.appendChild(drop);
 }
 
 
 /* =========================================================
-   MOBILE SIREN
+   HELPER
    ========================================================= */
 
-function playSiren() {
+function isValidNumber(value){
 
-    if (!sirenEnabled || !audioContext) {
-        return;
+    return Number.isFinite(value) &&
+           !Number.isNaN(value);
+}
+
+
+function addHistory(array,value,max=30){
+
+    if(!isValidNumber(value)) return;
+
+    array.push(value);
+
+    if(array.length > max){
+        array.shift();
     }
-
-    if (audioContext.state === "suspended") {
-        audioContext.resume();
-    }
-
-    const now = audioContext.currentTime;
-
-    document.getElementById("sirenBox")
-        .classList.add("alarm");
-
-    for (let i = 0; i < 8; i++) {
-
-        const oscillator =
-            audioContext.createOscillator();
-
-        const gain =
-            audioContext.createGain();
-
-        oscillator.type = "sawtooth";
-
-        oscillator.frequency.setValueAtTime(
-            430,
-            now + i * 0.45
-        );
-
-        oscillator.frequency.linearRampToValueAtTime(
-            780,
-            now + i * 0.45 + 0.20
-        );
-
-        gain.gain.setValueAtTime(
-            0.0001,
-            now + i * 0.45
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.20,
-            now + i * 0.45 + 0.04
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            now + i * 0.45 + 0.37
-        );
-
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
-
-        oscillator.start(now + i * 0.45);
-        oscillator.stop(now + i * 0.45 + 0.40);
-
-    }
-
-    setTimeout(function() {
-
-        document.getElementById("sirenBox")
-            .classList.remove("alarm");
-
-    }, 4000);
-
 }
 
 
 /* =========================================================
-   EMERGENCY VOICE
+   SOIL STATUS
    ========================================================= */
 
-function emergencyVoice() {
+function getSoilStatus(value){
 
-    if (!("speechSynthesis" in window)) {
-        return;
+    if(!isValidNumber(value)){
+        return {
+            text:"NO DATA",
+            type:"",
+            danger:false
+        };
     }
 
-    speechSynthesis.cancel();
+    if(value <= SOIL_DANGER){
 
-    const speech =
-        new SpeechSynthesisUtterance(
-            "Attention. High danger detected. Do not panic. Follow the direction and move to safety. Stay away from unstable slopes and follow official instructions."
-        );
-
-    speech.rate = 0.9;
-    speech.pitch = 1;
-    speech.volume = 1;
-
-    speechSynthesis.speak(speech);
-
-}
-
-
-/* =========================================================
-   LOAD THINGSPEAK DATA
-   ========================================================= */
-
-async function loadData() {
-
-    try {
-
-        const url =
-            `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
-
-        const response =
-            await fetch(url, {
-                cache: "no-store"
-            });
-
-        if (!response.ok) {
-            throw new Error(
-                "ThingSpeak connection failed: " +
-                response.status
-            );
-        }
-
-        const data =
-            await response.json();
-
-        if (!data.feeds || data.feeds.length === 0) {
-            throw new Error(
-                "No ThingSpeak data available"
-            );
-        }
-
-
-        soilData = [];
-        distanceData = [];
-        vibrationData = [];
-        rainData = [];
-        dateData = [];
-
-
-        data.feeds.forEach(function(feed) {
-
-            const distance =
-                parseFloat(
-                    feed[`field${FIELD_DISTANCE}`]
-                );
-
-            const soil =
-                parseFloat(
-                    feed[`field${FIELD_SOIL}`]
-                );
-
-            const vibration =
-                parseFloat(
-                    feed[`field${FIELD_VIBRATION}`]
-                );
-
-            const rain =
-                parseFloat(
-                    feed[`field${FIELD_RAIN}`]
-                );
-
-
-            distanceData.push(
-                Number.isFinite(distance)
-                    ? distance
-                    : 0
-            );
-
-            soilData.push(
-                Number.isFinite(soil)
-                    ? soil
-                    : 0
-            );
-
-            vibrationData.push(
-                Number.isFinite(vibration)
-                    ? vibration
-                    : 0
-            );
-
-            rainData.push(
-                Number.isFinite(rain)
-                    ? rain
-                    : 0
-            );
-
-
-            dateData.push(
-                new Date(feed.created_at)
-                    .toLocaleString(
-                        "en-IN",
-                        {
-                            day: "2-digit",
-                            month: "short",
-                            hour: "2-digit",
-                            minute: "2-digit"
-                        }
-                    )
-            );
-
-        });
-
-
-        const latest =
-            data.feeds[
-                data.feeds.length - 1
-            ];
-
-
-        const latestDistance =
-            parseFloat(
-                latest[`field${FIELD_DISTANCE}`]
-            );
-
-        const latestSoil =
-            parseFloat(
-                latest[`field${FIELD_SOIL}`]
-            );
-
-        const latestVibration =
-            parseFloat(
-                latest[`field${FIELD_VIBRATION}`]
-            );
-
-        const latestRain =
-            parseFloat(
-                latest[`field${FIELD_RAIN}`]
-            );
-
-
-        updateSensors(
-            Number.isFinite(latestSoil)
-                ? latestSoil
-                : 0,
-
-            Number.isFinite(latestDistance)
-                ? latestDistance
-                : 0,
-
-            Number.isFinite(latestRain)
-                ? latestRain
-                : 0,
-
-            Number.isFinite(latestVibration)
-                ? latestVibration
-                : 0
-        );
-
-
-        drawGraph(
-            "soilGraph",
-            soilData,
-            dateData,
-            "Soil"
-        );
-
-        drawGraph(
-            "distanceGraph",
-            distanceData,
-            dateData,
-            "Distance",
-            " cm"
-        );
-
-        drawGraph(
-            "rainGraph",
-            rainData,
-            dateData,
-            "Rain"
-        );
-
-        drawGraph(
-            "vibrationGraph",
-            vibrationData,
-            dateData,
-            "Vibration"
-        );
-
-
-        updateHistory(
-            soilData,
-            distanceData,
-            rainData,
-            vibrationData,
-            dateData
-        );
-
-
-        document.getElementById("healthThing")
-            .textContent = "✓ ONLINE";
-
-        document.getElementById("healthThing")
-            .className = "ok";
-
-        document.getElementById("latestData")
-            .textContent =
-            dateData[dateData.length - 1] || "--";
-
-    } catch (error) {
-
-        console.error(
-            "ThingSpeak error:",
-            error
-        );
-
-        document.getElementById("healthThing")
-            .textContent = "✕ OFFLINE";
-
-        document.getElementById("healthThing")
-            .className = "bad";
-
-        document.getElementById("status")
-            .textContent = "OFFLINE";
-
-        document.getElementById("message")
-            .textContent =
-            "Unable to read live ThingSpeak data.";
+        return {
+            text:"VERY WET / DANGER",
+            type:"danger",
+            danger:true
+        };
 
     }
 
+    if(value <= SOIL_WARNING){
+
+        return {
+            text:"WET / WARNING",
+            type:"warning",
+            danger:false
+        };
+
+    }
+
+    if(value <= SOIL_NORMAL){
+
+        return {
+            text:"MODERATE",
+            type:"warning",
+            danger:false
+        };
+
+    }
+
+    return {
+        text:"DRY / SAFE",
+        type:"",
+        danger:false
+    };
 }
 
 
 /* =========================================================
-   UPDATE SENSOR DISPLAY
+   DISTANCE STATUS
    ========================================================= */
 
-function updateSensors(
-    soil,
-    distance,
-    rain,
-    vibration
-) {
+function getDistanceStatus(value){
 
-    document.getElementById("soil")
-        .textContent =
-        soil.toFixed(0);
+    if(!isValidNumber(value) || value <= 0){
 
-    document.getElementById("distance")
-        .textContent =
-        distance.toFixed(1);
+        return {
+            text:"NO DATA",
+            type:"",
+            danger:false
+        };
+    }
 
-    document.getElementById("rainValue")
-        .textContent =
-        rain.toFixed(0);
+    if(value <= DISTANCE_DANGER){
 
-    document.getElementById("vibration")
-        .textContent =
-        vibration.toFixed(0);
+        return {
+            text:"DANGER",
+            type:"danger",
+            danger:true
+        };
+    }
 
-
-    /*
-       SOIL BAR
-
-       Lower value = wetter soil.
-       Higher value = drier soil.
-    */
-
-    const soilRiskPercent =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                ((4095 - soil) / 4095) * 100
-            )
-        );
-
-    document.getElementById("soilBar")
-        .style.width =
-        Math.max(5, soilRiskPercent) + "%";
-
-
-    /*
-       DISTANCE BAR
-
-       Smaller distance = object/rock closer.
-    */
-
-    const distanceRiskPercent =
-        distance > 0
-            ? Math.max(
-                5,
-                Math.min(
-                    100,
-                    ((100 - Math.min(distance, 100)) / 100) * 100
-                )
-            )
-            : 5;
-
-    document.getElementById("distanceBar")
-        .style.width =
-        distanceRiskPercent + "%";
-
-
-    /*
-       RAIN BAR
-
-       Lower value = more water.
-    */
-
-    const rainRiskPercent =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                ((4095 - rain) / 4095) * 100
-            )
-        );
-
-    document.getElementById("rainBar")
-        .style.width =
-        Math.max(5, rainRiskPercent) + "%";
-
-
-    /*
-       VIBRATION BAR
-    */
-
-    document.getElementById("vibrationBar")
-        .style.width =
-        vibration >= VIBRATION_DANGER
-            ? "100%"
-            : "5%";
-
-
-    updateHealth();
-
-    checkIndividualDanger(
-        soil,
-        distance,
-        rain,
-        vibration
-    );
-
+    return {
+        text:"SAFE",
+        type:"",
+        danger:false
+    };
 }
 
 
 /* =========================================================
-   SYSTEM HEALTH
+   VIBRATION STATUS
    ========================================================= */
 
-function updateHealth() {
+function updateVibrationStatus(value){
 
-    const healthIds = [
-        "healthSoil",
-        "healthDistance",
-        "healthRain",
-        "healthVibration"
-    ];
-
-    healthIds.forEach(function(id) {
-
-        document.getElementById(id)
-            .textContent =
-            "✓ RECEIVING";
-
-        document.getElementById(id)
-            .className =
-            "ok";
-
-    });
-
-}
-
-
-/* =========================================================
-   INDIVIDUAL SENSOR DANGER LOGIC
-   ========================================================= */
-
-function checkIndividualDanger(
-    soil,
-    distance,
-    rain,
-    vibration
-) {
-
-    /*
-       SOIL MOISTURE
-
-       IMPORTANT CALIBRATION:
-
-       4000 = DRY / SAFE
-       1850 = VERY WET / DANGER
-
-       Therefore lower values are dangerous.
-    */
-
-    const soilDanger =
-        soil > 0 &&
-        soil <= SOIL_DANGER;
-
-
-    /*
-       RAIN
-
-       Lower value = more water.
-    */
-
-    const rainDanger =
-        rain > 0 &&
-        rain <= RAIN_DANGER;
-
-
-    /*
-       VIBRATION
-
-       Require two consecutive readings.
-    */
-
-    if (vibration >= VIBRATION_DANGER) {
-
-        vibrationDangerCount++;
-
-    } else {
+    if(!isValidNumber(value)){
 
         vibrationDangerCount = 0;
 
+        return {
+            text:"NO DATA",
+            type:"",
+            danger:false
+        };
     }
 
+    if(value >= VIBRATION_DANGER){
 
-    const vibrationDanger =
-        vibrationDangerCount >=
-        VIBRATION_CONFIRMATIONS;
+        vibrationDangerCount++;
 
+    }else{
+
+        vibrationDangerCount = 0;
+    }
+
+    if(vibrationDangerCount >= VIBRATION_REQUIRED_READINGS){
+
+        return {
+            text:"VIBRATION DETECTED",
+            type:"danger",
+            danger:true
+        };
+
+    }
+
+    return {
+        text:value === 1 ? "DETECTED / VERIFYING" : "STABLE",
+        type:value === 1 ? "warning" : "",
+        danger:false
+    };
+}
+
+
+/* =========================================================
+   RAIN STATUS
+   ========================================================= */
+
+function getRainStatus(){
 
     /*
-       DISTANCE
+       Rain sensor is physically disconnected.
 
-       Object/rock comes within danger range.
+       Never evaluate its random analog value.
     */
 
-    const distanceDanger =
-        distance > 0 &&
-        distance <= DISTANCE_DANGER;
+    return {
+        text:"NOT CONNECTED",
+        type:"",
+        danger:false
+    };
+}
 
 
-    const danger =
-        soilDanger ||
-        rainDanger ||
-        vibrationDanger ||
-        distanceDanger;
+/* =========================================================
+   UPDATE SENSOR CARD
+   ========================================================= */
 
+function updateSensorCard(elementId,state){
 
-    const reasons = [];
+    const element = document.getElementById(elementId);
 
+    if(!element) return;
 
-    if (soilDanger) {
+    element.textContent = state.text;
 
-        reasons.push(
-            "DANGEROUS SOIL MOISTURE: " +
-            soil +
-            " — very wet soil detected"
-        );
+    element.className = "sensor-state";
 
+    if(state.type){
+        element.classList.add(state.type);
     }
-
-
-    if (rainDanger) {
-
-        reasons.push(
-            "HEAVY RAIN DETECTED: " +
-            rain +
-            " — water/rain is at the danger level"
-        );
-
-    }
-
-
-    if (vibrationDanger) {
-
-        reasons.push(
-            "GROUND VIBRATION DETECTED: " +
-            vibration +
-            " — confirmed by multiple readings"
-        );
-
-    }
-
-
-    if (distanceDanger) {
-
-        reasons.push(
-            "POSSIBLE ROCK/SLOPE MOVEMENT: distance is " +
-            distance.toFixed(1) +
-            " cm"
-        );
-
-    }
-
-
-    updateReasonBoxes(
-        soil,
-        distance,
-        rain,
-        vibration,
-        soilDanger,
-        distanceDanger,
-        rainDanger,
-        vibrationDanger
-    );
-
-
-    if (danger) {
-
-        setStatus(
-            "HIGH DANGER",
-            reasons.join(" • "),
-            "danger"
-        );
-
-        activateEmergency(
-            reasons.join(" • ")
-        );
-
-    } else {
-
-        setStatus(
-            "SAFE",
-            "All sensor readings are currently below their danger limits.",
-            "safe"
-        );
-
-        alarmCurrentlyActive = false;
-
-        document.getElementById("emergency")
-            .classList.remove("active");
-
-    }
-
 }
 
 
@@ -1571,139 +992,328 @@ function checkIndividualDanger(
 function updateReasonBoxes(
     soil,
     distance,
-    rain,
-    vibration,
-    soilDanger,
-    distanceDanger,
-    rainDanger,
-    vibrationDanger
-) {
+    vibration
+){
 
-    document.getElementById("reasonSoil")
-        .innerHTML =
-        `<b>🌱 Soil Moisture</b><br>` +
-        (
-            soilDanger
-                ? `DANGER: Value ${soil}. Soil is very wet. Your calibrated danger limit is ${SOIL_DANGER} or below.`
-                : soil > SOIL_NORMAL
-                    ? `SAFE: Value ${soil}. Soil is dry.`
-                    : soil > SOIL_WARNING
-                        ? `SAFE: Value ${soil}. Soil moisture is moderate.`
-                        : `WARNING: Value ${soil}. Soil is wet but has not crossed the danger limit of ${SOIL_DANGER}.`
-        );
+    const soilState = getSoilStatus(soil);
+    const distanceState = getDistanceStatus(distance);
+    const vibrationState = updateVibrationStatus(vibration);
+
+    const soilReason =
+        document.getElementById("soilReason");
+
+    const distanceReason =
+        document.getElementById("distanceReason");
+
+    const rainReason =
+        document.getElementById("rainReason");
+
+    const vibrationReason =
+        document.getElementById("vibrationReason");
 
 
-    document.getElementById("reasonRain")
-        .innerHTML =
-        `<b>🌧️ Rain</b><br>` +
-        (
-            rainDanger
-                ? `DANGER: Heavy water/rain detected. Value ${rain} is at or below ${RAIN_DANGER}.`
-                : `SAFE: Value ${rain}. Lower values indicate more water; the danger limit is ${RAIN_DANGER}.`
-        );
+    if(isValidNumber(soil)){
+
+        if(soil <= SOIL_DANGER){
+
+            soilReason.textContent =
+                "⚠ Soil moisture is VERY WET. The reading is " +
+                soil +
+                ", which is below the danger threshold of " +
+                SOIL_DANGER + ".";
+
+        }else if(soil <= SOIL_WARNING){
+
+            soilReason.textContent =
+                "⚠ Soil is wet/warning. Current reading: " +
+                soil + ".";
+
+        }else{
+
+            soilReason.textContent =
+                "✓ Soil moisture is DRY/SAFE. Current reading: " +
+                soil + ".";
+        }
+
+    }else{
+
+        soilReason.textContent =
+            "Soil moisture: no valid data.";
+    }
 
 
-    document.getElementById("reasonVibration")
-        .innerHTML =
-        `<b>📳 Vibration</b><br>` +
-        (
-            vibrationDanger
-                ? `DANGER: Ground vibration has been detected in multiple consecutive readings.`
-                : vibration >= VIBRATION_DANGER
-                    ? `CHECKING: Vibration value ${vibration} detected once. Waiting for confirmation.`
-                    : `SAFE: No dangerous vibration detected.`
-        );
+    if(isValidNumber(distance)){
+
+        if(distance <= DISTANCE_DANGER){
+
+            distanceReason.textContent =
+                "⚠ Distance sensor is reporting " +
+                distance +
+                " cm, which is at or below the danger threshold.";
+
+        }else{
+
+            distanceReason.textContent =
+                "✓ Distance sensor is within the configured safe range: " +
+                distance + " cm.";
+        }
+
+    }else{
+
+        distanceReason.textContent =
+            "Distance sensor: no valid data.";
+    }
 
 
-    document.getElementById("reasonDistance")
-        .innerHTML =
-        `<b>📏 Distance</b><br>` +
-        (
-            distanceDanger
-                ? `DANGER: Possible rock/slope movement. Distance ${distance.toFixed(1)} cm is within the ${DISTANCE_DANGER} cm danger range.`
-                : `SAFE: Distance is ${distance.toFixed(1)} cm, outside the ${DISTANCE_DANGER} cm danger range.`
-        );
+    rainReason.textContent =
+        "✓ Rain sensor is NOT CONNECTED. Its reading is completely ignored.";
 
+
+    if(isValidNumber(vibration)){
+
+        if(vibrationDangerCount >= VIBRATION_REQUIRED_READINGS){
+
+            vibrationReason.textContent =
+                "⚠ Repeated vibration detections have been received.";
+
+        }else if(vibration >= VIBRATION_DANGER){
+
+            vibrationReason.textContent =
+                "⚠ Vibration signal detected once. Waiting for confirmation.";
+
+        }else{
+
+            vibrationReason.textContent =
+                "✓ Vibration sensor is stable.";
+        }
+
+    }else{
+
+        vibrationReason.textContent =
+            "Vibration sensor: no valid data.";
+    }
 }
 
 
 /* =========================================================
-   STATUS
+   DANGER CHECK
    ========================================================= */
 
-function setStatus(
-    text,
-    message,
-    type
-) {
+function checkIndividualDanger(
+    soil,
+    distance,
+    vibration
+){
+
+    /*
+       IMPORTANT:
+
+       Rain is NOT included here because the sensor
+       is disconnected.
+    */
+
+    const soilDanger =
+        isValidNumber(soil) &&
+        soil > 0 &&
+        soil <= SOIL_DANGER;
+
+
+    const distanceDanger =
+        isValidNumber(distance) &&
+        distance > 0 &&
+        distance <= DISTANCE_DANGER;
+
+
+    const vibrationDanger =
+        isValidNumber(vibration) &&
+        vibrationDangerCount >= VIBRATION_REQUIRED_READINGS;
+
+
+    return {
+        soilDanger,
+        distanceDanger,
+        vibrationDanger,
+        anyDanger:
+            soilDanger ||
+            distanceDanger ||
+            vibrationDanger
+    };
+}
+
+
+/* =========================================================
+   OVERALL STATUS
+   ========================================================= */
+
+function updateOverallStatus(
+    soil,
+    distance,
+    vibration
+){
+
+    const danger =
+        checkIndividualDanger(
+            soil,
+            distance,
+            vibration
+        );
+
 
     const status =
-        document.getElementById("status");
+        document.getElementById("overallStatus");
 
-    const msg =
-        document.getElementById("message");
-
-    const light =
-        document.getElementById("light");
+    const message =
+        document.getElementById("statusMessage");
 
 
-    status.textContent = text;
-    msg.textContent = message;
+    status.className = "status";
 
 
-    if (type === "danger") {
+    if(danger.anyDanger){
 
-        status.style.color = "#d82d52";
+        status.classList.add("danger");
+        status.textContent = "HIGH DANGER";
 
-        light.style.background = "#ed3f61";
+        const reasons = [];
 
-        light.style.boxShadow =
-            "0 0 35px #ed3f6188";
+        if(danger.soilDanger)
+            reasons.push("very wet soil");
 
-    } else {
+        if(danger.distanceDanger)
+            reasons.push("dangerous distance");
 
-        status.style.color = "#15945a";
+        if(danger.vibrationDanger)
+            reasons.push("repeated vibration");
 
-        light.style.background = "#39d98a";
 
-        light.style.boxShadow =
-            "0 0 30px #39d98a88";
+        message.textContent =
+            "Danger detected: " +
+            reasons.join(", ") +
+            ".";
 
+
+        activateEmergency(
+            "Danger detected: " +
+            reasons.join(", ") +
+            "."
+        );
+
+
+    }else{
+
+        status.classList.add("safe");
+        status.textContent = "SAFE";
+
+        message.textContent =
+            "All active monitored sensors are within safe limits.";
     }
-
 }
 
 
 /* =========================================================
-   EMERGENCY ACTIVATION
+   UPDATE GRAPH
    ========================================================= */
 
-function activateEmergency(reason) {
+function updateGraph(
+    svgId,
+    data
+){
 
-    const emergency =
-        document.getElementById("emergency");
+    const svg =
+        document.getElementById(svgId);
 
-    emergency.classList.add("active");
+    if(!svg) return;
 
-    document.getElementById("dangerText")
-        .textContent =
-        "HIGH DANGER: " +
-        reason +
-        ". Do not panic. Follow the direction and move to safety.";
+    svg.innerHTML = "";
 
 
-    if (!alarmCurrentlyActive) {
+    /* Grid lines */
 
-        alarmCurrentlyActive = true;
+    for(let y=20;y<=150;y+=32){
 
-        playSiren();
+        const line =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
 
-        emergencyVoice();
+        line.setAttribute("x1","0");
+        line.setAttribute("x2","500");
+        line.setAttribute("y1",y);
+        line.setAttribute("y2",y);
+        line.setAttribute("class","gridline");
 
-        addAlert(reason);
-
+        svg.appendChild(line);
     }
 
+
+    if(data.length < 2) return;
+
+
+    let min = Math.min(...data);
+    let max = Math.max(...data);
+
+    if(min === max){
+        min -= 1;
+        max += 1;
+    }
+
+
+    const points = data.map(
+        (value,index)=>{
+
+            const x =
+                data.length === 1
+                ? 250
+                : index/(data.length-1)*500;
+
+            const y =
+                150 -
+                ((value-min)/(max-min))*130;
+
+            return `${x},${y}`;
+        }
+    ).join(" ");
+
+
+    const polyline =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "polyline"
+        );
+
+    polyline.setAttribute(
+        "points",
+        points
+    );
+
+    svg.appendChild(polyline);
+
+
+    const lastIndex =
+        data.length - 1;
+
+    const lastX =
+        data.length === 1
+        ? 250
+        : lastIndex/(data.length-1)*500;
+
+    const lastY =
+        150 -
+        ((data[lastIndex]-min)/(max-min))*130;
+
+
+    const circle =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle"
+        );
+
+    circle.setAttribute("cx",lastX);
+    circle.setAttribute("cy",lastY);
+    circle.setAttribute("r","5");
+
+    svg.appendChild(circle);
 }
 
 
@@ -1711,606 +1321,591 @@ function activateEmergency(reason) {
    ALERT HISTORY
    ========================================================= */
 
-let alertList = [];
+function addAlert(message,type="danger"){
 
+    const time =
+        new Date().toLocaleTimeString();
 
-function addAlert(reason) {
-
-    const now =
-        new Date().toLocaleString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
-
-
-    alertList.unshift({
-        time: now,
-        reason: reason
+    alertHistory.unshift({
+        message,
+        time,
+        type
     });
 
+    if(alertHistory.length > 10){
+        alertHistory.pop();
+    }
 
-    alertList =
-        alertList.slice(0, 8);
-
-
-    renderAlerts();
-
+    renderAlertHistory();
 }
 
 
-function renderAlerts() {
+function renderAlertHistory(){
 
-    const box =
-        document.getElementById("alerts");
+    const container =
+        document.getElementById("alertHistory");
 
+    if(!container) return;
 
-    if (!alertList.length) {
+    if(alertHistory.length === 0){
 
-        box.innerHTML =
-            '<div class="alert">No alerts recorded yet.</div>';
+        container.innerHTML =
+            `<div class="alert-item">
+                <span>No alerts recorded yet.</span>
+                <span class="alert-safe">SYSTEM READY</span>
+             </div>`;
 
         return;
-
     }
 
 
-    box.innerHTML =
-        alertList.map(function(alert) {
+    container.innerHTML =
+        alertHistory.map(
+            alert => `
 
-            return `
-                <div class="alert">
-                    <strong>⚠ HIGH DANGER</strong>
-                    <br>
-                    ${alert.reason}
-                    <br>
-                    ${alert.time}
-                </div>
-            `;
+            <div class="alert-item">
 
-        }).join("");
+                <span>${escapeHTML(alert.message)}</span>
 
+                <span class="${
+                    alert.type === "danger"
+                    ? "alert-danger"
+                    : "alert-safe"
+                }">
+                    ${escapeHTML(alert.time)}
+                </span>
+
+            </div>
+        `
+        ).join("");
+}
+
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
 }
 
 
 /* =========================================================
-   SENSOR HISTORY
+   EMERGENCY
    ========================================================= */
 
-function updateHistory(
-    soil,
-    distance,
-    rain,
-    vibration,
-    dates
-) {
+function activateEmergency(message){
 
-    renderHistory(
-        "soilHistory",
-        soil,
-        dates
-    );
+    if(emergencyActive) return;
 
-    renderHistory(
-        "distanceHistory",
-        distance,
-        dates
-    );
+    emergencyActive = true;
 
-    renderHistory(
-        "rainHistory",
-        rain,
-        dates
-    );
+    document
+        .getElementById("emergencyScreen")
+        .classList.add("active");
 
-    renderHistory(
-        "vibrationHistory",
-        vibration,
-        dates
-    );
+    document
+        .getElementById("emergencyMessage")
+        .textContent = message;
 
+    addAlert(message,"danger");
+
+    speakAlert(message);
 }
 
 
-function renderHistory(
-    id,
-    values,
-    dates
-) {
+function closeEmergency(){
 
-    const box =
-        document.getElementById(id);
+    emergencyActive = false;
 
-    const start =
-        Math.max(
-            0,
-            values.length - 6
-        );
-
-    box.innerHTML = "";
-
-
-    for (
-        let i = start;
-        i < values.length;
-        i++
-    ) {
-
-        const row =
-            document.createElement("div");
-
-        row.className =
-            "historyitem";
-
-        row.innerHTML =
-            `
-            <span>${dates[i] || "--"}</span>
-            <span class="histvalue">
-                ${Number(values[i]).toFixed(1)}
-            </span>
-            `;
-
-        box.appendChild(row);
-
-    }
-
+    document
+        .getElementById("emergencyScreen")
+        .classList.remove("active");
 }
 
 
 /* =========================================================
-   GRAPH
+   VOICE ALERT
    ========================================================= */
 
-function drawGraph(
-    id,
-    values,
-    dates,
-    label,
-    unit = ""
-) {
+function speakAlert(message){
 
-    const svg =
-        document.getElementById(id);
+    if(!("speechSynthesis" in window)) return;
 
-    if (!svg || !values.length) {
-        return;
-    }
+    try{
 
-    svg.innerHTML = "";
+        window.speechSynthesis.cancel();
 
-    const W = 600;
-    const H = 230;
-    const L = 42;
-    const R = 12;
-    const T = 12;
-    const B = 30;
-
-    const gw = W - L - R;
-    const gh = H - T - B;
-
-    let min =
-        Math.min(...values);
-
-    let max =
-        Math.max(...values);
-
-    if (min === max) {
-        min -= 1;
-        max += 1;
-    }
-
-    const pad =
-        Math.max(
-            (max - min) * 0.12,
-            1
-        );
-
-    min -= pad;
-    max += pad;
-
-
-    for (
-        let i = 0;
-        i <= 4;
-        i++
-    ) {
-
-        const y =
-            T + gh * i / 4;
-
-        const grid =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "line"
+        const speech =
+            new SpeechSynthesisUtterance(
+                "Warning. " + message
             );
 
-        grid.setAttribute("x1", L);
-        grid.setAttribute("x2", W - R);
-        grid.setAttribute("y1", y);
-        grid.setAttribute("y2", y);
-        grid.setAttribute("class", "grid");
+        speech.rate = .9;
+        speech.pitch = 1;
 
-        svg.appendChild(grid);
+        window.speechSynthesis.speak(speech);
 
+    }catch(error){
+
+        console.log("Speech unavailable");
     }
+}
 
 
-    const points =
-        values.map(function(value, index) {
+/* =========================================================
+   SIREN
+   ========================================================= */
 
-            return {
-                x:
-                    L +
-                    index /
-                    Math.max(
-                        values.length - 1,
-                        1
-                    ) *
-                    gw,
+function playSiren(){
 
-                y:
-                    T +
-                    gh -
-                    (value - min) /
-                    (max - min) *
-                    gh,
+    try{
 
-                v: value,
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
 
-                date:
-                    dates[index] || "--"
-            };
+        if(!AudioContext) return;
 
+        const audioContext =
+            new AudioContext();
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        oscillator.type = "sawtooth";
+
+        oscillator.frequency.setValueAtTime(
+            600,
+            audioContext.currentTime
+        );
+
+        oscillator.frequency.linearRampToValueAtTime(
+            1100,
+            audioContext.currentTime + .5
+        );
+
+        oscillator.frequency.linearRampToValueAtTime(
+            600,
+            audioContext.currentTime + 1
+        );
+
+        gain.gain.setValueAtTime(
+            .12,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audioContext.currentTime + 1
+        );
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start();
+        oscillator.stop(
+            audioContext.currentTime + 1
+        );
+
+    }catch(error){
+
+        console.log("Siren unavailable");
+    }
+}
+
+
+document
+    .getElementById("sirenButton")
+    .addEventListener(
+        "click",
+        playSiren
+    );
+
+
+/* =========================================================
+   LOAD THINGSPEAK DATA
+   ========================================================= */
+
+async function loadData(){
+
+    try{
+
+        const url =
+            `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
+
+
+        const response =
+            await fetch(url,{
+                cache:"no-store"
+            });
+
+
+        if(!response.ok){
+            throw new Error(
+                "ThingSpeak connection failed"
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !data ||
+            !Array.isArray(data.feeds) ||
+            data.feeds.length === 0
+        ){
+
+            throw new Error(
+                "No sensor data received"
+            );
+        }
+
+
+        document
+            .getElementById("connectionState")
+            .textContent = "CONNECTED";
+
+
+        document
+            .getElementById("connectionState")
+            .className = "sensor-state";
+
+
+        document
+            .getElementById("healthValue")
+            .textContent = "100%";
+
+
+        const feeds =
+            data.feeds;
+
+
+        /* =========================================
+           HISTORY
+           ========================================= */
+
+        soilHistory = [];
+        distanceHistory = [];
+        rainHistory = [];
+        vibrationHistory = [];
+
+
+        feeds.forEach(feed=>{
+
+            const soil =
+                parseFloat(feed.field2);
+
+            const distance =
+                parseFloat(feed.field1);
+
+            const vibration =
+                parseFloat(feed.field3);
+
+            const rain =
+                parseFloat(feed.field4);
+
+
+            addHistory(
+                soilHistory,
+                soil
+            );
+
+            addHistory(
+                distanceHistory,
+                distance
+            );
+
+            addHistory(
+                vibrationHistory,
+                vibration
+            );
+
+            /*
+               Keep rain history only for display
+               if a value happens to exist.
+
+               It will NEVER be used for danger.
+            */
+
+            if(RAIN_SENSOR_CONNECTED){
+
+                addHistory(
+                    rainHistory,
+                    rain
+                );
+            }
         });
 
 
-    const area =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "polygon"
-        );
+        /* =========================================
+           LATEST VALUES
+           ========================================= */
 
-    area.setAttribute(
-        "points",
-        [
-            `${points[0].x},${H-B}`,
-            ...points.map(
-                p => `${p.x},${p.y}`
-            ),
-            `${points[points.length-1].x},${H-B}`
-        ].join(" ")
-    );
-
-    area.setAttribute(
-        "class",
-        "area"
-    );
-
-    svg.appendChild(area);
+        const latest =
+            feeds[feeds.length - 1];
 
 
-    let path = "";
+        const soil =
+            parseFloat(latest.field2);
 
-    points.forEach(function(p, index) {
+        const distance =
+            parseFloat(latest.field1);
 
-        if (index === 0) {
+        const vibration =
+            parseFloat(latest.field3);
 
-            path =
-                `M ${p.x} ${p.y}`;
+        const rain =
+            parseFloat(latest.field4);
 
-        } else {
 
-            const previous =
-                points[index - 1];
+        /* =========================================
+           DISPLAY SOIL
+           ========================================= */
 
-            const middle =
-                (previous.x + p.x) / 2;
+        const soilElement =
+            document.getElementById("soilValue");
 
-            path +=
-                ` C ${middle} ${previous.y},
-                ${middle} ${p.y},
-                ${p.x} ${p.y}`;
 
+        if(isValidNumber(soil)){
+
+            soilElement.textContent =
+                Math.round(soil);
+
+        }else{
+
+            soilElement.textContent = "--";
         }
 
-    });
+
+        const soilStatus =
+            getSoilStatus(soil);
 
 
-    const line =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
+        updateSensorCard(
+            "soilState",
+            soilStatus
         );
 
-    line.setAttribute(
-        "d",
-        path
-    );
 
-    line.setAttribute(
-        "class",
-        "line"
-    );
-
-    svg.appendChild(line);
+        document
+            .getElementById("soilGraphValue")
+            .textContent =
+            isValidNumber(soil)
+            ? Math.round(soil)
+            : "--";
 
 
-    const holder =
-        svg.parentElement;
+        /* =========================================
+           DISPLAY DISTANCE
+           ========================================= */
 
-    const tip =
-        document.createElement("div");
+        document
+            .getElementById("distanceValue")
+            .textContent =
+            isValidNumber(distance)
+            ? distance.toFixed(1)
+            : "--";
 
-    tip.className =
-        "tip";
 
-    holder.appendChild(tip);
+        const distanceStatus =
+            getDistanceStatus(distance);
 
 
-    points.forEach(function(p, index) {
+        updateSensorCard(
+            "distanceState",
+            distanceStatus
+        );
 
-        const dot =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "circle"
+
+        document
+            .getElementById("distanceGraphValue")
+            .textContent =
+            isValidNumber(distance)
+            ? distance.toFixed(1) + " cm"
+            : "--";
+
+
+        /* =========================================
+           DISPLAY RAIN
+           ========================================= */
+
+        /*
+           IMPORTANT:
+
+           Even if ThingSpeak says rain = 38,
+           we DO NOT display it as a real sensor
+           measurement because the sensor is not connected.
+        */
+
+        document
+            .getElementById("rainValue")
+            .textContent =
+            "N/C";
+
+
+        updateSensorCard(
+            "rainState",
+            getRainStatus()
+        );
+
+
+        /* =========================================
+           DISPLAY VIBRATION
+           ========================================= */
+
+        document
+            .getElementById("vibrationValue")
+            .textContent =
+            isValidNumber(vibration)
+            ? vibration
+            : "--";
+
+
+        const vibrationStatus =
+            updateVibrationStatus(
+                vibration
             );
 
-        dot.setAttribute("cx", p.x);
-        dot.setAttribute("cy", p.y);
 
-        dot.setAttribute(
-            "r",
-            index === points.length - 1
-                ? 6
-                : 4.5
-        );
-
-        dot.setAttribute(
-            "class",
-            "dot"
+        updateSensorCard(
+            "vibrationState",
+            vibrationStatus
         );
 
 
-        dot.addEventListener(
-            "click",
-            function() {
+        document
+            .getElementById("vibrationGraphValue")
+            .textContent =
+            isValidNumber(vibration)
+            ? vibration
+            : "--";
 
-                tip.innerHTML =
-                    `
-                    <div>${p.date}</div>
-                    <b>${Number(p.v).toFixed(2)}${unit}</b>
-                    <div>${rating(p.v, label)}</div>
-                    `;
 
-                const rect =
-                    svg.getBoundingClientRect();
+        /* =========================================
+           UPDATE GRAPHS
+           ========================================= */
 
-                tip.style.left =
-                    (
-                        p.x /
-                        W *
-                        rect.width
-                    ) + "px";
-
-                tip.style.top =
-                    (
-                        p.y /
-                        H *
-                        rect.height
-                    ) + "px";
-
-                tip.classList.add(
-                    "show"
-                );
-
-            }
+        updateGraph(
+            "soilGraph",
+            soilHistory
         );
 
-        svg.appendChild(dot);
 
-    });
-
-
-    const indexes =
-        values.length <= 3
-            ? [...Array(values.length).keys()]
-            : [
-                0,
-                Math.floor(
-                    (values.length - 1) / 2
-                ),
-                values.length - 1
-            ];
-
-
-    indexes.forEach(function(index) {
-
-        const text =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "text"
-            );
-
-        text.setAttribute(
-            "x",
-            points[index].x
+        updateGraph(
+            "distanceGraph",
+            distanceHistory
         );
 
-        text.setAttribute(
-            "y",
-            H - 7
+
+        /*
+           Rain graph remains empty because
+           the rain sensor is disconnected.
+        */
+
+        updateGraph(
+            "rainGraph",
+            []
         );
 
-        text.setAttribute(
-            "text-anchor",
-            "middle"
+
+        updateGraph(
+            "vibrationGraph",
+            vibrationHistory
         );
 
-        text.setAttribute(
-            "font-size",
-            "10"
+
+        /* =========================================
+           REASONS
+           ========================================= */
+
+        updateReasonBoxes(
+            soil,
+            distance,
+            vibration
         );
 
-        text.setAttribute(
-            "fill",
-            "#75867d"
+
+        /* =========================================
+           OVERALL STATUS
+           ========================================= */
+
+        updateOverallStatus(
+            soil,
+            distance,
+            vibration
         );
 
-        text.textContent =
-            dates[index] || "--";
 
-        svg.appendChild(text);
+        /* =========================================
+           TIME
+           ========================================= */
 
-    });
+        const createdAt =
+            latest.created_at
+            ? new Date(latest.created_at)
+            : new Date();
 
+
+        document
+            .getElementById("systemTime")
+            .textContent =
+            "Last sensor update: " +
+            createdAt.toLocaleString();
+
+
+    }catch(error){
+
+        console.error(error);
+
+
+        document
+            .getElementById("connectionState")
+            .textContent =
+            "OFFLINE";
+
+
+        document
+            .getElementById("connectionState")
+            .className =
+            "sensor-state warning";
+
+
+        document
+            .getElementById("healthValue")
+            .textContent =
+            "OFFLINE";
+
+
+        document
+            .getElementById("systemTime")
+            .textContent =
+            "Unable to receive live ThingSpeak data.";
+    }
 }
 
 
 /* =========================================================
-   GRAPH RATING
-   ========================================================= */
-
-function rating(
-    value,
-    label
-) {
-
-    if (label === "Distance") {
-
-        if (
-            value > 0 &&
-            value <= DISTANCE_DANGER
-        ) {
-            return "🔴 POSSIBLE MOVEMENT / DANGER";
-        }
-
-        return "🟢 SAFE";
-
-    }
-
-
-    if (label === "Vibration") {
-
-        return value >= VIBRATION_DANGER
-            ? "🟠 VIBRATION READING"
-            : "🟢 SAFE";
-
-    }
-
-
-    if (label === "Rain") {
-
-        if (
-            value > 0 &&
-            value <= RAIN_DANGER
-        ) {
-            return "🔴 HEAVY RAIN / DANGER";
-        }
-
-        if (
-            value > RAIN_DANGER &&
-            value <= RAIN_WARNING
-        ) {
-            return "🟠 WET / WARNING";
-        }
-
-        return "🟢 DRY / SAFE";
-
-    }
-
-
-    if (label === "Soil") {
-
-        if (
-            value > 0 &&
-            value <= SOIL_DANGER
-        ) {
-            return "🔴 VERY WET / DANGER";
-        }
-
-        if (
-            value > SOIL_DANGER &&
-            value <= SOIL_WARNING
-        ) {
-            return "🟠 WET / WARNING";
-        }
-
-        if (
-            value > SOIL_WARNING &&
-            value <= SOIL_NORMAL
-        ) {
-            return "🟡 MODERATE MOISTURE";
-        }
-
-        return "🟢 DRY / SAFE";
-
-    }
-
-
-    return "🟢 SAFE";
-
-}
-
-
-/* =========================================================
-   MOBILE ORIENTATION
-   ========================================================= */
-
-function orientation(event) {
-
-    let heading;
-
-    if (
-        typeof event.webkitCompassHeading ===
-        "number"
-    ) {
-
-        heading =
-            event.webkitCompassHeading;
-
-    } else if (
-        typeof event.alpha ===
-        "number"
-    ) {
-
-        heading =
-            360 - event.alpha;
-
-    }
-
-
-    if (
-        typeof heading === "number"
-    ) {
-
-        document.getElementById("arrow")
-            .style.transform =
-            `rotate(${heading}deg)`;
-
-    }
-
-}
-
-
-/* =========================================================
-   START
+   INITIAL LOAD
    ========================================================= */
 
 loadData();
 
+
+/*
+   Update every 15 seconds.
+*/
+
 setInterval(
     loadData,
     15000
-);
-
-window.addEventListener(
-    "deviceorientation",
-    orientation,
-    true
 );
 
 </script>

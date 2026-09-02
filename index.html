@@ -797,15 +797,6 @@ Developed by <strong>Om Baraskar</strong>
 
 const CHANNEL_ID = "3456662";
 
-/*
-   FIELD ARRANGEMENT
-
-   Field 1 = Distance
-   Field 2 = Soil Moisture
-   Field 3 = Vibration
-   Field 4 = Rain
-*/
-
 const FIELD_DISTANCE = 1;
 const FIELD_SOIL = 2;
 const FIELD_VIBRATION = 3;
@@ -816,57 +807,26 @@ const FIELD_RAIN = 4;
    DANGER LIMITS
    ========================================================= */
 
-/*
-   SOIL MOISTURE
-
-   Higher ADC = drier soil
-   Lower ADC = wetter soil
-
-   4095 = dry
-   3000 = normal
-   2500 = warning
-   2000 or below = danger
-*/
-
 const SOIL_DANGER = 2000;
 const SOIL_WARNING = 2500;
 const SOIL_NORMAL = 3000;
-
-
-/*
-   RAIN SENSOR
-
-   Higher ADC = drier
-   Lower ADC = more water
-
-   These limits remain based on the
-   original sensor ADC readings.
-*/
 
 const RAIN_DANGER = 1000;
 const RAIN_WARNING = 1500;
 
 
 /* =========================================================
-   RAIN MM ESTIMATION
+   VIBRATION DANGER LEVEL
    ========================================================= */
 
-/*
-   IMPORTANT:
+const VIBRATION_DANGER = 3;
 
-   A normal resistive rain sensor gives an ADC
-   wetness reading. It does NOT directly measure
-   real rainfall in millimetres.
+const DISTANCE_DANGER = 20;
 
-   This conversion provides an ESTIMATED mm value
-   for the dashboard.
 
-   You can calibrate these values later with a
-   proper rain gauge.
-
-   4095 ADC = 0 mm
-   800 ADC  = 20 mm estimated
-*/
+/* =========================================================
+   RAIN MM ESTIMATION
+   ========================================================= */
 
 const RAIN_ADC_DRY = 4095;
 const RAIN_ADC_HEAVY = 800;
@@ -874,39 +834,91 @@ const RAIN_MM_AT_HEAVY = 20;
 
 
 /* =========================================================
-   VIBRATION LEVELS
+   VIBRATION ACTIVITY SETTINGS
    ========================================================= */
 
 /*
-   LEVEL 0 = No Vibration
-   LEVEL 1 = Very Low Vibration
-   LEVEL 2 = Low Vibration
-   LEVEL 3 = Moderate Vibration -> DANGER
-   LEVEL 4 = High Vibration -> DANGER
-   LEVEL 5 = Very High Vibration -> DANGER
+   The ESP32 currently sends:
+
+   0 = no SW-420 trigger
+   1 = SW-420 triggered
+
+   The website looks at the latest readings
+   and converts recent activity into a 0-5
+   PROJECT vibration level.
+
+   This is an activity scale, NOT Richter magnitude.
 */
 
-const VIBRATION_DANGER = 3;
+const VIBRATION_WINDOW = 10;
 
 
 /*
-   Distance sensor danger limit.
+   Number of "1" readings in the latest
+   10 ThingSpeak readings:
+
+   0       = Level 0
+   1       = Level 1
+   2-3     = Level 2
+   4-5     = Level 3
+   6-8     = Level 4
+   9-10    = Level 5
 */
 
-const DISTANCE_DANGER = 20;
+function calculateVibrationLevel(readings) {
+
+    if (!Array.isArray(readings) || readings.length === 0) {
+        return 0;
+    }
+
+    const recent =
+        readings.slice(
+            Math.max(
+                0,
+                readings.length - VIBRATION_WINDOW
+            )
+        );
+
+    let activeCount = 0;
+
+    recent.forEach(function(value) {
+
+        if (
+            Number.isFinite(value) &&
+            value >= 1
+        ) {
+            activeCount++;
+        }
+
+    });
+
+    if (activeCount === 0) {
+        return 0;
+    }
+
+    if (activeCount === 1) {
+        return 1;
+    }
+
+    if (activeCount <= 3) {
+        return 2;
+    }
+
+    if (activeCount <= 5) {
+        return 3;
+    }
+
+    if (activeCount <= 8) {
+        return 4;
+    }
+
+    return 5;
+}
 
 
 /* =========================================================
    SOIL ADC PERCENTAGE
    ========================================================= */
-
-/*
-   Converts the raw 0-4095 ADC reading
-   into a normalized moisture percentage.
-
-   4095 ADC = 0% moisture
-   0 ADC    = 100% moisture
-*/
 
 function adcToSoilPercent(adc) {
 
@@ -924,12 +936,11 @@ function adcToSoilPercent(adc) {
             percentage
         )
     );
-
 }
 
 
 /* =========================================================
-   RAIN ADC TO MM
+   RAIN ADC TO ESTIMATED MM
    ========================================================= */
 
 function adcToRainMM(adc) {
@@ -956,7 +967,6 @@ function adcToRainMM(adc) {
             mm
         )
     );
-
 }
 
 
@@ -977,7 +987,6 @@ function normalizeVibration(value) {
             Math.round(value)
         )
     );
-
 }
 
 
@@ -1012,9 +1021,7 @@ function vibrationLevel(value) {
 
         default:
             return "No Vibration";
-
     }
-
 }
 
 
@@ -1070,9 +1077,7 @@ function enableSiren() {
 
         document.getElementById("sirenStatus").textContent =
             "Audio could not be enabled on this browser.";
-
     }
-
 }
 
 
@@ -1133,9 +1138,13 @@ function playSiren() {
         oscillator.connect(gain);
         gain.connect(audioContext.destination);
 
-        oscillator.start(now + i * 0.45);
-        oscillator.stop(now + i * 0.45 + 0.40);
+        oscillator.start(
+            now + i * 0.45
+        );
 
+        oscillator.stop(
+            now + i * 0.45 + 0.40
+        );
     }
 
     setTimeout(function() {
@@ -1144,7 +1153,6 @@ function playSiren() {
             .classList.remove("alarm");
 
     }, 4000);
-
 }
 
 
@@ -1170,7 +1178,6 @@ function emergencyVoice() {
     speech.volume = 1;
 
     speechSynthesis.speak(speech);
-
 }
 
 
@@ -1186,11 +1193,15 @@ async function loadData() {
             `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=30`;
 
         const response =
-            await fetch(url, {
-                cache: "no-store"
-            });
+            await fetch(
+                url,
+                {
+                    cache: "no-store"
+                }
+            );
 
         if (!response.ok) {
+
             throw new Error(
                 "ThingSpeak connection failed: " +
                 response.status
@@ -1200,7 +1211,11 @@ async function loadData() {
         const data =
             await response.json();
 
-        if (!data.feeds || data.feeds.length === 0) {
+        if (
+            !data.feeds ||
+            data.feeds.length === 0
+        ) {
+
             throw new Error(
                 "No ThingSpeak data available"
             );
@@ -1214,7 +1229,64 @@ async function loadData() {
         dateData = [];
 
 
+        /* =====================================================
+           READ RAW VIBRATION DATA FIRST
+           ===================================================== */
+
+        const rawVibrationReadings = [];
+
         data.feeds.forEach(function(feed) {
+
+            const raw =
+                parseFloat(
+                    feed[`field${FIELD_VIBRATION}`]
+                );
+
+            rawVibrationReadings.push(
+                Number.isFinite(raw)
+                    ? raw
+                    : 0
+            );
+        });
+
+
+        /* =====================================================
+           CONVERT EVERY VIBRATION POINT TO ACTIVITY LEVEL
+           ===================================================== */
+
+        const calculatedVibrationLevels = [];
+
+        for (
+            let i = 0;
+            i < rawVibrationReadings.length;
+            i++
+        ) {
+
+            const start =
+                Math.max(
+                    0,
+                    i - VIBRATION_WINDOW + 1
+                );
+
+            const window =
+                rawVibrationReadings.slice(
+                    start,
+                    i + 1
+                );
+
+            calculatedVibrationLevels.push(
+                calculateVibrationLevel(
+                    window
+                )
+            );
+        }
+
+
+        /* =====================================================
+           PROCESS ALL FEEDS
+           ===================================================== */
+
+        data.feeds.forEach(function(feed, index) {
 
             const distance =
                 parseFloat(
@@ -1226,90 +1298,82 @@ async function loadData() {
                     feed[`field${FIELD_SOIL}`]
                 );
 
-            const vibration =
-                parseFloat(
-                    feed[`field${FIELD_VIBRATION}`]
-                );
-
             const rainADC =
                 parseFloat(
                     feed[`field${FIELD_RAIN}`]
                 );
 
 
-            /*
-               Convert soil ADC to percentage
-            */
+            const safeDistance =
+                Number.isFinite(distance)
+                    ? distance
+                    : 0;
+
+            const safeSoilADC =
+                Number.isFinite(soilADC)
+                    ? soilADC
+                    : 0;
+
+            const safeRainADC =
+                Number.isFinite(rainADC)
+                    ? rainADC
+                    : 0;
+
 
             const soilPercent =
                 adcToSoilPercent(
-                    Number.isFinite(soilADC)
-                        ? soilADC
-                        : 0
+                    safeSoilADC
                 );
 
-
-            /*
-               Convert rain ADC to estimated mm
-            */
 
             const rainMM =
                 adcToRainMM(
-                    Number.isFinite(rainADC)
-                        ? rainADC
-                        : 0
+                    safeRainADC
                 );
 
 
-            /*
-               Normalize vibration to 0-5
-            */
-
-            const vibrationLevelValue =
+            const vibrationValue =
                 normalizeVibration(
-                    Number.isFinite(vibration)
-                        ? vibration
-                        : 0
+                    calculatedVibrationLevels[index]
                 );
 
 
             distanceData.push(
-                Number.isFinite(distance)
-                    ? distance
-                    : 0
+                safeDistance
             );
-
 
             soilData.push(
                 soilPercent
             );
 
-
             vibrationData.push(
-                vibrationLevelValue
+                vibrationValue
             );
-
 
             rainData.push(
                 rainMM
             );
 
-
             dateData.push(
-                new Date(feed.created_at)
-                    .toLocaleString(
-                        "en-IN",
-                        {
-                            day: "2-digit",
-                            month: "short",
-                            hour: "2-digit",
-                            minute: "2-digit"
-                        }
-                    )
+                new Date(
+                    feed.created_at
+                ).toLocaleString(
+                    "en-IN",
+                    {
+                        day:"2-digit",
+                        month:"short",
+                        hour:"2-digit",
+                        minute:"2-digit"
+                    }
+                )
             );
 
         });
 
+
+        /* =====================================================
+           LATEST FEED
+           ===================================================== */
 
         const latest =
             data.feeds[
@@ -1327,14 +1391,22 @@ async function loadData() {
                 latest[`field${FIELD_SOIL}`]
             );
 
-        const latestVibration =
-            parseFloat(
-                latest[`field${FIELD_VIBRATION}`]
-            );
-
         const latestRain =
             parseFloat(
                 latest[`field${FIELD_RAIN}`]
+            );
+
+
+        /* =====================================================
+           IMPORTANT:
+
+           Calculate vibration from the most recent
+           10 raw SW-420 readings.
+           ===================================================== */
+
+        const latestVibration =
+            calculateVibrationLevel(
+                rawVibrationReadings
             );
 
 
@@ -1352,11 +1424,13 @@ async function loadData() {
                 ? latestRain
                 : 0,
 
-            Number.isFinite(latestVibration)
-                ? latestVibration
-                : 0
+            latestVibration
         );
 
+
+        /* =====================================================
+           GRAPHS
+           ===================================================== */
 
         drawGraph(
             "soilGraph",
@@ -1394,6 +1468,10 @@ async function loadData() {
         );
 
 
+        /* =====================================================
+           HISTORY
+           ===================================================== */
+
         updateHistory(
             soilData,
             distanceData,
@@ -1403,15 +1481,24 @@ async function loadData() {
         );
 
 
-        document.getElementById("healthThing")
-            .textContent = "✓ ONLINE";
+        /* =====================================================
+           HEALTH
+           ===================================================== */
 
         document.getElementById("healthThing")
-            .className = "ok";
+            .textContent =
+            "✓ ONLINE";
+
+        document.getElementById("healthThing")
+            .className =
+            "ok";
+
 
         document.getElementById("latestData")
             .textContent =
-            dateData[dateData.length - 1] || "--";
+            dateData[
+                dateData.length - 1
+            ] || "--";
 
     } catch (error) {
 
@@ -1421,20 +1508,21 @@ async function loadData() {
         );
 
         document.getElementById("healthThing")
-            .textContent = "✕ OFFLINE";
+            .textContent =
+            "✕ OFFLINE";
 
         document.getElementById("healthThing")
-            .className = "bad";
+            .className =
+            "bad";
 
         document.getElementById("status")
-            .textContent = "OFFLINE";
+            .textContent =
+            "OFFLINE";
 
         document.getElementById("message")
             .textContent =
             "Unable to read live ThingSpeak data.";
-
     }
-
 }
 
 
@@ -1449,29 +1537,17 @@ function updateSensors(
     vibration
 ) {
 
-    /*
-       SOIL ADC -> ADC %
-    */
-
     const soilPercent =
         adcToSoilPercent(
             soilADC
         );
 
 
-    /*
-       RAIN ADC -> estimated mm
-    */
-
     const rainMM =
         adcToRainMM(
             rainADC
         );
 
-
-    /*
-       VIBRATION -> 0-5
-    */
 
     const vibrationValue =
         normalizeVibration(
@@ -1484,6 +1560,10 @@ function updateSensors(
             vibrationValue
         );
 
+
+    /* =====================================================
+       DISPLAY VALUES
+       ===================================================== */
 
     document.getElementById("soil")
         .textContent =
@@ -1510,11 +1590,9 @@ function updateSensors(
         vibrationText;
 
 
-    /*
+    /* =====================================================
        SOIL BAR
-
-       Higher percentage = wetter soil.
-    */
+       ===================================================== */
 
     const soilRiskPercent =
         Math.max(
@@ -1533,11 +1611,9 @@ function updateSensors(
         ) + "%";
 
 
-    /*
+    /* =====================================================
        DISTANCE BAR
-
-       Smaller distance = object/rock closer.
-    */
+       ===================================================== */
 
     const distanceRiskPercent =
         distance > 0
@@ -1545,7 +1621,16 @@ function updateSensors(
                 5,
                 Math.min(
                     100,
-                    ((100 - Math.min(distance, 100)) / 100) * 100
+                    (
+                        (
+                            100 -
+                            Math.min(
+                                distance,
+                                100
+                            )
+                        ) /
+                        100
+                    ) * 100
                 )
             )
             : 5;
@@ -1555,18 +1640,19 @@ function updateSensors(
         distanceRiskPercent + "%";
 
 
-    /*
+    /* =====================================================
        RAIN BAR
-
-       Use the original ADC wetness relationship.
-    */
+       ===================================================== */
 
     const rainRiskPercent =
         Math.max(
             0,
             Math.min(
                 100,
-                ((4095 - rainADC) / 4095) * 100
+                (
+                    (4095 - rainADC) /
+                    4095
+                ) * 100
             )
         );
 
@@ -1578,16 +1664,9 @@ function updateSensors(
         ) + "%";
 
 
-    /*
+    /* =====================================================
        VIBRATION BAR
-
-       0 = 5% visual minimum
-       1 = 20%
-       2 = 40%
-       3 = 60%
-       4 = 80%
-       5 = 100%
-    */
+       ===================================================== */
 
     const vibrationBarPercent =
         Math.max(
@@ -1600,8 +1679,11 @@ function updateSensors(
         vibrationBarPercent + "%";
 
 
-    updateHealth();
+    /* =====================================================
+       UPDATE HEALTH + DANGER
+       ===================================================== */
 
+    updateHealth();
 
     checkIndividualDanger(
         soilADC,
@@ -1609,7 +1691,6 @@ function updateSensors(
         rainADC,
         vibrationValue
     );
-
 }
 
 
@@ -1635,9 +1716,7 @@ function updateHealth() {
         document.getElementById(id)
             .className =
             "ok";
-
     });
-
 }
 
 
@@ -1652,64 +1731,34 @@ function checkIndividualDanger(
     vibration
 ) {
 
-    /*
-       SOIL:
-
-       0-2000 = VERY WET / DANGER
-       2001-2500 = WET / WARNING
-       2501-3000 = MODERATE
-       3001-4095 = DRY / SAFE
-    */
-
     const soilDanger =
         soil > 0 &&
         soil <= SOIL_DANGER;
 
-
-    /*
-       RAIN:
-
-       Low ADC value = more water.
-    */
 
     const rainDanger =
         rain > 0 &&
         rain <= RAIN_DANGER;
 
 
-    /*
-       VIBRATION:
-
-       Level 0 = SAFE
-       Level 1 = SAFE
-       Level 2 = SAFE
-       Level 3 = DANGER
-       Level 4 = DANGER
-       Level 5 = DANGER
-    */
-
     const vibrationValue =
         normalizeVibration(
             vibration
         );
 
-    const vibrationDanger =
-        vibrationValue >= VIBRATION_DANGER;
-
 
     /*
-       DISTANCE
+       LEVEL 3 IS THE EXACT DANGER START.
     */
+
+    const vibrationDanger =
+        vibrationValue >= 3;
+
 
     const distanceDanger =
         distance > 0 &&
         distance <= DISTANCE_DANGER;
 
-
-    /*
-       ANY ONE DANGER SENSOR
-       activates emergency mode.
-    */
 
     const danger =
         soilDanger ||
@@ -1730,7 +1779,6 @@ function checkIndividualDanger(
             adcToSoilPercent(soil).toFixed(0) +
             "% ADC)"
         );
-
     }
 
 
@@ -1741,7 +1789,6 @@ function checkIndividualDanger(
             adcToRainMM(rain).toFixed(1) +
             " mm"
         );
-
     }
 
 
@@ -1753,7 +1800,6 @@ function checkIndividualDanger(
             "/5 — " +
             vibrationLevel(vibrationValue)
         );
-
     }
 
 
@@ -1766,7 +1812,6 @@ function checkIndividualDanger(
             DISTANCE_DANGER +
             " cm)"
         );
-
     }
 
 
@@ -1806,9 +1851,7 @@ function checkIndividualDanger(
 
         document.getElementById("emergency")
             .classList.remove("active");
-
     }
-
 }
 
 
@@ -1883,7 +1926,6 @@ function updateReasonBoxes(
                 ? `DANGER: Possible rock/slope movement. Distance ${distance.toFixed(1)} cm is within the ${DISTANCE_DANGER} cm danger range.`
                 : `SAFE: Distance is ${distance.toFixed(1)} cm, outside the ${DISTANCE_DANGER} cm danger range.`
         );
-
 }
 
 
@@ -1907,30 +1949,35 @@ function setStatus(
         document.getElementById("light");
 
 
-    status.textContent = text;
-    msg.textContent = message;
+    status.textContent =
+        text;
+
+    msg.textContent =
+        message;
 
 
     if (type === "danger") {
 
-        status.style.color = "#d82d52";
+        status.style.color =
+            "#d82d52";
 
-        light.style.background = "#ed3f61";
+        light.style.background =
+            "#ed3f61";
 
         light.style.boxShadow =
             "0 0 35px #ed3f6188";
 
     } else {
 
-        status.style.color = "#15945a";
+        status.style.color =
+            "#15945a";
 
-        light.style.background = "#39d98a";
+        light.style.background =
+            "#39d98a";
 
         light.style.boxShadow =
             "0 0 30px #39d98a88";
-
     }
-
 }
 
 
@@ -1943,7 +1990,10 @@ function activateEmergency(reason) {
     const emergency =
         document.getElementById("emergency");
 
-    emergency.classList.add("active");
+    emergency.classList.add(
+        "active"
+    );
+
 
     document.getElementById("dangerText")
         .textContent =
@@ -1951,6 +2001,11 @@ function activateEmergency(reason) {
         reason +
         ". Do not panic. Follow the direction and move to safety.";
 
+
+    /*
+       Only activate the siren/voice once
+       for the current danger event.
+    */
 
     if (!alarmCurrentlyActive) {
 
@@ -1961,9 +2016,7 @@ function activateEmergency(reason) {
         emergencyVoice();
 
         addAlert(reason);
-
     }
-
 }
 
 
@@ -1980,33 +2033,37 @@ function addAlert(reason) {
         new Date().toLocaleString(
             "en-IN",
             {
-                day: "2-digit",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit"
+                day:"2-digit",
+                month:"short",
+                hour:"2-digit",
+                minute:"2-digit"
             }
         );
 
 
     alertList.unshift({
-        time: now,
-        reason: reason
+        time:now,
+        reason:reason
     });
 
 
     alertList =
-        alertList.slice(0, 8);
+        alertList.slice(
+            0,
+            8
+        );
 
 
     renderAlerts();
-
 }
 
 
 function renderAlerts() {
 
     const box =
-        document.getElementById("alerts");
+        document.getElementById(
+            "alerts"
+        );
 
 
     if (!alertList.length) {
@@ -2015,25 +2072,25 @@ function renderAlerts() {
             '<div class="alert">No alerts recorded yet.</div>';
 
         return;
-
     }
 
 
     box.innerHTML =
-        alertList.map(function(alert) {
+        alertList.map(
+            function(alert) {
 
-            return `
-                <div class="alert">
-                    <strong>⚠ HIGH DANGER</strong>
-                    <br>
-                    ${alert.reason}
-                    <br>
-                    ${alert.time}
-                </div>
-            `;
+                return `
+                    <div class="alert">
+                        <strong>⚠ HIGH DANGER</strong>
+                        <br>
+                        ${alert.reason}
+                        <br>
+                        ${alert.time}
+                    </div>
+                `;
 
-        }).join("");
-
+            }
+        ).join("");
 }
 
 
@@ -2079,7 +2136,6 @@ function updateHistory(
         dates,
         "vibration"
     );
-
 }
 
 
@@ -2091,13 +2147,17 @@ function renderHistory(
 ) {
 
     const box =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
+
 
     const start =
         Math.max(
             0,
             values.length - 6
         );
+
 
     box.innerHTML = "";
 
@@ -2109,7 +2169,9 @@ function renderHistory(
     ) {
 
         const row =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         row.className =
             "historyitem";
@@ -2121,33 +2183,48 @@ function renderHistory(
         if (type === "soil") {
 
             displayValue =
-                Number(values[i]).toFixed(0) +
+                Number(
+                    values[i]
+                ).toFixed(0) +
                 "%";
 
-        } else if (type === "distance") {
+        } else if (
+            type === "distance"
+        ) {
 
             displayValue =
-                Number(values[i]).toFixed(1) +
+                Number(
+                    values[i]
+                ).toFixed(1) +
                 " cm";
 
-        } else if (type === "rain") {
+        } else if (
+            type === "rain"
+        ) {
 
             displayValue =
-                Number(values[i]).toFixed(1) +
+                Number(
+                    values[i]
+                ).toFixed(1) +
                 " mm";
 
-        } else if (type === "vibration") {
+        } else if (
+            type === "vibration"
+        ) {
 
             const level =
                 normalizeVibration(
-                    Number(values[i])
+                    Number(
+                        values[i]
+                    )
                 );
 
             displayValue =
                 level +
                 "/5 — " +
-                vibrationLevel(level);
-
+                vibrationLevel(
+                    level
+                );
         }
 
 
@@ -2160,10 +2237,10 @@ function renderHistory(
             `;
 
 
-        box.appendChild(row);
-
+        box.appendChild(
+            row
+        );
     }
-
 }
 
 
@@ -2180,13 +2257,21 @@ function drawGraph(
 ) {
 
     const svg =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
-    if (!svg || !values.length) {
+
+    if (
+        !svg ||
+        !values.length
+    ) {
         return;
     }
 
+
     svg.innerHTML = "";
+
 
     const W = 600;
     const H = 230;
@@ -2195,21 +2280,31 @@ function drawGraph(
     const T = 12;
     const B = 30;
 
-    const gw = W - L - R;
-    const gh = H - T - B;
+
+    const gw =
+        W - L - R;
+
+    const gh =
+        H - T - B;
+
 
     let min =
-        Math.min(...values);
+        Math.min(
+            ...values
+        );
 
     let max =
-        Math.max(...values);
+        Math.max(
+            ...values
+        );
+
 
     if (min === max) {
 
         min -= 1;
         max += 1;
-
     }
+
 
     const pad =
         Math.max(
@@ -2217,13 +2312,14 @@ function drawGraph(
             1
         );
 
+
     min -= pad;
     max += pad;
 
 
-    /*
+    /* =====================================================
        GRAPH GRID
-    */
+       ===================================================== */
 
     for (
         let i = 0;
@@ -2232,7 +2328,9 @@ function drawGraph(
     ) {
 
         const y =
-            T + gh * i / 4;
+            T +
+            gh * i / 4;
+
 
         const grid =
             document.createElementNS(
@@ -2240,53 +2338,83 @@ function drawGraph(
                 "line"
             );
 
-        grid.setAttribute("x1", L);
-        grid.setAttribute("x2", W - R);
-        grid.setAttribute("y1", y);
-        grid.setAttribute("y2", y);
-        grid.setAttribute("class", "grid");
 
-        svg.appendChild(grid);
+        grid.setAttribute(
+            "x1",
+            L
+        );
 
+        grid.setAttribute(
+            "x2",
+            W - R
+        );
+
+        grid.setAttribute(
+            "y1",
+            y
+        );
+
+        grid.setAttribute(
+            "y2",
+            y
+        );
+
+        grid.setAttribute(
+            "class",
+            "grid"
+        );
+
+
+        svg.appendChild(
+            grid
+        );
     }
 
 
-    /*
+    /* =====================================================
        GRAPH POINTS
-    */
+       ===================================================== */
 
     const points =
-        values.map(function(value, index) {
+        values.map(
+            function(value,index) {
 
-            return {
-                x:
-                    L +
-                    index /
-                    Math.max(
-                        values.length - 1,
-                        1
-                    ) *
-                    gw,
+                return {
 
-                y:
-                    T +
-                    gh -
-                    (value - min) /
-                    (max - min) *
-                    gh,
+                    x:
+                        L +
+                        index /
+                        Math.max(
+                            values.length - 1,
+                            1
+                        ) *
+                        gw,
 
-                v: value,
+                    y:
+                        T +
+                        gh -
+                        (
+                            value - min
+                        ) /
+                        (
+                            max - min
+                        ) *
+                        gh,
 
-                date:
-                    dates[index] || "--"
-            };
+                    v:value,
 
-        });
+                    date:
+                        dates[index] ||
+                        "--"
+                };
+
+            }
+        );
 
 
-    /*
+    /* =====================================================
        AREA
-    */
+       ===================================================== */
 
     const area =
         document.createElementNS(
@@ -2294,54 +2422,65 @@ function drawGraph(
             "polygon"
         );
 
+
     area.setAttribute(
         "points",
         [
             `${points[0].x},${H-B}`,
             ...points.map(
-                p => `${p.x},${p.y}`
+                p =>
+                    `${p.x},${p.y}`
             ),
             `${points[points.length-1].x},${H-B}`
         ].join(" ")
     );
+
 
     area.setAttribute(
         "class",
         "area"
     );
 
-    svg.appendChild(area);
+
+    svg.appendChild(
+        area
+    );
 
 
-    /*
+    /* =====================================================
        SMOOTH LINE
-    */
+       ===================================================== */
 
     let path = "";
 
-    points.forEach(function(p, index) {
 
-        if (index === 0) {
+    points.forEach(
+        function(p,index) {
 
-            path =
-                `M ${p.x} ${p.y}`;
+            if (index === 0) {
 
-        } else {
+                path =
+                    `M ${p.x} ${p.y}`;
 
-            const previous =
-                points[index - 1];
+            } else {
 
-            const middle =
-                (previous.x + p.x) / 2;
+                const previous =
+                    points[index - 1];
 
-            path +=
-                ` C ${middle} ${previous.y},
-                ${middle} ${p.y},
-                ${p.x} ${p.y}`;
+                const middle =
+                    (
+                        previous.x +
+                        p.x
+                    ) / 2;
 
+
+                path +=
+                    ` C ${middle} ${previous.y},
+                    ${middle} ${p.y},
+                    ${p.x} ${p.y}`;
+            }
         }
-
-    });
+    );
 
 
     const line =
@@ -2350,185 +2489,229 @@ function drawGraph(
             "path"
         );
 
+
     line.setAttribute(
         "d",
         path
     );
+
 
     line.setAttribute(
         "class",
         "line"
     );
 
-    svg.appendChild(line);
+
+    svg.appendChild(
+        line
+    );
 
 
-    /*
+    /* =====================================================
        TOOLTIP
-    */
+       ===================================================== */
 
     const holder =
         svg.parentElement;
 
+
     const tip =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     tip.className =
         "tip";
 
-    holder.appendChild(tip);
+
+    holder.appendChild(
+        tip
+    );
 
 
-    /*
+    /* =====================================================
        DATA DOTS
-    */
+       ===================================================== */
 
-    points.forEach(function(p, index) {
+    points.forEach(
+        function(p,index) {
 
-        const dot =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "circle"
-            );
-
-        dot.setAttribute("cx", p.x);
-        dot.setAttribute("cy", p.y);
-
-        dot.setAttribute(
-            "r",
-            index === points.length - 1
-                ? 6
-                : 4.5
-        );
-
-        dot.setAttribute(
-            "class",
-            "dot"
-        );
-
-
-        dot.addEventListener(
-            "click",
-            function() {
-
-                let shownValue = "";
-
-
-                if (label === "Vibration") {
-
-                    const level =
-                        normalizeVibration(
-                            Number(p.v)
-                        );
-
-                    shownValue =
-                        `${level}/5 — ${vibrationLevel(level)}`;
-
-                } else {
-
-                    shownValue =
-                        `${Number(p.v).toFixed(2)}${unit}`;
-
-                }
-
-
-                tip.innerHTML =
-                    `
-                    <div>${p.date}</div>
-                    <b>${shownValue}</b>
-                    <div>${rating(p.v, label)}</div>
-                    `;
-
-
-                const rect =
-                    svg.getBoundingClientRect();
-
-
-                tip.style.left =
-                    (
-                        p.x /
-                        W *
-                        rect.width
-                    ) + "px";
-
-
-                tip.style.top =
-                    (
-                        p.y /
-                        H *
-                        rect.height
-                    ) + "px";
-
-
-                tip.classList.add(
-                    "show"
+            const dot =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "circle"
                 );
 
-            }
-        );
+
+            dot.setAttribute(
+                "cx",
+                p.x
+            );
+
+            dot.setAttribute(
+                "cy",
+                p.y
+            );
 
 
-        svg.appendChild(dot);
+            dot.setAttribute(
+                "r",
+                index === points.length - 1
+                    ? 6
+                    : 4.5
+            );
 
-    });
+
+            dot.setAttribute(
+                "class",
+                "dot"
+            );
 
 
-    /*
+            dot.addEventListener(
+                "click",
+                function() {
+
+                    let shownValue = "";
+
+
+                    if (
+                        label === "Vibration"
+                    ) {
+
+                        const level =
+                            normalizeVibration(
+                                Number(
+                                    p.v
+                                )
+                            );
+
+
+                        shownValue =
+                            `${level}/5 — ${vibrationLevel(level)}`;
+
+                    } else {
+
+                        shownValue =
+                            `${Number(p.v).toFixed(2)}${unit}`;
+                    }
+
+
+                    tip.innerHTML =
+                        `
+                        <div>${p.date}</div>
+                        <b>${shownValue}</b>
+                        <div>${rating(p.v,label)}</div>
+                        `;
+
+
+                    const rect =
+                        svg.getBoundingClientRect();
+
+
+                    tip.style.left =
+                        (
+                            p.x /
+                            W *
+                            rect.width
+                        ) + "px";
+
+
+                    tip.style.top =
+                        (
+                            p.y /
+                            H *
+                            rect.height
+                        ) + "px";
+
+
+                    tip.classList.add(
+                        "show"
+                    );
+                }
+            );
+
+
+            svg.appendChild(
+                dot
+            );
+        }
+    );
+
+
+    /* =====================================================
        DATE LABELS
-    */
+       ===================================================== */
 
     const indexes =
         values.length <= 3
-            ? [...Array(values.length).keys()]
+            ? [
+                ...Array(
+                    values.length
+                ).keys()
+            ]
             : [
                 0,
                 Math.floor(
-                    (values.length - 1) / 2
+                    (
+                        values.length - 1
+                    ) / 2
                 ),
                 values.length - 1
             ];
 
 
-    indexes.forEach(function(index) {
+    indexes.forEach(
+        function(index) {
 
-        const text =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "text"
+            const text =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "text"
+                );
+
+
+            text.setAttribute(
+                "x",
+                points[index].x
             );
 
-        text.setAttribute(
-            "x",
-            points[index].x
-        );
 
-        text.setAttribute(
-            "y",
-            H - 7
-        );
+            text.setAttribute(
+                "y",
+                H - 7
+            );
 
-        text.setAttribute(
-            "text-anchor",
-            "middle"
-        );
 
-        text.setAttribute(
-            "font-size",
-            "10"
-        );
+            text.setAttribute(
+                "text-anchor",
+                "middle"
+            );
 
-        text.setAttribute(
-            "fill",
-            "#75867d"
-        );
 
-        text.textContent =
-            dates[index] || "--";
+            text.setAttribute(
+                "font-size",
+                "10"
+            );
 
-        svg.appendChild(text);
 
-    });
+            text.setAttribute(
+                "fill",
+                "#75867d"
+            );
 
+
+            text.textContent =
+                dates[index] ||
+                "--";
+
+
+            svg.appendChild(
+                text
+            );
+        }
+    );
 }
 
 
@@ -2541,11 +2724,13 @@ function rating(
     label
 ) {
 
-    /*
+    /* =====================================================
        DISTANCE
-    */
+       ===================================================== */
 
-    if (label === "Distance") {
+    if (
+        label === "Distance"
+    ) {
 
         if (
             value > 0 &&
@@ -2553,19 +2738,20 @@ function rating(
         ) {
 
             return "🔴 POSSIBLE MOVEMENT / DANGER";
-
         }
 
-        return "🟢 SAFE";
 
+        return "🟢 SAFE";
     }
 
 
-    /*
+    /* =====================================================
        VIBRATION
-    */
+       ===================================================== */
 
-    if (label === "Vibration") {
+    if (
+        label === "Vibration"
+    ) {
 
         const level =
             normalizeVibration(
@@ -2573,38 +2759,45 @@ function rating(
             );
 
 
-        if (level >= 3) {
+        if (
+            level >= 3
+        ) {
 
-            return "🔴 LEVEL " +
+            return (
+                "🔴 LEVEL " +
                 level +
                 " — " +
-                vibrationLevel(level).toUpperCase();
-
+                vibrationLevel(
+                    level
+                ).toUpperCase()
+            );
         }
 
 
-        return "🟢 LEVEL " +
+        return (
+            "🟢 LEVEL " +
             level +
             " — " +
-            vibrationLevel(level).toUpperCase();
-
+            vibrationLevel(
+                level
+            ).toUpperCase()
+        );
     }
 
 
-    /*
+    /* =====================================================
        RAIN
+       ===================================================== */
 
-       Graph contains mm values,
-       so calculate the equivalent
-       mm danger/warning values.
-    */
-
-    if (label === "Rain") {
+    if (
+        label === "Rain"
+    ) {
 
         const dangerMM =
             adcToRainMM(
                 RAIN_DANGER
             );
+
 
         const warningMM =
             adcToRainMM(
@@ -2612,43 +2805,45 @@ function rating(
             );
 
 
-        if (value >= dangerMM) {
+        if (
+            value >= dangerMM
+        ) {
 
             return "🔴 HEAVY RAIN / DANGER";
-
         }
 
 
-        if (value >= warningMM) {
+        if (
+            value >= warningMM
+        ) {
 
             return "🟠 WET / WARNING";
-
         }
 
 
         return "🟢 DRY / SAFE";
-
     }
 
 
-    /*
+    /* =====================================================
        SOIL
+       ===================================================== */
 
-       Graph contains percentage values,
-       so convert ADC limits to percentage.
-    */
-
-    if (label === "Soil") {
+    if (
+        label === "Soil"
+    ) {
 
         const dangerPercent =
             adcToSoilPercent(
                 SOIL_DANGER
             );
 
+
         const warningPercent =
             adcToSoilPercent(
                 SOIL_WARNING
             );
+
 
         const normalPercent =
             adcToSoilPercent(
@@ -2661,7 +2856,6 @@ function rating(
         ) {
 
             return "🔴 VERY WET / DANGER";
-
         }
 
 
@@ -2670,7 +2864,6 @@ function rating(
         ) {
 
             return "🟠 WET / WARNING";
-
         }
 
 
@@ -2679,17 +2872,14 @@ function rating(
         ) {
 
             return "🟡 MODERATE MOISTURE";
-
         }
 
 
         return "🟢 DRY / SAFE";
-
     }
 
 
     return "🟢 SAFE";
-
 }
 
 
@@ -2717,20 +2907,19 @@ function orientation(event) {
 
         heading =
             360 - event.alpha;
-
     }
 
 
     if (
-        typeof heading === "number"
+        typeof heading ===
+        "number"
     ) {
 
-        document.getElementById("arrow")
-            .style.transform =
+        document.getElementById(
+            "arrow"
+        ).style.transform =
             `rotate(${heading}deg)`;
-
     }
-
 }
 
 

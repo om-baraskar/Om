@@ -813,52 +813,64 @@ const FIELD_RAIN = 4;
 
 
 /* =========================================================
-   DANGER LIMITS
-   ========================================================= */
-
-/*
    SOIL MOISTURE CALIBRATION
+   =========================================================
 
-   Higher value = drier soil
-   Lower value = wetter soil
+   YOUR ACTUAL SENSOR TEST:
 
-   4095 = dry / safe
-   1501-2500 = moderate moisture
-   701-1500 = wet / warning
-   0-700 = very wet / danger
+   Dry / removed from water  ≈ 4000
+   Fully wet / dipped in water ≈ 1850
+
+   Therefore:
+
+   > 3000       = DRY / SAFE
+   2801-3000    = MODERATE
+   2001-2800    = WET / WARNING
+   <= 2000      = VERY WET / DANGER
+
+   IMPORTANT:
+   Higher value = DRIER
+   Lower value = WETTER
 */
 
-const SOIL_DANGER = 700;
-const SOIL_WARNING = 1500;
-const SOIL_NORMAL = 2500;
+const SOIL_DANGER = 2000;
+const SOIL_WARNING = 2800;
+const SOIL_NORMAL = 3000;
 
 
-/*
+/* =========================================================
    RAIN SENSOR CALIBRATION
+   =========================================================
 
    Higher value = dry
-   Lower value = more rain/water
-
-   4095 = dry / safe
-   1001-1500 = wet / warning
-   0-1000 = heavy rain / danger
+   Lower value = more water/rain
 */
 
 const RAIN_DANGER = 1000;
 const RAIN_WARNING = 1500;
 
 
-/* Vibration */
+/* =========================================================
+   VIBRATION
+   =========================================================
+
+   SW420 normally gives a digital 0/1.
+
+   We require TWO consecutive danger readings
+   before declaring vibration danger.
+
+   This prevents one accidental HIGH reading
+   from immediately triggering the entire system.
+*/
 
 const VIBRATION_DANGER = 1;
+let vibrationDangerCount = 0;
+const VIBRATION_CONFIRMATIONS = 2;
 
 
-/*
-   Distance sensor danger limit.
-
-   This sensor is used to monitor possible
-   rock or slope movement.
-*/
+/* =========================================================
+   DISTANCE
+   ========================================================= */
 
 const DISTANCE_DANGER = 20;
 
@@ -1274,7 +1286,8 @@ function updateSensors(
     /*
        SOIL BAR
 
-       Lower soil value = more moisture.
+       Lower value = wetter soil.
+       Higher value = drier soil.
     */
 
     const soilRiskPercent =
@@ -1316,7 +1329,7 @@ function updateSensors(
     /*
        RAIN BAR
 
-       Lower rain value = more water.
+       Lower value = more water.
     */
 
     const rainRiskPercent =
@@ -1332,6 +1345,10 @@ function updateSensors(
         .style.width =
         Math.max(5, rainRiskPercent) + "%";
 
+
+    /*
+       VIBRATION BAR
+    */
 
     document.getElementById("vibrationBar")
         .style.width =
@@ -1392,9 +1409,14 @@ function checkIndividualDanger(
 ) {
 
     /*
-       SOIL:
-       4095 = dry / SAFE
-       700 or below = very wet / DANGER
+       SOIL MOISTURE
+
+       IMPORTANT CALIBRATION:
+
+       4000 = DRY / SAFE
+       1850 = VERY WET / DANGER
+
+       Therefore lower values are dangerous.
     */
 
     const soilDanger =
@@ -1403,8 +1425,9 @@ function checkIndividualDanger(
 
 
     /*
-       RAIN:
-       Low value = more rain/water.
+       RAIN
+
+       Lower value = more water.
     */
 
     const rainDanger =
@@ -1412,12 +1435,31 @@ function checkIndividualDanger(
         rain <= RAIN_DANGER;
 
 
+    /*
+       VIBRATION
+
+       Require two consecutive readings.
+    */
+
+    if (vibration >= VIBRATION_DANGER) {
+
+        vibrationDangerCount++;
+
+    } else {
+
+        vibrationDangerCount = 0;
+
+    }
+
+
     const vibrationDanger =
-        vibration >= VIBRATION_DANGER;
+        vibrationDangerCount >=
+        VIBRATION_CONFIRMATIONS;
 
 
     /*
-       DISTANCE:
+       DISTANCE
+
        Object/rock comes within danger range.
     */
 
@@ -1439,11 +1481,9 @@ function checkIndividualDanger(
     if (soilDanger) {
 
         reasons.push(
-            "Dangerous soil moisture detected: " +
+            "DANGEROUS SOIL MOISTURE: " +
             soil +
-            " (danger at " +
-            SOIL_DANGER +
-            " or below)"
+            " — very wet soil detected"
         );
 
     }
@@ -1452,11 +1492,9 @@ function checkIndividualDanger(
     if (rainDanger) {
 
         reasons.push(
-            "Heavy rain detected: " +
+            "HEAVY RAIN DETECTED: " +
             rain +
-            " (danger at " +
-            RAIN_DANGER +
-            " or below)"
+            " — water/rain is at the danger level"
         );
 
     }
@@ -1465,9 +1503,9 @@ function checkIndividualDanger(
     if (vibrationDanger) {
 
         reasons.push(
-            "Ground vibration detected (" +
+            "GROUND VIBRATION DETECTED: " +
             vibration +
-            ")"
+            " — confirmed by multiple readings"
         );
 
     }
@@ -1476,11 +1514,9 @@ function checkIndividualDanger(
     if (distanceDanger) {
 
         reasons.push(
-            "Possible rock or slope movement: distance is " +
+            "POSSIBLE ROCK/SLOPE MOVEMENT: distance is " +
             distance.toFixed(1) +
-            " cm (danger limit " +
-            DISTANCE_DANGER +
-            " cm)"
+            " cm"
         );
 
     }
@@ -1548,8 +1584,12 @@ function updateReasonBoxes(
         `<b>🌱 Soil Moisture</b><br>` +
         (
             soilDanger
-                ? `DANGER: Value ${soil}. Soil is at or below the danger limit of ${SOIL_DANGER}.`
-                : `SAFE: Value ${soil}. 4095 represents dry soil and does not cause a danger alert.`
+                ? `DANGER: Value ${soil}. Soil is very wet. Your calibrated danger limit is ${SOIL_DANGER} or below.`
+                : soil > SOIL_NORMAL
+                    ? `SAFE: Value ${soil}. Soil is dry.`
+                    : soil > SOIL_WARNING
+                        ? `SAFE: Value ${soil}. Soil moisture is moderate.`
+                        : `WARNING: Value ${soil}. Soil is wet but has not crossed the danger limit of ${SOIL_DANGER}.`
         );
 
 
@@ -1568,8 +1608,10 @@ function updateReasonBoxes(
         `<b>📳 Vibration</b><br>` +
         (
             vibrationDanger
-                ? `DANGER: Ground vibration detected with value ${vibration}.`
-                : `SAFE: No dangerous vibration detected.`
+                ? `DANGER: Ground vibration has been detected in multiple consecutive readings.`
+                : vibration >= VIBRATION_DANGER
+                    ? `CHECKING: Vibration value ${vibration} detected once. Waiting for confirmation.`
+                    : `SAFE: No dangerous vibration detected.`
         );
 
 
@@ -2154,7 +2196,7 @@ function rating(
     if (label === "Vibration") {
 
         return value >= VIBRATION_DANGER
-            ? "🔴 VIBRATION DETECTED"
+            ? "🟠 VIBRATION READING"
             : "🟢 SAFE";
 
     }

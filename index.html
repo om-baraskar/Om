@@ -546,8 +546,8 @@ footer{
         <div class="card sensor-card">
             <div class="sensor-name">Rain Sensor</div>
             <div class="sensor-value" id="rainValue">--</div>
-            <div class="sensor-unit">Sensor status</div>
-            <div class="sensor-state" id="rainState">NOT CONNECTED</div>
+            <div class="sensor-unit">Analog value</div>
+            <div class="sensor-state" id="rainState">WAITING</div>
         </div>
 
         <div class="card sensor-card">
@@ -590,7 +590,7 @@ footer{
         <div class="card graph-card">
             <div class="graph-title">
                 <strong>Rain</strong>
-                <span>DISABLED</span>
+                <span id="rainGraphValue">--</span>
             </div>
 
             <svg class="graph" id="rainGraph"
@@ -629,7 +629,7 @@ footer{
             </p>
 
             <p id="rainReason" style="margin-top:10px">
-                Rain sensor: not connected — ignored.
+                Rain sensor: waiting for data.
             </p>
 
             <p id="vibrationReason" style="margin-top:10px">
@@ -706,17 +706,19 @@ const FIELD_RAIN = 4;
    ========================================================= */
 
 /*
-   SOIL CALIBRATION BASED ON YOUR ACTUAL TEST:
+   SOIL MOISTURE CALIBRATION
 
-   Fully wet / water ≈ 1850
-   Dry ≈ 3382–4000
+   Your actual readings:
 
+   Wet / water      ≈ 1856
+   Dry              ≈ 3382+
+   
    Therefore:
 
-   <= 2000       VERY WET / DANGER
-   2001–2500     WET / WARNING
-   2501–3000     MODERATE
-   > 3000        DRY / SAFE
+   0–2000       VERY WET / DANGER
+   2001–2500    WET / WARNING
+   2501–3000    MODERATE
+   >3000        DRY / SAFE
 */
 
 const SOIL_DANGER = 2000;
@@ -725,35 +727,42 @@ const SOIL_NORMAL = 3000;
 
 
 /*
-   RAIN SENSOR IS CURRENTLY NOT CONNECTED.
+   RAIN SENSOR
 
-   IMPORTANT:
-   We intentionally DO NOT use the rain value
-   for danger detection.
+   Your previous readings:
 
-   This prevents random floating values such as 38
-   from creating HIGH DANGER.
+   Dry       ≈ 4095
+   Wet       ≈ 1500
+   Very wet  ≈ 800
+
+   Therefore:
+
+   0–1000       HEAVY RAIN / DANGER
+   1001–1500    RAIN / WARNING
+   >1500        DRY / SAFE
 */
 
-const RAIN_SENSOR_CONNECTED = false;
+const RAIN_DANGER = 1000;
+const RAIN_WARNING = 1500;
 
 
 /*
-   Distance threshold.
-
-   Only used if a valid distance value is received.
+   DISTANCE SENSOR
 */
 
 const DISTANCE_DANGER = 20;
 
 
 /*
-   Vibration sensor.
+   VIBRATION SENSOR
 
-   The SW420 is a digital sensor.
+   SW420 digital output:
 
-   We require repeated positive readings before
-   declaring vibration danger.
+   0 = stable
+   1 = vibration detected
+
+   Two consecutive positive readings
+   are required for danger.
 */
 
 const VIBRATION_DANGER = 1;
@@ -775,6 +784,8 @@ let alertHistory = [];
 
 let emergencyActive = false;
 
+let lastDangerMessage = "";
+
 
 /* =========================================================
    CREATE RAIN BACKGROUND
@@ -787,8 +798,11 @@ for(let i=0;i<80;i++){
     const drop = document.createElement("span");
 
     drop.style.left = Math.random()*100 + "%";
-    drop.style.animationDuration = (0.5 + Math.random()*1.2) + "s";
-    drop.style.animationDelay = Math.random()*2 + "s";
+    drop.style.animationDuration =
+        (0.5 + Math.random()*1.2) + "s";
+
+    drop.style.animationDelay =
+        Math.random()*2 + "s";
 
     rainContainer.appendChild(drop);
 }
@@ -824,9 +838,10 @@ function addHistory(array,value,max=30){
 function getSoilStatus(value){
 
     if(!isValidNumber(value)){
+
         return {
             text:"NO DATA",
-            type:"",
+            type:"warning",
             danger:false
         };
     }
@@ -838,7 +853,6 @@ function getSoilStatus(value){
             type:"danger",
             danger:true
         };
-
     }
 
     if(value <= SOIL_WARNING){
@@ -848,7 +862,6 @@ function getSoilStatus(value){
             type:"warning",
             danger:false
         };
-
     }
 
     if(value <= SOIL_NORMAL){
@@ -858,7 +871,6 @@ function getSoilStatus(value){
             type:"warning",
             danger:false
         };
-
     }
 
     return {
@@ -879,7 +891,7 @@ function getDistanceStatus(value){
 
         return {
             text:"NO DATA",
-            type:"",
+            type:"warning",
             danger:false
         };
     }
@@ -902,10 +914,51 @@ function getDistanceStatus(value){
 
 
 /* =========================================================
+   RAIN STATUS
+   ========================================================= */
+
+function getRainStatus(value){
+
+    if(!isValidNumber(value)){
+
+        return {
+            text:"NO DATA",
+            type:"warning",
+            danger:false
+        };
+    }
+
+    if(value <= RAIN_DANGER){
+
+        return {
+            text:"HEAVY RAIN / DANGER",
+            type:"danger",
+            danger:true
+        };
+    }
+
+    if(value <= RAIN_WARNING){
+
+        return {
+            text:"RAIN / WARNING",
+            type:"warning",
+            danger:false
+        };
+    }
+
+    return {
+        text:"DRY / SAFE",
+        type:"",
+        danger:false
+    };
+}
+
+
+/* =========================================================
    VIBRATION STATUS
    ========================================================= */
 
-function updateVibrationStatus(value){
+function calculateVibrationStatus(value){
 
     if(!isValidNumber(value)){
 
@@ -913,7 +966,7 @@ function updateVibrationStatus(value){
 
         return {
             text:"NO DATA",
-            type:"",
+            type:"warning",
             danger:false
         };
     }
@@ -934,31 +987,19 @@ function updateVibrationStatus(value){
             type:"danger",
             danger:true
         };
+    }
 
+    if(value >= VIBRATION_DANGER){
+
+        return {
+            text:"DETECTED / VERIFYING",
+            type:"warning",
+            danger:false
+        };
     }
 
     return {
-        text:value === 1 ? "DETECTED / VERIFYING" : "STABLE",
-        type:value === 1 ? "warning" : "",
-        danger:false
-    };
-}
-
-
-/* =========================================================
-   RAIN STATUS
-   ========================================================= */
-
-function getRainStatus(){
-
-    /*
-       Rain sensor is physically disconnected.
-
-       Never evaluate its random analog value.
-    */
-
-    return {
-        text:"NOT CONNECTED",
+        text:"STABLE",
         type:"",
         danger:false
     };
@@ -971,7 +1012,8 @@ function getRainStatus(){
 
 function updateSensorCard(elementId,state){
 
-    const element = document.getElementById(elementId);
+    const element =
+        document.getElementById(elementId);
 
     if(!element) return;
 
@@ -980,6 +1022,7 @@ function updateSensorCard(elementId,state){
     element.className = "sensor-state";
 
     if(state.type){
+
         element.classList.add(state.type);
     }
 }
@@ -992,12 +1035,10 @@ function updateSensorCard(elementId,state){
 function updateReasonBoxes(
     soil,
     distance,
-    vibration
+    rain,
+    vibration,
+    vibrationState
 ){
-
-    const soilState = getSoilStatus(soil);
-    const distanceState = getDistanceStatus(distance);
-    const vibrationState = updateVibrationStatus(vibration);
 
     const soilReason =
         document.getElementById("soilReason");
@@ -1012,27 +1053,39 @@ function updateReasonBoxes(
         document.getElementById("vibrationReason");
 
 
+    /* SOIL */
+
     if(isValidNumber(soil)){
 
         if(soil <= SOIL_DANGER){
 
             soilReason.textContent =
-                "⚠ Soil moisture is VERY WET. The reading is " +
-                soil +
-                ", which is below the danger threshold of " +
+                "⚠ Soil moisture is VERY WET / DANGER. " +
+                "Current reading: " +
+                Math.round(soil) +
+                ". Danger threshold: ≤ " +
                 SOIL_DANGER + ".";
 
         }else if(soil <= SOIL_WARNING){
 
             soilReason.textContent =
-                "⚠ Soil is wet/warning. Current reading: " +
-                soil + ".";
+                "⚠ Soil moisture is WET / WARNING. " +
+                "Current reading: " +
+                Math.round(soil) + ".";
+
+        }else if(soil <= SOIL_NORMAL){
+
+            soilReason.textContent =
+                "⚠ Soil moisture is MODERATE. " +
+                "Current reading: " +
+                Math.round(soil) + ".";
 
         }else{
 
             soilReason.textContent =
-                "✓ Soil moisture is DRY/SAFE. Current reading: " +
-                soil + ".";
+                "✓ Soil moisture is DRY / SAFE. " +
+                "Current reading: " +
+                Math.round(soil) + ".";
         }
 
     }else{
@@ -1042,20 +1095,24 @@ function updateReasonBoxes(
     }
 
 
+    /* DISTANCE */
+
     if(isValidNumber(distance)){
 
-        if(distance <= DISTANCE_DANGER){
+        if(distance > 0 &&
+           distance <= DISTANCE_DANGER){
 
             distanceReason.textContent =
                 "⚠ Distance sensor is reporting " +
-                distance +
-                " cm, which is at or below the danger threshold.";
+                distance.toFixed(1) +
+                " cm. This is at or below the danger threshold.";
 
         }else{
 
             distanceReason.textContent =
                 "✓ Distance sensor is within the configured safe range: " +
-                distance + " cm.";
+                distance.toFixed(1) +
+                " cm.";
         }
 
     }else{
@@ -1065,13 +1122,47 @@ function updateReasonBoxes(
     }
 
 
-    rainReason.textContent =
-        "✓ Rain sensor is NOT CONNECTED. Its reading is completely ignored.";
+    /* RAIN */
 
+    if(isValidNumber(rain)){
+
+        if(rain <= RAIN_DANGER){
+
+            rainReason.textContent =
+                "⚠ Rain sensor indicates HEAVY RAIN / DANGER. " +
+                "Current reading: " +
+                Math.round(rain) +
+                ". Danger threshold: ≤ " +
+                RAIN_DANGER + ".";
+
+        }else if(rain <= RAIN_WARNING){
+
+            rainReason.textContent =
+                "⚠ Rain sensor indicates RAIN / WARNING. " +
+                "Current reading: " +
+                Math.round(rain) + ".";
+
+        }else{
+
+            rainReason.textContent =
+                "✓ Rain sensor indicates DRY / SAFE conditions. " +
+                "Current reading: " +
+                Math.round(rain) + ".";
+        }
+
+    }else{
+
+        rainReason.textContent =
+            "Rain sensor: no valid data.";
+    }
+
+
+    /* VIBRATION */
 
     if(isValidNumber(vibration)){
 
-        if(vibrationDangerCount >= VIBRATION_REQUIRED_READINGS){
+        if(vibrationDangerCount >=
+           VIBRATION_REQUIRED_READINGS){
 
             vibrationReason.textContent =
                 "⚠ Repeated vibration detections have been received.";
@@ -1079,7 +1170,7 @@ function updateReasonBoxes(
         }else if(vibration >= VIBRATION_DANGER){
 
             vibrationReason.textContent =
-                "⚠ Vibration signal detected once. Waiting for confirmation.";
+                "⚠ Vibration signal detected. Waiting for confirmation.";
 
         }else{
 
@@ -1102,15 +1193,9 @@ function updateReasonBoxes(
 function checkIndividualDanger(
     soil,
     distance,
+    rain,
     vibration
 ){
-
-    /*
-       IMPORTANT:
-
-       Rain is NOT included here because the sensor
-       is disconnected.
-    */
 
     const soilDanger =
         isValidNumber(soil) &&
@@ -1124,18 +1209,29 @@ function checkIndividualDanger(
         distance <= DISTANCE_DANGER;
 
 
+    const rainDanger =
+        isValidNumber(rain) &&
+        rain > 0 &&
+        rain <= RAIN_DANGER;
+
+
     const vibrationDanger =
         isValidNumber(vibration) &&
-        vibrationDangerCount >= VIBRATION_REQUIRED_READINGS;
+        vibrationDangerCount >=
+        VIBRATION_REQUIRED_READINGS;
 
 
     return {
+
         soilDanger,
         distanceDanger,
+        rainDanger,
         vibrationDanger,
+
         anyDanger:
             soilDanger ||
             distanceDanger ||
+            rainDanger ||
             vibrationDanger
     };
 }
@@ -1148,6 +1244,7 @@ function checkIndividualDanger(
 function updateOverallStatus(
     soil,
     distance,
+    rain,
     vibration
 ){
 
@@ -1155,15 +1252,20 @@ function updateOverallStatus(
         checkIndividualDanger(
             soil,
             distance,
+            rain,
             vibration
         );
 
 
     const status =
-        document.getElementById("overallStatus");
+        document.getElementById(
+            "overallStatus"
+        );
 
     const message =
-        document.getElementById("statusMessage");
+        document.getElementById(
+            "statusMessage"
+        );
 
 
     status.className = "status";
@@ -1172,40 +1274,91 @@ function updateOverallStatus(
     if(danger.anyDanger){
 
         status.classList.add("danger");
-        status.textContent = "HIGH DANGER";
+
+        status.textContent =
+            "HIGH DANGER";
+
 
         const reasons = [];
 
-        if(danger.soilDanger)
-            reasons.push("very wet soil");
 
-        if(danger.distanceDanger)
-            reasons.push("dangerous distance");
+        if(danger.soilDanger){
 
-        if(danger.vibrationDanger)
-            reasons.push("repeated vibration");
+            reasons.push(
+                "very wet soil (" +
+                Math.round(soil) +
+                ")"
+            );
+        }
 
 
-        message.textContent =
+        if(danger.distanceDanger){
+
+            reasons.push(
+                "dangerous distance (" +
+                distance.toFixed(1) +
+                " cm)"
+            );
+        }
+
+
+        if(danger.rainDanger){
+
+            reasons.push(
+                "heavy rain (" +
+                Math.round(rain) +
+                ")"
+            );
+        }
+
+
+        if(danger.vibrationDanger){
+
+            reasons.push(
+                "repeated vibration"
+            );
+        }
+
+
+        const dangerMessage =
             "Danger detected: " +
             reasons.join(", ") +
             ".";
 
 
-        activateEmergency(
-            "Danger detected: " +
-            reasons.join(", ") +
-            "."
-        );
+        message.textContent =
+            dangerMessage;
+
+
+        /*
+           Emergency screen is only activated
+           when a NEW danger condition appears.
+        */
+
+        if(lastDangerMessage !== dangerMessage){
+
+            lastDangerMessage =
+                dangerMessage;
+
+            activateEmergency(
+                dangerMessage
+            );
+        }
 
 
     }else{
 
         status.classList.add("safe");
-        status.textContent = "SAFE";
+
+        status.textContent =
+            "SAFE";
+
 
         message.textContent =
             "All active monitored sensors are within safe limits.";
+
+
+        lastDangerMessage = "";
     }
 }
 
@@ -1241,7 +1394,10 @@ function updateGraph(
         line.setAttribute("x2","500");
         line.setAttribute("y1",y);
         line.setAttribute("y2",y);
-        line.setAttribute("class","gridline");
+        line.setAttribute(
+            "class",
+            "gridline"
+        );
 
         svg.appendChild(line);
     }
@@ -1250,30 +1406,42 @@ function updateGraph(
     if(data.length < 2) return;
 
 
-    let min = Math.min(...data);
-    let max = Math.max(...data);
+    let min =
+        Math.min(...data);
+
+    let max =
+        Math.max(...data);
+
 
     if(min === max){
+
         min -= 1;
         max += 1;
     }
 
 
-    const points = data.map(
-        (value,index)=>{
+    const points =
+        data.map(
+            (value,index)=>{
 
-            const x =
-                data.length === 1
-                ? 250
-                : index/(data.length-1)*500;
+                const x =
+                    data.length === 1
+                    ? 250
+                    : index /
+                      (data.length - 1) *
+                      500;
 
-            const y =
-                150 -
-                ((value-min)/(max-min))*130;
 
-            return `${x},${y}`;
-        }
-    ).join(" ");
+                const y =
+                    150 -
+                    ((value-min) /
+                    (max-min)) *
+                    130;
+
+
+                return `${x},${y}`;
+            }
+        ).join(" ");
 
 
     const polyline =
@@ -1282,10 +1450,12 @@ function updateGraph(
             "polyline"
         );
 
+
     polyline.setAttribute(
         "points",
         points
     );
+
 
     svg.appendChild(polyline);
 
@@ -1293,14 +1463,20 @@ function updateGraph(
     const lastIndex =
         data.length - 1;
 
+
     const lastX =
         data.length === 1
         ? 250
-        : lastIndex/(data.length-1)*500;
+        : lastIndex /
+          (data.length - 1) *
+          500;
+
 
     const lastY =
         150 -
-        ((data[lastIndex]-min)/(max-min))*130;
+        ((data[lastIndex]-min) /
+        (max-min)) *
+        130;
 
 
     const circle =
@@ -1309,9 +1485,22 @@ function updateGraph(
             "circle"
         );
 
-    circle.setAttribute("cx",lastX);
-    circle.setAttribute("cy",lastY);
-    circle.setAttribute("r","5");
+
+    circle.setAttribute(
+        "cx",
+        lastX
+    );
+
+    circle.setAttribute(
+        "cy",
+        lastY
+    );
+
+    circle.setAttribute(
+        "r",
+        "5"
+    );
+
 
     svg.appendChild(circle);
 }
@@ -1321,20 +1510,28 @@ function updateGraph(
    ALERT HISTORY
    ========================================================= */
 
-function addAlert(message,type="danger"){
+function addAlert(
+    message,
+    type="danger"
+){
 
     const time =
         new Date().toLocaleTimeString();
 
+
     alertHistory.unshift({
+
         message,
         time,
         type
     });
 
+
     if(alertHistory.length > 10){
+
         alertHistory.pop();
     }
+
 
     renderAlertHistory();
 }
@@ -1343,9 +1540,13 @@ function addAlert(message,type="danger"){
 function renderAlertHistory(){
 
     const container =
-        document.getElementById("alertHistory");
+        document.getElementById(
+            "alertHistory"
+        );
+
 
     if(!container) return;
+
 
     if(alertHistory.length === 0){
 
@@ -1365,14 +1566,20 @@ function renderAlertHistory(){
 
             <div class="alert-item">
 
-                <span>${escapeHTML(alert.message)}</span>
+                <span>
+                    ${escapeHTML(
+                        alert.message
+                    )}
+                </span>
 
                 <span class="${
                     alert.type === "danger"
                     ? "alert-danger"
                     : "alert-safe"
                 }">
-                    ${escapeHTML(alert.time)}
+                    ${escapeHTML(
+                        alert.time
+                    )}
                 </span>
 
             </div>
@@ -1400,17 +1607,30 @@ function activateEmergency(message){
 
     if(emergencyActive) return;
 
+
     emergencyActive = true;
 
+
     document
-        .getElementById("emergencyScreen")
+        .getElementById(
+            "emergencyScreen"
+        )
         .classList.add("active");
 
-    document
-        .getElementById("emergencyMessage")
-        .textContent = message;
 
-    addAlert(message,"danger");
+    document
+        .getElementById(
+            "emergencyMessage"
+        )
+        .textContent =
+        message;
+
+
+    addAlert(
+        message,
+        "danger"
+    );
+
 
     speakAlert(message);
 }
@@ -1420,8 +1640,11 @@ function closeEmergency(){
 
     emergencyActive = false;
 
+
     document
-        .getElementById("emergencyScreen")
+        .getElementById(
+            "emergencyScreen"
+        )
         .classList.remove("active");
 }
 
@@ -1432,25 +1655,34 @@ function closeEmergency(){
 
 function speakAlert(message){
 
-    if(!("speechSynthesis" in window)) return;
+    if(!("speechSynthesis" in window))
+        return;
+
 
     try{
 
         window.speechSynthesis.cancel();
+
 
         const speech =
             new SpeechSynthesisUtterance(
                 "Warning. " + message
             );
 
+
         speech.rate = .9;
         speech.pitch = 1;
 
-        window.speechSynthesis.speak(speech);
+
+        window.speechSynthesis.speak(
+            speech
+        );
 
     }catch(error){
 
-        console.log("Speech unavailable");
+        console.log(
+            "Speech unavailable"
+        );
     }
 }
 
@@ -1467,61 +1699,84 @@ function playSiren(){
             window.AudioContext ||
             window.webkitAudioContext;
 
+
         if(!AudioContext) return;
+
 
         const audioContext =
             new AudioContext();
 
+
         const oscillator =
             audioContext.createOscillator();
+
 
         const gain =
             audioContext.createGain();
 
-        oscillator.type = "sawtooth";
+
+        oscillator.type =
+            "sawtooth";
+
 
         oscillator.frequency.setValueAtTime(
             600,
             audioContext.currentTime
         );
 
+
         oscillator.frequency.linearRampToValueAtTime(
             1100,
             audioContext.currentTime + .5
         );
+
 
         oscillator.frequency.linearRampToValueAtTime(
             600,
             audioContext.currentTime + 1
         );
 
+
         gain.gain.setValueAtTime(
             .12,
             audioContext.currentTime
         );
+
 
         gain.gain.exponentialRampToValueAtTime(
             .001,
             audioContext.currentTime + 1
         );
 
+
         oscillator.connect(gain);
-        gain.connect(audioContext.destination);
+
+        gain.connect(
+            audioContext.destination
+        );
+
 
         oscillator.start();
+
+
         oscillator.stop(
             audioContext.currentTime + 1
         );
 
+
     }catch(error){
 
-        console.log("Siren unavailable");
+        console.log(
+            "Siren unavailable"
+        );
     }
 }
 
 
 document
-    .getElementById("sirenButton")
+    .getElementById(
+        "sirenButton"
+    )
     .addEventListener(
         "click",
         playSiren
@@ -1541,12 +1796,16 @@ async function loadData(){
 
 
         const response =
-            await fetch(url,{
-                cache:"no-store"
-            });
+            await fetch(
+                url,
+                {
+                    cache:"no-store"
+                }
+            );
 
 
         if(!response.ok){
+
             throw new Error(
                 "ThingSpeak connection failed"
             );
@@ -1569,19 +1828,32 @@ async function loadData(){
         }
 
 
-        document
-            .getElementById("connectionState")
-            .textContent = "CONNECTED";
-
-
-        document
-            .getElementById("connectionState")
-            .className = "sensor-state";
-
+        /* =========================================
+           CONNECTION STATUS
+           ========================================= */
 
         document
-            .getElementById("healthValue")
-            .textContent = "100%";
+            .getElementById(
+                "connectionState"
+            )
+            .textContent =
+            "CONNECTED";
+
+
+        document
+            .getElementById(
+                "connectionState"
+            )
+            .className =
+            "sensor-state";
+
+
+        document
+            .getElementById(
+                "healthValue"
+            )
+            .textContent =
+            "100%";
 
 
         const feeds =
@@ -1589,7 +1861,7 @@ async function loadData(){
 
 
         /* =========================================
-           HISTORY
+           RESET HISTORY
            ========================================= */
 
         soilHistory = [];
@@ -1598,55 +1870,61 @@ async function loadData(){
         vibrationHistory = [];
 
 
-        feeds.forEach(feed=>{
+        feeds.forEach(
+            feed => {
 
-            const soil =
-                parseFloat(feed.field2);
-
-            const distance =
-                parseFloat(feed.field1);
-
-            const vibration =
-                parseFloat(feed.field3);
-
-            const rain =
-                parseFloat(feed.field4);
+                const soil =
+                    parseFloat(
+                        feed[`field${FIELD_SOIL}`]
+                    );
 
 
-            addHistory(
-                soilHistory,
-                soil
-            );
+                const distance =
+                    parseFloat(
+                        feed[`field${FIELD_DISTANCE}`]
+                    );
 
-            addHistory(
-                distanceHistory,
-                distance
-            );
 
-            addHistory(
-                vibrationHistory,
-                vibration
-            );
+                const vibration =
+                    parseFloat(
+                        feed[`field${FIELD_VIBRATION}`]
+                    );
 
-            /*
-               Keep rain history only for display
-               if a value happens to exist.
 
-               It will NEVER be used for danger.
-            */
+                const rain =
+                    parseFloat(
+                        feed[`field${FIELD_RAIN}`]
+                    );
 
-            if(RAIN_SENSOR_CONNECTED){
+
+                addHistory(
+                    soilHistory,
+                    soil
+                );
+
+
+                addHistory(
+                    distanceHistory,
+                    distance
+                );
+
+
+                addHistory(
+                    vibrationHistory,
+                    vibration
+                );
+
 
                 addHistory(
                     rainHistory,
                     rain
                 );
             }
-        });
+        );
 
 
         /* =========================================
-           LATEST VALUES
+           LATEST FEED
            ========================================= */
 
         const latest =
@@ -1654,35 +1932,64 @@ async function loadData(){
 
 
         const soil =
-            parseFloat(latest.field2);
+            parseFloat(
+                latest[`field${FIELD_SOIL}`]
+            );
+
 
         const distance =
-            parseFloat(latest.field1);
+            parseFloat(
+                latest[`field${FIELD_DISTANCE}`]
+            );
+
 
         const vibration =
-            parseFloat(latest.field3);
+            parseFloat(
+                latest[`field${FIELD_VIBRATION}`]
+            );
+
 
         const rain =
-            parseFloat(latest.field4);
+            parseFloat(
+                latest[`field${FIELD_RAIN}`]
+            );
+
+
+        console.log(
+            "LATEST THINGSPEAK VALUES:",
+            {
+                distance,
+                soil,
+                vibration,
+                rain
+            }
+        );
 
 
         /* =========================================
-           DISPLAY SOIL
+           VIBRATION
+
+           Calculate exactly ONCE per update.
            ========================================= */
 
-        const soilElement =
-            document.getElementById("soilValue");
+        const vibrationStatus =
+            calculateVibrationStatus(
+                vibration
+            );
 
 
-        if(isValidNumber(soil)){
+        /* =========================================
+           SOIL DISPLAY
+           ========================================= */
 
-            soilElement.textContent =
-                Math.round(soil);
-
-        }else{
-
-            soilElement.textContent = "--";
-        }
+        document
+            .getElementById(
+                "soilValue"
+            )
+            .textContent =
+            isValidNumber(soil)
+            ? Math.round(soil)
+            : "--";
 
 
         const soilStatus =
@@ -1696,7 +2003,9 @@ async function loadData(){
 
 
         document
-            .getElementById("soilGraphValue")
+            .getElementById(
+                "soilGraphValue"
+            )
             .textContent =
             isValidNumber(soil)
             ? Math.round(soil)
@@ -1704,11 +2013,13 @@ async function loadData(){
 
 
         /* =========================================
-           DISPLAY DISTANCE
+           DISTANCE DISPLAY
            ========================================= */
 
         document
-            .getElementById("distanceValue")
+            .getElementById(
+                "distanceValue"
+            )
             .textContent =
             isValidNumber(distance)
             ? distance.toFixed(1)
@@ -1716,7 +2027,9 @@ async function loadData(){
 
 
         const distanceStatus =
-            getDistanceStatus(distance);
+            getDistanceStatus(
+                distance
+            );
 
 
         updateSensorCard(
@@ -1726,7 +2039,9 @@ async function loadData(){
 
 
         document
-            .getElementById("distanceGraphValue")
+            .getElementById(
+                "distanceGraphValue"
+            )
             .textContent =
             isValidNumber(distance)
             ? distance.toFixed(1) + " cm"
@@ -1734,45 +2049,51 @@ async function loadData(){
 
 
         /* =========================================
-           DISPLAY RAIN
+           RAIN DISPLAY
            ========================================= */
 
-        /*
-           IMPORTANT:
-
-           Even if ThingSpeak says rain = 38,
-           we DO NOT display it as a real sensor
-           measurement because the sensor is not connected.
-        */
-
         document
-            .getElementById("rainValue")
+            .getElementById(
+                "rainValue"
+            )
             .textContent =
-            "N/C";
+            isValidNumber(rain)
+            ? Math.round(rain)
+            : "--";
+
+
+        const rainStatus =
+            getRainStatus(rain);
 
 
         updateSensorCard(
             "rainState",
-            getRainStatus()
+            rainStatus
         );
 
 
+        document
+            .getElementById(
+                "rainGraphValue"
+            )
+            .textContent =
+            isValidNumber(rain)
+            ? Math.round(rain)
+            : "--";
+
+
         /* =========================================
-           DISPLAY VIBRATION
+           VIBRATION DISPLAY
            ========================================= */
 
         document
-            .getElementById("vibrationValue")
+            .getElementById(
+                "vibrationValue"
+            )
             .textContent =
             isValidNumber(vibration)
             ? vibration
             : "--";
-
-
-        const vibrationStatus =
-            updateVibrationStatus(
-                vibration
-            );
 
 
         updateSensorCard(
@@ -1782,7 +2103,9 @@ async function loadData(){
 
 
         document
-            .getElementById("vibrationGraphValue")
+            .getElementById(
+                "vibrationGraphValue"
+            )
             .textContent =
             isValidNumber(vibration)
             ? vibration
@@ -1805,14 +2128,9 @@ async function loadData(){
         );
 
 
-        /*
-           Rain graph remains empty because
-           the rain sensor is disconnected.
-        */
-
         updateGraph(
             "rainGraph",
-            []
+            rainHistory
         );
 
 
@@ -1829,7 +2147,9 @@ async function loadData(){
         updateReasonBoxes(
             soil,
             distance,
-            vibration
+            rain,
+            vibration,
+            vibrationStatus
         );
 
 
@@ -1840,6 +2160,7 @@ async function loadData(){
         updateOverallStatus(
             soil,
             distance,
+            rain,
             vibration
         );
 
@@ -1850,12 +2171,16 @@ async function loadData(){
 
         const createdAt =
             latest.created_at
-            ? new Date(latest.created_at)
+            ? new Date(
+                latest.created_at
+              )
             : new Date();
 
 
         document
-            .getElementById("systemTime")
+            .getElementById(
+                "systemTime"
+            )
             .textContent =
             "Last sensor update: " +
             createdAt.toLocaleString();
@@ -1863,29 +2188,40 @@ async function loadData(){
 
     }catch(error){
 
-        console.error(error);
+        console.error(
+            "ThingSpeak Error:",
+            error
+        );
 
 
         document
-            .getElementById("connectionState")
+            .getElementById(
+                "connectionState"
+            )
             .textContent =
             "OFFLINE";
 
 
         document
-            .getElementById("connectionState")
+            .getElementById(
+                "connectionState"
+            )
             .className =
             "sensor-state warning";
 
 
         document
-            .getElementById("healthValue")
+            .getElementById(
+                "healthValue"
+            )
             .textContent =
             "OFFLINE";
 
 
         document
-            .getElementById("systemTime")
+            .getElementById(
+                "systemTime"
+            )
             .textContent =
             "Unable to receive live ThingSpeak data.";
     }

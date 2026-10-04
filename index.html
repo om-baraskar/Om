@@ -5,108 +5,2223 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#07111f">
+
 <title>Landslide Intelligence & Monitoring Platform</title>
 
-<link rel="stylesheet" href="css/style.css">
+<style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(0, 180, 255, .16), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(0, 255, 160, .10), transparent 25%),
+        linear-gradient(180deg, #030914 0%, #071524 48%, #02070d 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   MOUNTAIN BACKGROUND
+========================================================= */
+
+.sky {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 15%,
+        rgba(80,180,255,.15),
+        transparent 35%);
+}
+
+.moon {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    right: 10%;
+    top: 8%;
+    background: rgba(220,245,255,.9);
+    box-shadow:
+        0 0 35px rgba(150,220,255,.5),
+        0 0 100px rgba(80,180,255,.18);
+}
+
+.mountain {
+    position: absolute;
+    bottom: -20px;
+    width: 0;
+    height: 0;
+    border-left: 300px solid transparent;
+    border-right: 300px solid transparent;
+    border-bottom: 520px solid #07131f;
+    filter: drop-shadow(0 0 15px rgba(0,0,0,.8));
+}
+
+.m1 {
+    left: -160px;
+}
+
+.m2 {
+    left: 18%;
+    border-left-width: 420px;
+    border-right-width: 420px;
+    border-bottom-width: 610px;
+    border-bottom-color: #0a1a29;
+}
+
+.m3 {
+    right: -220px;
+    border-left-width: 450px;
+    border-right-width: 450px;
+    border-bottom-width: 580px;
+    border-bottom-color: #06111c;
+}
+
+.mountain::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -20px;
+    top: 40px;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 55px solid rgba(220,245,255,.35);
+}
+
+.fog {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: 110px;
+    height: 100px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(150,220,255,.08),
+        rgba(255,255,255,.06),
+        transparent
+    );
+    filter: blur(18px);
+    animation: fogMove 12s linear infinite alternate;
+}
+
+@keyframes fogMove {
+    from { transform: translateX(-4%); }
+    to   { transform: translateX(4%); }
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(18px);
+    background: rgba(3,10,19,.72);
+    border-bottom: 1px solid rgba(100,210,255,.16);
+}
+
+.header-inner {
+    max-width: 1400px;
+    margin: auto;
+    padding: 16px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    background:
+        linear-gradient(135deg,#00c6ff,#0072ff);
+    box-shadow: 0 0 25px rgba(0,180,255,.35);
+}
+
+.brand h1 {
+    font-size: 20px;
+    letter-spacing: .5px;
+}
+
+.brand p {
+    color: #91afc8;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.status-area {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.status-pill {
+    padding: 9px 13px;
+    border-radius: 30px;
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.10);
+    font-size: 12px;
+    color: #a9c4da;
+}
+
+.status-pill span {
+    color: #42ff9b;
+    font-weight: bold;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+main {
+    max-width: 1400px;
+    margin: auto;
+    padding: 28px 20px 70px;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    padding: 45px 10px 28px;
+    text-align: center;
+}
+
+.hero .tag {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 30px;
+    background: rgba(0,200,255,.08);
+    border: 1px solid rgba(0,200,255,.25);
+    color: #69dcff;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+}
+
+.hero h2 {
+    font-size: clamp(32px, 6vw, 68px);
+    line-height: 1;
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #6de4ff,
+        #63ffb0
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    max-width: 760px;
+    margin: 18px auto 0;
+    color: #9cb5ca;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   RISK PANEL
+========================================================= */
+
+.risk-panel {
+    margin-top: 25px;
+    padding: 28px;
+    border-radius: 26px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(10,32,50,.88),
+            rgba(4,15,27,.90)
+        );
+    border: 1px solid rgba(100,220,255,.15);
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.04);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 30px;
+}
+
+.risk-title {
+    color: #8ca9bd;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.risk-value {
+    font-size: clamp(48px, 8vw, 85px);
+    font-weight: 900;
+    margin-top: 8px;
+    color: #42ff9b;
+    text-shadow: 0 0 30px rgba(66,255,155,.35);
+}
+
+.risk-message {
+    margin-top: 7px;
+    color: #a9bfd0;
+}
+
+.risk-meter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.meter {
+    width: min(280px, 80vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+        conic-gradient(
+            #42ff9b 0deg,
+            #42ff9b 80deg,
+            rgba(255,255,255,.07) 80deg,
+            rgba(255,255,255,.07) 360deg
+        );
+    position: relative;
+    box-shadow: 0 0 50px rgba(66,255,155,.12);
+}
+
+.meter::before {
+    content: "";
+    position: absolute;
+    width: 78%;
+    height: 78%;
+    border-radius: 50%;
+    background: #071421;
+}
+
+.meter-content {
+    position: relative;
+    text-align: center;
+}
+
+.meter-content strong {
+    font-size: 30px;
+}
+
+.meter-content small {
+    display: block;
+    color: #7894a8;
+    margin-top: 5px;
+}
+
+/* =========================================================
+   SENSOR GRID
+========================================================= */
+
+.section-title {
+    margin: 45px 0 18px;
+    font-size: 22px;
+}
+
+.section-title span {
+    color: #53dbff;
+}
+
+.sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
+}
+
+.sensor-card {
+    padding: 22px;
+    min-height: 160px;
+    border-radius: 22px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,38,58,.82),
+            rgba(5,16,28,.82)
+        );
+    border: 1px solid rgba(100,200,255,.12);
+    position: relative;
+    overflow: hidden;
+    transition: .25s;
+}
+
+.sensor-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(90,220,255,.35);
+    box-shadow: 0 15px 40px rgba(0,0,0,.25);
+}
+
+.sensor-card::after {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    right: -35px;
+    bottom: -40px;
+    border-radius: 50%;
+    background: rgba(0,200,255,.08);
+    filter: blur(10px);
+}
+
+.sensor-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sensor-icon {
+    font-size: 28px;
+}
+
+.sensor-name {
+    color: #91aabd;
+    font-size: 13px;
+}
+
+.sensor-value {
+    font-size: 36px;
+    font-weight: 800;
+    margin-top: 16px;
+}
+
+.sensor-unit {
+    color: #7190a5;
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+.sensor-state {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    background: rgba(66,255,155,.08);
+    color: #42ff9b;
+}
+
+/* =========================================================
+   GRAPH
+========================================================= */
+
+.graph-container {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 22px;
+    background: rgba(5,18,31,.82);
+    border: 1px solid rgba(100,200,255,.12);
+}
+
+canvas {
+    width: 100%;
+    height: 260px;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+}
+
+.action-card {
+    padding: 22px;
+    border-radius: 20px;
+    background: rgba(8,25,40,.85);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.action-card h3 {
+    margin-bottom: 8px;
+}
+
+.action-card p {
+    color: #839caf;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+button,
+.file-label {
+    margin-top: 17px;
+    display: inline-block;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg,#008cff,#00c6ff);
+    box-shadow: 0 8px 25px rgba(0,160,255,.20);
+}
+
+button:hover,
+.file-label:hover {
+    transform: translateY(-2px);
+}
+
+input[type="file"] {
+    display: none;
+}
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+.location-box {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(8,25,40,.85);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.location-status {
+    color: #8ca7ba;
+    margin-top: 8px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert-box {
+    position: fixed;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 500;
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: rgba(100,15,20,.94);
+    border: 1px solid rgba(255,90,90,.55);
+    box-shadow: 0 15px 60px rgba(255,0,0,.22);
+    display: none;
+    animation: alertPulse 1.2s infinite alternate;
+}
+
+.alert-box.show {
+    display: block;
+}
+
+@keyframes alertPulse {
+    from { box-shadow: 0 15px 50px rgba(255,0,0,.15); }
+    to { box-shadow: 0 15px 80px rgba(255,0,0,.42); }
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+    margin-top: 60px;
+    padding: 25px;
+    text-align: center;
+    color: #668094;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width: 900px) {
+
+    .risk-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .sensor-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 600px) {
+
+    .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .status-area {
+        justify-content: flex-start;
+    }
+
+    main {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    .hero {
+        padding-top: 30px;
+    }
+
+    .sensor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .risk-panel {
+        padding: 22px;
+    }
+
+    .moon {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
-<header>
-    <h1>Sanjivani College</h1>
-    <p>Landslide Intelligence & Monitoring Platform</p>
+<!-- ======================================================
+     BACKGROUND
+====================================================== -->
 
-    <span id="connection">
-        ● CONNECTING...
-    </span>
+<div class="sky">
+    <div class="moon"></div>
+    <div class="mountain m1"></div>
+    <div class="mountain m2"></div>
+    <div class="mountain m3"></div>
+    <div class="fog"></div>
+</div>
+
+
+<!-- ======================================================
+     HEADER
+====================================================== -->
+
+<header>
+
+<div class="header-inner">
+
+    <div class="brand">
+
+        <div class="logo">
+            🏔️
+        </div>
+
+        <div>
+            <h1>Sanjivani College</h1>
+
+            <p>
+                Smart Landslide Monitoring System
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="status-area">
+
+        <div class="status-pill">
+            ThingSpeak:
+            <span id="connectionStatus">
+                CONNECTING
+            </span>
+        </div>
+
+        <div class="status-pill">
+            Location:
+            <span id="locationStatus">
+                OFF
+            </span>
+        </div>
+
+        <div class="status-pill">
+            Alerts:
+            <span id="notificationStatus">
+                OFF
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
 </header>
 
 
-<section class="risk">
+<!-- ======================================================
+     MAIN
+====================================================== -->
 
-    <h2>Current Risk</h2>
+<main>
 
-    <div id="riskLevel">
-        LOADING
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="tag">
+        LIVE ENVIRONMENTAL INTELLIGENCE
     </div>
 
-    <p id="lastUpdate">
-        Waiting for sensor data...
+    <h2>
+        Landslide Intelligence
+        & Monitoring
+    </h2>
+
+    <p>
+        Real-time environmental monitoring using
+        IoT sensors, ThingSpeak data and intelligent
+        risk detection.
     </p>
 
 </section>
 
 
-<section class="sensors">
+<!-- ======================================================
+     RISK
+====================================================== -->
 
-    <div class="card">
-        <h3>🌧 Rain</h3>
-        <strong id="rain">--</strong>
-        <span>mm</span>
+<section class="risk-panel">
+
+    <div>
+
+        <div class="risk-title">
+            Current Site Risk
+        </div>
+
+        <div
+            id="riskValue"
+            class="risk-value">
+            SAFE
+        </div>
+
+        <p
+            id="riskMessage"
+            class="risk-message">
+            All monitored parameters are currently
+            within safe limits.
+        </p>
+
     </div>
 
-    <div class="card">
-        <h3>💧 Soil</h3>
-        <strong id="soil">--</strong>
-        <span>%</span>
-    </div>
 
-    <div class="card">
-        <h3>📳 Vibration</h3>
-        <strong id="vibration">--</strong>
-        <span>/ 5</span>
-    </div>
+    <div class="risk-meter">
 
-    <div class="card">
-        <h3>📏 Distance</h3>
-        <strong id="distance">--</strong>
-        <span>cm</span>
-    </div>
+        <div
+            class="meter"
+            id="riskMeter">
 
-    <div class="card">
-        <h3>🌡 Temperature</h3>
-        <strong id="temperature">--</strong>
-        <span>°C</span>
-    </div>
+            <div class="meter-content">
 
-    <div class="card">
-        <h3>💨 Humidity</h3>
-        <strong id="humidity">--</strong>
-        <span>%</span>
+                <strong id="riskScore">
+                    0%
+                </strong>
+
+                <small>
+                    Risk Index
+                </small>
+
+            </div>
+
+        </div>
+
     </div>
 
 </section>
 
 
-<section class="photo">
+<!-- ======================================================
+     SENSOR SECTION
+====================================================== -->
 
-    <h2>📷 Report Site Condition</h2>
+<h2 class="section-title">
+    <span>01</span>
+    Live Sensor Intelligence
+</h2>
 
-    <input
-        type="file"
-        id="photo"
-        accept="image/*"
-        capture="environment">
 
-    <textarea
-        id="description"
-        placeholder="Describe the site condition...">
-    </textarea>
+<section class="sensor-grid">
 
-    <button onclick="uploadPhoto()">
-        SUBMIT PHOTO
+
+    <!-- RAIN -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-top">
+
+            <div class="sensor-icon">
+                🌧️
+            </div>
+
+            <div class="sensor-name">
+                RAINFALL
+            </div>
+
+        </div>
+
+        <div>
+            <span
+                class="sensor-value"
+                id="rain">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                mm
+            </span>
+        </div>
+
+        <div
+            id="rainState"
+            class="sensor-state">
+            WAITING
+        </div>
+
+    </div>
+
+
+    <!-- SOIL -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-top">
+
+            <div class="sensor-icon">
+                💧
+            </div>
+
+            <div class="sensor-name">
+                SOIL MOISTURE
+            </div>
+
+        </div>
+
+        <div>
+
+            <span
+                class="sensor-value"
+                id="soil">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                %
+            </span>
+
+        </div>
+
+        <div
+            id="soilState"
+            class="sensor-state">
+            WAITING
+        </div>
+
+    </div>
+
+
+    <!-- VIBRATION -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-top">
+
+            <div class="sensor-icon">
+                📳
+            </div>
+
+            <div class="sensor-name">
+                VIBRATION
+            </div>
+
+        </div>
+
+        <div>
+
+            <span
+                class="sensor-value"
+                id="vibration">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                / 5
+            </span>
+
+        </div>
+
+        <div
+            id="vibrationState"
+            class="sensor-state">
+            WAITING
+        </div>
+
+    </div>
+
+
+    <!-- DISTANCE -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-top">
+
+            <div class="sensor-icon">
+                📏
+            </div>
+
+            <div class="sensor-name">
+                DISTANCE
+            </div>
+
+        </div>
+
+        <div>
+
+            <span
+                class="sensor-value"
+                id="distance">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                cm
+            </span>
+
+        </div>
+
+        <div
+            id="distanceState"
+            class="sensor-state">
+            WAITING
+        </div>
+
+    </div>
+
+
+    <!-- TEMPERATURE -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-top">
+
+            <div class="sensor-icon">
+                🌡️
+            </div>
+
+            <div class="sensor-name">
+                TEMPERATURE
+            </div>
+
+        </div>
+
+        <div>
+
+            <span
+                class="sensor-value"
+                id="temperature">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                °C
+            </span>
+
+        </div>
+
+        <div
+            id="temperatureState"
+            class="sensor-state">
+            WAITING
+        </div>
+
+    </div>
+
+
+    <!-- HUMIDITY -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-top">
+
+            <div class="sensor-icon">
+                💨
+            </div>
+
+            <div class="sensor-name">
+                HUMIDITY
+            </div>
+
+        </div>
+
+        <div>
+
+            <span
+                class="sensor-value"
+                id="humidity">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                %
+            </span>
+
+        </div>
+
+        <div
+            id="humidityState"
+            class="sensor-state">
+            WAITING
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     GRAPH
+====================================================== -->
+
+<h2 class="section-title">
+    <span>02</span>
+    Live Environmental Trend
+</h2>
+
+
+<div class="graph-container">
+
+    <canvas id="sensorGraph"></canvas>
+
+</div>
+
+
+<!-- ======================================================
+     CONTROL ACTIONS
+====================================================== -->
+
+<h2 class="section-title">
+    <span>03</span>
+    Smart Controls
+</h2>
+
+
+<section class="action-grid">
+
+
+    <!-- LOCATION -->
+
+    <div class="action-card">
+
+        <h3>
+            📍 Site Location
+        </h3>
+
+        <p>
+            Allow the monitoring platform to
+            access your approximate location.
+        </p>
+
+        <button onclick="enableLocation()">
+            ENABLE LOCATION
+        </button>
+
+        <div
+            id="locationText"
+            class="location-status">
+            Location is disabled.
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATION -->
+
+    <div class="action-card">
+
+        <h3>
+            🔔 Emergency Notifications
+        </h3>
+
+        <p>
+            Enable browser notifications so the
+            dashboard can warn you when a high-risk
+            condition is detected.
+        </p>
+
+        <button onclick="enableNotifications()">
+            ENABLE ALERTS
+        </button>
+
+        <div
+            id="notificationText"
+            class="location-status">
+            Notifications are disabled.
+        </div>
+
+    </div>
+
+
+    <!-- CAMERA -->
+
+    <div class="action-card">
+
+        <h3>
+            📷 Site Photograph
+        </h3>
+
+        <p>
+            Capture or select a photograph of the
+            monitored slope for future analysis.
+        </p>
+
+        <label class="file-label">
+
+            CAPTURE / SELECT PHOTO
+
+            <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                id="sitePhoto"
+                onchange="photoSelected(event)">
+
+        </label>
+
+        <div
+            id="photoText"
+            class="location-status">
+            No photograph selected.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     LOCATION DATA
+====================================================== -->
+
+<div class="location-box">
+
+    <h3>
+        📍 Monitoring Location
+    </h3>
+
+    <div
+        id="coordinates"
+        class="location-status">
+        Location permission has not been enabled.
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ADMIN
+====================================================== -->
+
+<section
+    class="action-card"
+    style="margin-top:20px;">
+
+    <h3>
+        🔐 Administration
+    </h3>
+
+    <p>
+        Authorized administrators can access the
+        private monitoring control center.
+    </p>
+
+    <button
+        onclick="window.location.href='admin.html'">
+
+        OPEN ADMIN DASHBOARD
+
     </button>
 
 </section>
 
 
 <footer>
-    Developed by Om Baraskar
+
+    <p>
+        Sanjivani College • Smart Landslide Monitoring System
+    </p>
+
+    <p style="margin-top:8px;">
+        Developed by Om Baraskar
+    </p>
+
 </footer>
 
+</main>
 
-<script src="js/thingspeak.js"></script>
-<script src="js/upload.js"></script>
+
+<!-- ======================================================
+     EMERGENCY ALERT
+====================================================== -->
+
+<div
+    id="alertBox"
+    class="alert-box">
+
+    <strong>
+        🚨 HIGH-RISK LANDSLIDE CONDITION
+    </strong>
+
+    <p
+        id="alertMessage"
+        style="margin-top:7px;">
+        A monitored parameter has crossed
+        the configured warning threshold.
+    </p>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   THINGSPEAK CONFIGURATION
+========================================================= */
+
+const CHANNEL_ID = "3456662";
+
+/*
+   CURRENT FIELDS
+
+   Field 1 = Distance
+   Field 2 = Soil
+   Field 3 = Vibration
+   Field 4 = Rain
+
+   NEW FIELDS
+
+   Field 5 = Temperature
+   Field 6 = Humidity
+*/
+
+const FIELD_DISTANCE = "field1";
+const FIELD_SOIL = "field2";
+const FIELD_VIBRATION = "field3";
+const FIELD_RAIN = "field4";
+const FIELD_TEMPERATURE = "field5";
+const FIELD_HUMIDITY = "field6";
+
+
+/* =========================================================
+   THRESHOLDS
+   CHANGE THESE AFTER REAL SENSOR TESTING
+========================================================= */
+
+const LIMITS = {
+
+    soil: 700,
+
+    vibration: 4,
+
+    /*
+       Adjust according to your real rain
+       sensor's calibration.
+    */
+
+    rain: 80,
+
+    /*
+       Distance threshold depends on how
+       your HC-SR04 is mounted.
+    */
+
+    distance: 5
+
+};
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+let history = [];
+
+let currentRisk = "SAFE";
+
+let lastNotificationRisk = "SAFE";
+
+
+/* =========================================================
+   GET THINGSPEAK DATA
+========================================================= */
+
+async function getSensorData() {
+
+    const url =
+        `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=20`;
+
+    try {
+
+        const response =
+            await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("ThingSpeak unavailable");
+        }
+
+        const data =
+            await response.json();
+
+        if (!data.feeds || data.feeds.length === 0) {
+            throw new Error("No data");
+        }
+
+        const latest =
+            data.feeds[data.feeds.length - 1];
+
+
+        /* READ VALUES */
+
+        const distance =
+            Number(latest[FIELD_DISTANCE]);
+
+        const soil =
+            Number(latest[FIELD_SOIL]);
+
+        const vibration =
+            Number(latest[FIELD_VIBRATION]);
+
+        const rain =
+            Number(latest[FIELD_RAIN]);
+
+        const temperature =
+            Number(latest[FIELD_TEMPERATURE]);
+
+        const humidity =
+            Number(latest[FIELD_HUMIDITY]);
+
+
+        /* DISPLAY */
+
+        setValue("distance", distance);
+        setValue("soil", soil);
+        setValue("vibration", vibration);
+        setValue("rain", rain);
+        setValue("temperature", temperature);
+        setValue("humidity", humidity);
+
+
+        /* CONNECTION */
+
+        document.getElementById(
+            "connectionStatus"
+        ).textContent = "ONLINE";
+
+
+        /* SENSOR STATUS */
+
+        sensorState(
+            "distanceState",
+            distance,
+            LIMITS.distance,
+            "Distance"
+        );
+
+        sensorState(
+            "soilState",
+            soil,
+            LIMITS.soil,
+            "Soil"
+        );
+
+        sensorState(
+            "vibrationState",
+            vibration,
+            LIMITS.vibration,
+            "Vibration"
+        );
+
+        sensorState(
+            "rainState",
+            rain,
+            LIMITS.rain,
+            "Rain"
+        );
+
+        document.getElementById(
+            "temperatureState"
+        ).textContent =
+            Number.isFinite(temperature)
+            ? "LIVE"
+            : "WAITING";
+
+        document.getElementById(
+            "humidityState"
+        ).textContent =
+            Number.isFinite(humidity)
+            ? "LIVE"
+            : "WAITING";
+
+
+        /* SAVE HISTORY */
+
+        history = data.feeds.map(feed => {
+
+            return {
+
+                time: new Date(feed.created_at),
+
+                rain:
+                    Number(feed.field4) || 0,
+
+                soil:
+                    Number(feed.field2) || 0
+
+            };
+
+        });
+
+
+        drawGraph();
+
+        calculateRisk({
+            distance,
+            soil,
+            vibration,
+            rain,
+            temperature,
+            humidity
+        });
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "connectionStatus"
+        ).textContent = "OFFLINE";
+
+    }
+
+}
+
+
+/* =========================================================
+   DISPLAY HELPER
+========================================================= */
+
+function setValue(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+    if (
+        value === undefined ||
+        value === null ||
+        Number.isNaN(value)
+    ) {
+
+        element.textContent = "--";
+
+    } else {
+
+        element.textContent =
+            Number(value).toFixed(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   SENSOR STATE
+========================================================= */
+
+function sensorState(
+    elementId,
+    value,
+    limit,
+    name
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+    if (!Number.isFinite(value)) {
+
+        element.textContent =
+            "WAITING";
+
+        return;
+
+    }
+
+    if (value >= limit) {
+
+        element.textContent =
+            "HIGH";
+
+    } else {
+
+        element.textContent =
+            "NORMAL";
+
+    }
+
+}
+
+
+/* =========================================================
+   RISK ENGINE
+========================================================= */
+
+function calculateRisk(data) {
+
+    let dangerCount = 0;
+
+    let reasons = [];
+
+
+    /*
+       Soil
+    */
+
+    if (
+        Number.isFinite(data.soil) &&
+        data.soil >= LIMITS.soil
+    ) {
+
+        dangerCount++;
+
+        reasons.push(
+            "soil moisture is high"
+        );
+
+    }
+
+
+    /*
+       Vibration
+    */
+
+    if (
+        Number.isFinite(data.vibration) &&
+        data.vibration >= LIMITS.vibration
+    ) {
+
+        dangerCount++;
+
+        reasons.push(
+            "strong vibration detected"
+        );
+
+    }
+
+
+    /*
+       Rain
+    */
+
+    if (
+        Number.isFinite(data.rain) &&
+        data.rain >= LIMITS.rain
+    ) {
+
+        dangerCount++;
+
+        reasons.push(
+            "heavy rainfall detected"
+        );
+
+    }
+
+
+    /*
+       Distance
+
+       Only use this threshold if your
+       distance sensor arrangement makes
+       this interpretation valid.
+    */
+
+    if (
+        Number.isFinite(data.distance) &&
+        data.distance <= LIMITS.distance
+    ) {
+
+        dangerCount++;
+
+        reasons.push(
+            "distance threshold exceeded"
+        );
+
+    }
+
+
+    let risk = "SAFE";
+
+    let score = 0;
+
+
+    if (dangerCount === 0) {
+
+        risk = "SAFE";
+        score = 10;
+
+    }
+
+    else if (dangerCount === 1) {
+
+        risk = "WATCH";
+        score = 40;
+
+    }
+
+    else if (dangerCount === 2) {
+
+        risk = "WARNING";
+        score = 70;
+
+    }
+
+    else {
+
+        risk = "CRITICAL";
+        score = 95;
+
+    }
+
+
+    currentRisk = risk;
+
+    updateRiskUI(
+        risk,
+        score,
+        reasons
+    );
+
+
+    /*
+       Notification only when risk
+       becomes WARNING or CRITICAL.
+    */
+
+    if (
+        risk === "WARNING" ||
+        risk === "CRITICAL"
+    ) {
+
+        if (
+            lastNotificationRisk !== risk
+        ) {
+
+            sendRiskNotification(
+                risk,
+                reasons
+            );
+
+            lastNotificationRisk =
+                risk;
+        }
+
+    } else {
+
+        lastNotificationRisk =
+            "SAFE";
+
+    }
+
+}
+
+
+/* =========================================================
+   RISK UI
+========================================================= */
+
+function updateRiskUI(
+    risk,
+    score,
+    reasons
+) {
+
+    const value =
+        document.getElementById(
+            "riskValue"
+        );
+
+    const message =
+        document.getElementById(
+            "riskMessage"
+        );
+
+    const scoreElement =
+        document.getElementById(
+            "riskScore"
+        );
+
+    const meter =
+        document.getElementById(
+            "riskMeter"
+        );
+
+
+    value.textContent =
+        risk;
+
+    scoreElement.textContent =
+        score + "%";
+
+
+    let degree =
+        Math.max(
+            15,
+            score * 3.6
+        );
+
+
+    let color =
+        "#42ff9b";
+
+
+    if (risk === "WATCH") {
+
+        color =
+            "#ffd447";
+
+    }
+
+    if (risk === "WARNING") {
+
+        color =
+            "#ff9d42";
+
+    }
+
+    if (risk === "CRITICAL") {
+
+        color =
+            "#ff4141";
+
+    }
+
+
+    value.style.color =
+        color;
+
+    value.style.textShadow =
+        `0 0 30px ${color}55`;
+
+
+    meter.style.background =
+        `conic-gradient(
+            ${color} 0deg,
+            ${color} ${degree}deg,
+            rgba(255,255,255,.07)
+            ${degree}deg,
+            rgba(255,255,255,.07)
+            360deg
+        )`;
+
+
+
+    if (reasons.length === 0) {
+
+        message.textContent =
+            "All monitored parameters are currently within configured safe limits.";
+
+    } else {
+
+        message.textContent =
+            "Detected: " +
+            reasons.join(", ") +
+            ".";
+
+    }
+
+
+    const alertBox =
+        document.getElementById(
+            "alertBox"
+        );
+
+
+    if (
+        risk === "WARNING" ||
+        risk === "CRITICAL"
+    ) {
+
+        alertBox.classList.add(
+            "show"
+        );
+
+        document.getElementById(
+            "alertMessage"
+        ).textContent =
+            "Detected: " +
+            reasons.join(", ") +
+            ".";
+
+    } else {
+
+        alertBox.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+async function enableNotifications() {
+
+    if (
+        !("Notification" in window)
+    ) {
+
+        document.getElementById(
+            "notificationText"
+        ).textContent =
+            "This browser does not support notifications.";
+
+        return;
+
+    }
+
+
+    const permission =
+        await Notification.requestPermission();
+
+
+    if (permission === "granted") {
+
+        document.getElementById(
+            "notificationStatus"
+        ).textContent =
+            "ON";
+
+        document.getElementById(
+            "notificationText"
+        ).textContent =
+            "Emergency notifications enabled.";
+
+        new Notification(
+            "Landslide Monitoring",
+            {
+                body:
+                    "Emergency notifications are now enabled."
+            }
+        );
+
+    } else {
+
+        document.getElementById(
+            "notificationText"
+        ).textContent =
+            "Notification permission was not granted.";
+
+    }
+
+}
+
+
+/* =========================================================
+   SEND RISK NOTIFICATION
+========================================================= */
+
+function sendRiskNotification(
+    risk,
+    reasons
+) {
+
+    if (
+        !("Notification" in window)
+    ) {
+        return;
+    }
+
+    if (
+        Notification.permission !==
+        "granted"
+    ) {
+        return;
+    }
+
+
+    new Notification(
+        "🚨 Landslide " + risk,
+        {
+            body:
+                "High-risk condition detected: " +
+                reasons.join(", ") +
+                "."
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+function enableLocation() {
+
+    if (!navigator.geolocation) {
+
+        document.getElementById(
+            "locationText"
+        ).textContent =
+            "Geolocation is not supported.";
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+
+            document.getElementById(
+                "locationStatus"
+            ).textContent =
+                "ON";
+
+            document.getElementById(
+                "locationText"
+            ).textContent =
+                "Location permission enabled.";
+
+            document.getElementById(
+                "coordinates"
+            ).textContent =
+                `Latitude: ${latitude.toFixed(6)}
+                 | Longitude: ${longitude.toFixed(6)}`;
+
+        },
+
+        function(error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "locationText"
+            ).textContent =
+                "Location permission was denied.";
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 60000
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   PHOTO
+========================================================= */
+
+function photoSelected(event) {
+
+    const file =
+        event.target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    document.getElementById(
+        "photoText"
+    ).textContent =
+        "Selected: " +
+        file.name +
+        " (" +
+        Math.round(file.size / 1024) +
+        " KB)";
+
+}
+
+
+/* =========================================================
+   GRAPH
+========================================================= */
+
+function drawGraph() {
+
+    const canvas =
+        document.getElementById(
+            "sensorGraph"
+        );
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    const width =
+        canvas.clientWidth;
+
+    const height =
+        260;
+
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        width * dpr;
+
+    canvas.height =
+        height * dpr;
+
+    ctx.scale(
+        dpr,
+        dpr
+    );
+
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    if (
+        history.length < 2
+    ) {
+
+        ctx.fillStyle =
+            "#668094";
+
+        ctx.font =
+            "14px Arial";
+
+        ctx.fillText(
+            "Waiting for historical sensor data...",
+            20,
+            40
+        );
+
+        return;
+
+    }
+
+
+    /* GRID */
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,.07)";
+
+    ctx.lineWidth = 1;
+
+
+    for (
+        let y = 20;
+        y < height;
+        y += 45
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            width,
+            y
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    drawLine(
+        history.map(
+            x => x.rain
+        ),
+        "#45d9ff",
+        width,
+        height
+    );
+
+
+    drawLine(
+        history.map(
+            x => x.soil
+        ),
+        "#62ffad",
+        width,
+        height
+    );
+
+}
+
+
+/* =========================================================
+   GRAPH LINE
+========================================================= */
+
+function drawLine(
+    values,
+    color,
+    width,
+    height
+) {
+
+    if (!values.length) {
+        return;
+    }
+
+
+    const max =
+        Math.max(
+            ...values,
+            1
+        );
+
+    const min =
+        Math.min(
+            ...values,
+            0
+        );
+
+
+    ctx.beginPath();
+
+
+    values.forEach(
+        (value, index) => {
+
+            const x =
+                index /
+                (values.length - 1) *
+                width;
+
+            const y =
+                height -
+                (
+                    (value - min) /
+                    Math.max(
+                        max - min,
+                        1
+                    )
+                ) *
+                (height - 30) -
+                10;
+
+
+            if (index === 0) {
+
+                ctx.moveTo(
+                    x,
+                    y
+                );
+
+            } else {
+
+                ctx.lineTo(
+                    x,
+                    y
+                );
+
+            }
+
+        }
+    );
+
+
+    ctx.strokeStyle =
+        color;
+
+    ctx.lineWidth = 3;
+
+    ctx.stroke();
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+getSensorData();
+
+
+/*
+   Refresh every 15 seconds,
+   matching your ESP32 upload interval.
+*/
+
+setInterval(
+    getSensorData,
+    15000
+);
+
+
+window.addEventListener(
+    "resize",
+    drawGraph
+);
+
+</script>
 
 </body>
 </html>
